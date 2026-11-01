@@ -1,5 +1,9 @@
 # Deploying armedias.com to a VPS
 
+> **This VPS (Ubuntu 24.04, PM2) uses the PM2 flow below.** It installs Node 24 separately in
+> `/opt/node24`, so the other PM2 apps keep their own Node version. `deploy/armedias.service`
+> is only for servers that use systemd instead of PM2.
+
 The site is static HTML served by **nginx**. One small **Node** process (Node 24+) handles
 the contact form, the visitor counter and the admin panel at `/admin/`. Leads, visitor
 stats and login lockouts are stored in a SQLite file in `/var/www/armedias/data`.
