@@ -5,6 +5,7 @@ import logo from '../../assets/logo-mark.png';
 import { isAuthenticated } from '../../server/auth';
 import { getStats } from '../../server/analytics';
 import { db } from '../../server/db';
+import { eventTotal, getWhatsApp, whatsAppUrl } from '../../server/settings';
 
 export const prerender = false;
 
@@ -23,6 +24,8 @@ interface Lead {
 const leads = db.prepare('SELECT * FROM submissions ORDER BY created_at DESC LIMIT 2000').all() as unknown as Lead[];
 const since = new Date(Date.now() - (days - 1) * 86_400_000).toISOString().slice(0, 10);
 const leadsInRange = leads.filter((l) => l.created_at.slice(0, 10) >= since).length;
+const whatsapp = getWhatsApp();
+const waClicks = eventTotal('whatsapp_click', since);
 
 const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 const countryName = (code: string) => (code.length === 2 ? regionNames.of(code) ?? code : code);
@@ -39,6 +42,7 @@ const cards = [
   { label: `Page views · ${days} days`, value: stats.views },
   { label: 'Visitors today', value: stats.today.visitors },
   { label: `New leads · ${days} days`, value: leadsInRange },
+  { label: `WhatsApp clicks · ${days} days`, value: waClicks },
 ];
 ---
 
@@ -53,6 +57,7 @@ const cards = [
       <nav class="flex items-center gap-1 text-sm font-semibold">
         <a href="#overview" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Overview</a>
         <a href="#leads" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Leads <span class="ml-1 rounded-full bg-olive px-2 py-0.5 text-xs text-white">{leads.length}</span></a>
+        <a href="#settings" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Settings</a>
         <a href="/" target="_blank" rel="noopener" class="rounded-full px-3 py-2 text-navy hover:bg-mist">View site ↗</a>
         <button data-logout class="rounded-full px-3 py-2 text-red-700 hover:bg-red-50">Sign out</button>
       </nav>
@@ -76,7 +81,7 @@ const cards = [
         </div>
       </div>
 
-      <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {cards.map((c) => (
           <li class="rounded-3xl bg-white p-6 ring-1 ring-navy/5">
             <p class="text-sm text-slate">{c.label}</p>
@@ -235,6 +240,28 @@ const cards = [
       )}
     </section>
 
+    <!-- SETTINGS -->
+    <section id="settings" class="scroll-mt-20 rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+      <h2 class="text-2xl font-bold">WhatsApp button</h2>
+      <p class="mt-1 text-sm text-slate">Where the floating WhatsApp button and every "WhatsApp us" link on the site send visitors. Changes apply instantly, no rebuild needed.</p>
+      <form id="wa-form" class="mt-6 grid gap-5 lg:grid-cols-2" novalidate>
+        <label class="grid gap-1.5 text-sm font-semibold text-navy">
+          WhatsApp number or wa.me link
+          <input name="whatsapp" value={`+${whatsapp.number}`} required class="rounded-2xl border border-navy/15 bg-mist px-4 py-3 font-normal" placeholder="+91 77018 97557 or https://wa.me/917701897557" />
+          <span class="text-xs font-normal text-slate">Include the country code. Spaces and dashes are fine.</span>
+        </label>
+        <label class="grid gap-1.5 text-sm font-semibold text-navy">
+          Pre-filled message (optional)
+          <textarea name="message" rows="3" maxlength="500" class="rounded-2xl border border-navy/15 bg-mist px-4 py-3 font-normal" placeholder="Hi AR Medias, I'd like to discuss a project.">{whatsapp.message}</textarea>
+        </label>
+        <div class="flex flex-wrap items-center gap-3 lg:col-span-2">
+          <button type="submit" class="btn-primary">Save</button>
+          <a data-wa-test href={whatsAppUrl(whatsapp)} target="_blank" rel="noopener" class="btn-ghost">Test current link ↗</a>
+          <p data-wa-msg role="status" class="text-sm font-medium"></p>
+        </div>
+      </form>
+    </section>
+
     <p class="pb-6 text-center text-xs text-slate">Visitor stats are cookieless: no IP addresses are stored. For bot traffic, threats and caching, see your Cloudflare dashboard.</p>
   </main>
 </Admin>
@@ -255,6 +282,23 @@ const cards = [
 
   const dateFmt = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
   document.querySelectorAll<HTMLTimeElement>('time[data-local]').forEach((t) => { t.textContent = dateFmt.format(new Date(t.dateTime)); });
+
+  const waForm = document.querySelector<HTMLFormElement>('#wa-form')!;
+  const waMsg = waForm.querySelector<HTMLElement>('[data-wa-msg]')!;
+  waForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = new FormData(waForm);
+    const res = await fetch('/api/admin/settings/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ whatsapp: data.get('whatsapp'), message: data.get('message') }),
+    });
+    if (res.status === 401) return location.assign('/admin/');
+    const body = await res.json().catch(() => ({}));
+    waMsg.className = `text-sm font-medium ${body.ok ? 'text-olive' : 'text-red-700'}`;
+    waMsg.textContent = body.ok ? 'Saved. The site now links to this chat.' : body.error || 'Could not save.';
+    if (body.ok) waForm.querySelector<HTMLAnchorElement>('[data-wa-test]')!.href = body.url;
+  });
 
   document.querySelector('[data-logout]')!.addEventListener('click', async () => {
     await fetch('/api/admin/logout/', { method: 'POST' });

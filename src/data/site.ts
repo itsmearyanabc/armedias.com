@@ -14,7 +14,10 @@ export const site = {
   email: 'info@armedias.com',
   phone: '+91 77018 97557',
   phoneE164: '+917701897557',
-  whatsapp: 'https://wa.me/917701897557',
+  // Every WhatsApp link goes through this redirect, so the destination can be changed in
+  // /admin/ without rebuilding. The default applies until a link is saved there.
+  whatsapp: '/api/whatsapp/',
+  whatsappDefault: 'https://wa.me/917701897557',
   address: {
     street: 'N-48, 1st Floor, Scooter Market, Kirti Nagar',
     locality: 'New Delhi',

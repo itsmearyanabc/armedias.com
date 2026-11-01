@@ -49,7 +49,7 @@ const schema = [
         <ul class="mt-10 grid gap-3" data-reveal="stagger">
           {channels.map((c) => (
             <li>
-              <a href={c.href} data-tilt class="group flex items-center gap-5 rounded-3xl bg-white p-5 ring-1 ring-navy/8 transition-colors hover:bg-navy" rel={c.href.startsWith('http') ? 'noopener' : undefined} target={c.href.startsWith('http') ? '_blank' : undefined}>
+              <a href={c.href} data-tilt class="group flex items-center gap-5 rounded-3xl bg-white p-5 ring-1 ring-navy/8 transition-colors hover:bg-navy" rel={c.href.startsWith('http') || c.href === site.whatsapp ? 'noopener' : undefined} target={c.href.startsWith('http') || c.href === site.whatsapp ? '_blank' : undefined}>
                 <span class="grid size-12 shrink-0 place-items-center rounded-2xl bg-olive/10 text-olive transition-colors group-hover:bg-olive group-hover:text-white">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d={c.icon} /></svg>
                 </span>
