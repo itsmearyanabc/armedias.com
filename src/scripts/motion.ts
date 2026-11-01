@@ -101,18 +101,6 @@ export async function initMotion() {
 
   if (!hover) return;
 
-  // Cursor follower ring that grows over interactive elements
-  const ring = Object.assign(document.createElement('div'), { className: 'cursor-ring' });
-  document.body.append(ring);
-  const rx = gsap.quickTo(ring, 'x', { duration: 0.35, ease: 'power3' });
-  const ry = gsap.quickTo(ring, 'y', { duration: 0.35, ease: 'power3' });
-  addEventListener('pointermove', (e) => {
-    rx(e.clientX); ry(e.clientY);
-    ring.classList.toggle('is-active', !!(e.target as Element).closest('a, button, summary, [data-tilt]'));
-  }, { passive: true });
-  document.addEventListener('pointerleave', () => ring.classList.add('is-hidden'));
-  document.addEventListener('pointerenter', () => ring.classList.remove('is-hidden'));
-
   // Magnetic buttons
   document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
     const xTo = gsap.quickTo(el, 'x', { duration: 0.4, ease: 'power3' });

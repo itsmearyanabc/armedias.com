@@ -77,13 +77,6 @@ html.lenis, html.lenis body { height: auto; }
 .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
 .w > span { display: inline-block; will-change: transform; }
 
-/* Cursor follower */
-.cursor-ring { position: fixed; left: 0; top: 0; z-index: 70; width: 28px; height: 28px; margin: -14px 0 0 -14px;
-  border: 1.5px solid var(--color-ember); border-radius: 999px; pointer-events: none;
-  transition: width 0.25s, height 0.25s, margin 0.25s, background-color 0.25s, opacity 0.25s; }
-.cursor-ring.is-active { width: 56px; height: 56px; margin: -28px 0 0 -28px; background: rgb(255 122 26 / 0.18); border-color: transparent; }
-.cursor-ring.is-hidden { opacity: 0; }
-
 /* Tilt glare */
 [data-tilt] { position: relative; transform-style: preserve-3d; }
 [data-tilt]::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
