@@ -4,18 +4,19 @@ import { site } from '../data/site';
 import { process as steps } from '../data/process';
 import { engagementModels as models } from '../data/engagement';
 import Scribble from '../components/Scribble.astro';
+import FeatureCard from '../components/FeatureCard.astro';
 
 const title = 'Our Process | How AR Medias Delivers Software Projects';
 const description =
   'How AR Medias delivers websites, apps, CRM/ERP and AI automation: discovery, design, build, launch and support. Fixed quotes, weekly demos and full ownership of your code.';
 
 const promises = [
-  { t: 'Weekly demos', d: 'See working software every week on a private staging link.' },
-  { t: 'One point of contact', d: 'A dedicated project lead who answers your messages the same day.' },
-  { t: 'Your time zone', d: 'Calls scheduled in your working hours, wherever you are.' },
-  { t: 'Shared visibility', d: 'A live task board so you always know what is done and what is next.' },
-  { t: 'NDA on request', d: 'We sign a non-disclosure agreement before you share details.' },
-  { t: 'You own everything', d: 'Code, designs, domains and accounts are transferred to you.' },
+  { icon: 'demo' as const, t: 'Weekly demos', d: 'See working software every week on a private staging link.' },
+  { icon: 'founder' as const, t: 'One point of contact', d: 'A dedicated project lead who answers your messages the same day.' },
+  { icon: 'clock' as const, t: 'Your time zone', d: 'Calls scheduled in your working hours, wherever you are.' },
+  { icon: 'board' as const, t: 'Shared visibility', d: 'A live task board so you always know what is done and what is next.' },
+  { icon: 'lock' as const, t: 'NDA on request', d: 'We sign a non-disclosure agreement before you share details.' },
+  { icon: 'key' as const, t: 'You own everything', d: 'Code, designs, domains and accounts are transferred to you.' },
 ];
 
 const schema = [
@@ -102,15 +103,7 @@ const schema = [
         <h2 class="mt-4 text-4xl font-bold sm:text-5xl">What you can expect on every project.</h2>
       </div>
       <ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
-        {promises.map((p) => (
-          <li data-tilt class="rounded-3xl bg-mist p-8">
-            <span class="grid size-11 place-items-center rounded-2xl bg-olive text-white">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9" /></svg>
-            </span>
-            <h3 class="mt-5 text-xl font-bold">{p.t}</h3>
-            <p class="mt-2 leading-relaxed text-slate">{p.d}</p>
-          </li>
-        ))}
+        {promises.map((p, i) => <FeatureCard icon={p.icon} title={p.t} text={p.d} index={i} />)}
       </ul>
     </div>
   </section>

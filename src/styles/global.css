@@ -27,6 +27,11 @@
   html { -webkit-font-smoothing: antialiased; scroll-behavior: auto; }
   body { @apply bg-white font-sans text-ink; }
   h1, h2, h3, h4 { @apply font-display tracking-tight text-ink; }
+  /* Even line lengths in headings and no lonely last words in paragraphs */
+  h1, h2, h3 { text-wrap: balance; }
+  p, li, dd { text-wrap: pretty; }
+  /* Counting numbers keep the same width, so they don't jitter while animating */
+  [data-count], dd, time { font-variant-numeric: tabular-nums; }
   :focus-visible { @apply outline-2 outline-offset-2 outline-olive; }
 }
 

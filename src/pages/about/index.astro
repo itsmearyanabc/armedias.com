@@ -2,16 +2,17 @@
 import Base from '../../layouts/Base.astro';
 import FounderAvatar from '../../components/FounderAvatar.astro';
 import Illustration from '../../components/illustrations/Illustration.astro';
+import FeatureCard from '../../components/FeatureCard.astro';
 import { site, markets, pillars } from '../../data/site';
 
 const title = 'About AR Medias | IT Company in New Delhi Since 2024';
 const description = `AR Medias is a founder-led IT company in New Delhi, founded on 1 January 2024 by ${site.founder.name}. ${site.projectsDelivered}+ projects delivered across web, apps, CRM/ERP and AI automation for clients in seven countries.`;
 
 const values = [
-  { t: 'Outcomes over output', d: 'We measure success by leads, sales and hours saved, not by the number of screens shipped.' },
-  { t: 'Straight answers', d: 'Fixed quotes, honest timelines and a clear "no" when something is not worth building.' },
-  { t: 'Craft in the details', d: 'Fast pages, clean code, smooth motion and interfaces that feel obvious to use.' },
-  { t: 'Long-term partners', d: 'Most of our work continues after launch, improving and growing with each client.' },
+  { icon: 'target' as const, t: 'Outcomes over output', d: 'We measure success by leads, sales and hours saved, not by the number of screens shipped.' },
+  { icon: 'chat' as const, t: 'Straight answers', d: 'Fixed quotes, honest timelines and a clear "no" when something is not worth building.' },
+  { icon: 'sparkle' as const, t: 'Craft in the details', d: 'Fast pages, clean code, smooth motion and interfaces that feel obvious to use.' },
+  { icon: 'handshake' as const, t: 'Long-term partners', d: 'Most of our work continues after launch, improving and growing with each client.' },
 ];
 
 const timeline = [
@@ -124,13 +125,7 @@ const schema = [
         <h2 class="mt-4 text-4xl font-bold sm:text-5xl">What every client can count on.</h2>
       </div>
       <ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-reveal="stagger">
-        {values.map((v, i) => (
-          <li data-tilt class="rounded-3xl bg-navy p-8 text-white">
-            <span class="font-display text-5xl font-bold text-olive-300/40">0{i + 1}</span>
-            <h3 class="mt-4 text-xl font-bold text-white">{v.t}</h3>
-            <p class="mt-2 leading-relaxed text-white/70">{v.d}</p>
-          </li>
-        ))}
+        {values.map((v, i) => <FeatureCard icon={v.icon} title={v.t} text={v.d} index={i} tone="dark" />)}
       </ul>
     </div>
   </section>

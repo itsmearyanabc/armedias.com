@@ -95,9 +95,18 @@ const schema = [
   <section class="border-y border-navy/8 bg-mist/60 py-10">
     <div class="container-x">
       <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-slate" data-no-split>Who it's for</h2>
-      <ul class="mt-5 flex flex-wrap gap-3" data-reveal="stagger">
-        {s.forWho.map((w) => <li class="rounded-full bg-white px-5 py-2.5 font-medium text-navy ring-1 ring-navy/8">{w}</li>)}
-      </ul>
+    </div>
+    <!-- Slow auto-scrolling strip; the second copy only completes the loop -->
+    <div class="marquee mt-5" style="--speed: 50s; --gap: 0.75rem">
+      {[0, 1].map((copy) => (
+        <ul class="marquee__track" aria-hidden={copy === 1 ? 'true' : undefined}>
+          {[...s.forWho, ...s.forWho].map((w, i) => (
+            <li class="flex items-center gap-2.5 whitespace-nowrap rounded-full bg-white px-5 py-2.5 font-medium text-navy ring-1 ring-navy/8 transition-colors hover:bg-ember hover:text-navy hover:ring-ember">
+              <span aria-hidden="true" class:list={['size-2 rounded-full', i % 2 ? 'bg-olive' : 'bg-ember']}></span>{w}
+            </li>
+          ))}
+        </ul>
+      ))}
     </div>
   </section>
 

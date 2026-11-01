@@ -5,6 +5,9 @@ import Footer from '../components/Footer.astro';
 import ContactSection from '../components/ContactSection.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import { site, markets } from '../data/site';
+// The two font files every page needs first; preloading them avoids a visible font swap
+import displayFont from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
+import bodyFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
 interface Props {
   title: string;
@@ -58,6 +61,8 @@ const jsonLd = [organization, ...schema];
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#13213a" />
+    <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />

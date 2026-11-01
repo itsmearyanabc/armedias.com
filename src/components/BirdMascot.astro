@@ -1,0 +1,75 @@
+---
+// "Ari", the bird from the AR Medias logo, as a small mascot. It bobs, blinks, tilts its
+// head, follows the cursor with its eye, flaps when hovered and can say a short line.
+interface Props { say?: string; class?: string; flip?: boolean }
+const { say, class: className, flip = false } = Astro.props;
+---
+
+<div class:list={['mascot group/bird', className, flip && 'mascot--flip']} data-mascot>
+  {say && <span class="mascot-say">{say}</span>}
+  <svg viewBox="0 0 120 100" aria-hidden="true" class="mascot-svg">
+    <g class="m-body">
+      <path d="M18 70c-8 2-14 0-16-3 8 0 14-3 18-7z" fill="#556b2f" />
+      <path d="M22 62c4-18 20-30 40-30 14 0 24 8 26 20 2 14-10 26-30 28-16 2-30-4-36-18z" fill="#13213a" />
+      <g class="m-head">
+        <circle cx="82" cy="34" r="17" fill="#13213a" />
+        <path d="M97 31l14 5-14 4z" fill="#ff7a1a" />
+        <g class="m-eye">
+          <circle cx="86" cy="30" r="5.5" fill="#fff" />
+          <circle class="m-pupil" cx="87" cy="30" r="2.6" fill="#13213a" />
+          <rect class="m-lid" x="80" y="24" width="12" height="12" rx="6" fill="#13213a" />
+        </g>
+        <circle cx="80" cy="39" r="3" fill="#ff7a1a" opacity="0.35" />
+      </g>
+      <path class="m-wing" d="M40 52c10-6 26-6 34 2-8 10-24 14-36 8z" fill="#a9c46c" />
+      <path d="M50 79l-2 9M62 79l2 9" stroke="#ff7a1a" stroke-width="3" stroke-linecap="round" />
+      <path d="M44 89h10M58 89h10" stroke="#ff7a1a" stroke-width="3" stroke-linecap="round" />
+    </g>
+  </svg>
+</div>
+
+<style>
+  .mascot { position: relative; display: inline-block; width: 7rem; }
+  .mascot--flip .mascot-svg { transform: scaleX(-1); }
+  .mascot-svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .mascot :is(.m-body, .m-head, .m-wing, .m-lid) { transform-box: fill-box; }
+  .m-body { transform-origin: 50% 100%; animation: m-bob 2.8s ease-in-out infinite; }
+  .m-head { transform-origin: 30% 80%; animation: m-tilt 5s ease-in-out infinite; }
+  .m-wing { transform-origin: 10% 50%; animation: m-wing 3.2s ease-in-out infinite; }
+  .m-lid { transform-origin: 50% 0%; transform: scaleY(0); animation: m-blink 4.5s infinite; }
+  .m-pupil { transition: transform 0.2s ease-out; }
+  .group\/bird:hover .m-wing { animation: m-flap 0.25s ease-in-out infinite alternate; }
+  .group\/bird:hover .m-body { animation: m-hop 0.6s ease-in-out infinite; }
+
+  .mascot-say {
+    position: absolute; bottom: 100%; left: 50%; translate: -50% -0.25rem; white-space: nowrap;
+    border-radius: 999px; background: #fff; color: var(--color-navy); padding: 0.4rem 0.8rem;
+    font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
+    box-shadow: 0 10px 25px -10px rgb(19 33 58 / 0.4); animation: m-say 4s ease-in-out infinite;
+  }
+  .mascot-say::after { content: ''; position: absolute; left: 50%; top: 100%; translate: -50% -1px; border: 6px solid transparent; border-top-color: #fff; }
+
+  @keyframes m-bob { 50% { transform: translateY(-3px); } }
+  @keyframes m-hop { 50% { transform: translateY(-8px) rotate(-3deg); } }
+  @keyframes m-tilt { 0%, 40%, 100% { transform: rotate(0); } 50%, 70% { transform: rotate(-12deg); } }
+  @keyframes m-wing { 0%, 80%, 100% { transform: rotate(0); } 85% { transform: rotate(-18deg); } 90% { transform: rotate(4deg); } }
+  @keyframes m-flap { from { transform: rotate(-25deg); } to { transform: rotate(10deg); } }
+  @keyframes m-blink { 0%, 92%, 100% { transform: scaleY(0); } 95% { transform: scaleY(1); } }
+  @keyframes m-say { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+  @media (prefers-reduced-motion: reduce) { .mascot * { animation: none !important; } }
+</style>
+
+<script>
+  // The eye follows the pointer (desktop only)
+  if (matchMedia('(hover: hover)').matches) {
+    const pupils = [...document.querySelectorAll<SVGCircleElement>('[data-mascot] .m-pupil')];
+    if (pupils.length) addEventListener('pointermove', (e) => {
+      for (const p of pupils) {
+        const r = p.getBoundingClientRect();
+        const flip = p.closest('.mascot--flip') ? -1 : 1;
+        const a = Math.atan2(e.clientY - (r.top + r.height / 2), (e.clientX - (r.left + r.width / 2)) * flip);
+        p.style.transform = `translate(${Math.cos(a) * 1.6}px, ${Math.sin(a) * 1.6}px)`;
+      }
+    }, { passive: true });
+  }
+</script>

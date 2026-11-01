@@ -1,18 +1,68 @@
 ---
 import Base from '../layouts/Base.astro';
+import BirdMascot from '../components/BirdMascot.astro';
 import { site } from '../data/site';
+
+const steps = [
+  { t: 'We read your message', d: 'Usually within a few hours on working days.' },
+  { t: 'We call or message you', d: 'Within one business day, at a time that suits you.' },
+  { t: 'You get a clear plan', d: 'Scope, timeline and a fixed quote, free of charge.' },
+];
+const confetti = Array.from({ length: 28 }, (_, i) => i);
 ---
 
 <Base title="Thank You | AR Medias" description="Your message has been sent to AR Medias." noindex hideContact>
-  <section class="grid min-h-[80vh] place-items-center px-4 pb-20 pt-32 text-center">
-    <div>
-      <p class="eyebrow">Message sent</p>
-      <h1 class="mt-4 text-5xl font-bold sm:text-6xl">Thank you!</h1>
-      <p class="mx-auto mt-5 max-w-md text-lg text-slate">We'll reply within one business day. For anything urgent, message us on WhatsApp.</p>
-      <div class="mt-9 flex flex-wrap justify-center gap-3">
-        <a href={site.whatsapp} class="btn-primary" rel="noopener" target="_blank">WhatsApp us</a>
-        <a href="/" class="btn-ghost">Back to home</a>
+  <section class="relative grid min-h-[85vh] place-items-center overflow-hidden px-4 pb-20 pt-32 text-center">
+    <div aria-hidden="true" class="confetti pointer-events-none absolute inset-0">
+      {confetti.map((i) => <span style={`--x:${(i * 37) % 100}%;--d:${(i % 7) * 0.18}s;--r:${(i * 53) % 360}deg;--c:${['#ff7a1a', '#ffc93c', '#a9c46c', '#556b2f', '#13213a'][i % 5]}`}></span>)}
+    </div>
+    <div aria-hidden="true" class="blob pointer-events-none absolute -right-24 top-10 -z-10 size-[30rem] rounded-full bg-olive-300/30 blur-3xl"></div>
+    <div class="relative max-w-2xl">
+      <svg class="mx-auto text-olive" width="96" height="96" viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle class="ty-circle" cx="26" cy="26" r="23" />
+        <path class="ty-check" d="M15 27l7 7 15-16" />
+      </svg>
+      <p class="eyebrow mt-6">Message sent</p>
+      <h1 class="mt-3 text-5xl font-bold sm:text-6xl">Thank you!</h1>
+      <p class="mx-auto mt-4 max-w-md text-lg text-slate">Your message is with us. Here's what happens next.</p>
+
+      <ol class="mt-12 grid gap-4 text-left sm:grid-cols-3">
+        {steps.map((s, i) => (
+          <li class="ty-step rounded-3xl bg-white p-6 ring-1 ring-navy/8" style={`animation-delay:${0.9 + i * 0.25}s`}>
+            <span class="grid size-10 place-items-center rounded-full bg-gradient-to-br from-ember to-sun font-display text-sm font-bold text-navy">0{i + 1}</span>
+            <h2 class="mt-4 text-lg font-bold" data-no-split>{s.t}</h2>
+            <p class="mt-1 text-sm text-slate">{s.d}</p>
+          </li>
+        ))}
+      </ol>
+
+      <BirdMascot say="Talk soon!" class="mx-auto mt-12 block w-24" />
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href={site.whatsapp} class="btn-ember" rel="noopener" target="_blank">Need it faster? WhatsApp us</a>
+        <a href="/blog/" class="btn-ghost">Read our guides</a>
       </div>
     </div>
   </section>
 </Base>
+
+<style>
+  .ty-circle, .ty-check { stroke-dasharray: 160; stroke-dashoffset: 160; }
+  .ty-circle { animation: ty-draw 0.9s ease-out 0.1s forwards; }
+  .ty-check { animation: ty-draw 0.6s ease-out 0.8s forwards; }
+  @keyframes ty-draw { to { stroke-dashoffset: 0; } }
+
+  .ty-step { opacity: 0; transform: translateY(20px); animation: ty-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+  @keyframes ty-rise { to { opacity: 1; transform: none; } }
+
+  .confetti span { position: absolute; top: -20px; left: var(--x); width: 9px; height: 14px; border-radius: 2px;
+    background: var(--c); transform: rotate(var(--r)); animation: ty-fall 3.2s cubic-bezier(0.3, 0.6, 0.5, 1) var(--d) both; }
+  .confetti span:nth-child(3n) { width: 7px; height: 7px; border-radius: 99px; }
+  @keyframes ty-fall {
+    from { transform: translateY(-20px) rotate(var(--r)); opacity: 1; }
+    to { transform: translateY(105vh) rotate(calc(var(--r) + 540deg)); opacity: 0.2; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .confetti { display: none; }
+    .ty-step, .ty-circle, .ty-check { animation: none; opacity: 1; transform: none; stroke-dashoffset: 0; }
+  }
+</style>

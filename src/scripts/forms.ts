@@ -42,6 +42,7 @@ export function initForms() {
         if (!res.ok || !body.ok) throw new Error(body.error || 'Something went wrong.');
         success.hidden = false;
         gsap.from(success, { opacity: 0, scale: 0.96, duration: 0.6, ease: 'power3.out' });
+        burst(success);
         form.reset();
       } catch (err) {
         showError(`${(err as Error).message} Please try again, or email us directly.`);
@@ -51,4 +52,24 @@ export function initForms() {
       }
     });
   });
+}
+
+/** Brand-coloured confetti burst inside the success panel. */
+function burst(panel: HTMLElement) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const colors = ['#ff7a1a', '#ffc93c', '#a9c46c', '#ffffff'];
+  for (let i = 0; i < 36; i++) {
+    const piece = document.createElement('span');
+    Object.assign(piece.style, {
+      position: 'absolute', left: '50%', top: '38%', width: '8px', height: i % 3 ? '12px' : '8px',
+      borderRadius: i % 3 ? '2px' : '99px', background: colors[i % colors.length], pointerEvents: 'none',
+    });
+    panel.append(piece);
+    const angle = (Math.PI * 2 * i) / 36 + Math.random() * 0.3;
+    const dist = 90 + Math.random() * 140;
+    gsap.to(piece, {
+      x: Math.cos(angle) * dist, y: Math.sin(angle) * dist + 120, rotation: Math.random() * 720,
+      opacity: 0, duration: 1.4 + Math.random() * 0.6, ease: 'power2.out', onComplete: () => piece.remove(),
+    });
+  }
 }

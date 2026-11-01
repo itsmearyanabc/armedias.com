@@ -1,0 +1,26 @@
+---
+// Highlighted feature card: orange icon tile with a looping animated icon, an accent bar
+// that sweeps across on hover and a soft orange glow. Used for "why us"-style lists.
+import AnimatedIcon from './AnimatedIcon.astro';
+
+interface Props {
+  icon: Parameters<typeof AnimatedIcon>[0]['name'];
+  title: string;
+  text: string;
+  index?: number;
+  tone?: 'light' | 'dark';
+}
+const { icon, title, text, index, tone = 'light' } = Astro.props;
+const dark = tone === 'dark';
+---
+
+<li data-tilt class:list={['group relative overflow-hidden rounded-3xl p-7 transition-[box-shadow,background-color] duration-300 sm:p-8', dark ? 'bg-navy text-white hover:shadow-2xl hover:shadow-navy/30' : 'bg-white ring-1 ring-navy/8 hover:shadow-2xl hover:shadow-ember/15 hover:ring-ember/30']}>
+  <span aria-hidden="true" class="absolute inset-x-0 top-0 h-1 origin-left scale-x-[0.18] bg-gradient-to-r from-ember to-sun transition-transform duration-500 group-hover:scale-x-100"></span>
+  <span aria-hidden="true" class="pointer-events-none absolute -right-12 -top-12 size-36 rounded-full bg-ember/20 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"></span>
+  {index !== undefined && <span aria-hidden="true" class:list={['absolute right-6 top-6 font-display text-sm font-bold', dark ? 'text-white/25' : 'text-navy/20']}>0{index + 1}</span>}
+  <span class="relative grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-ember to-sun p-2.5 text-navy shadow-lg shadow-ember/30 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+    <AnimatedIcon name={icon} class="size-full" />
+  </span>
+  <h3 class:list={['relative mt-5 text-xl font-bold', dark && 'text-white']}>{title}</h3>
+  <p class:list={['relative mt-2 leading-relaxed', dark ? 'text-white/70' : 'text-slate']}>{text}</p>
+</li>

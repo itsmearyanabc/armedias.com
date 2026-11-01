@@ -14,6 +14,8 @@ export default defineConfig({
   // Astro's origin check accept form posts from https://armedias.com behind the proxy.
   security: { allowedDomains: [{ hostname: 'armedias.com', protocol: 'https' }] },
   build: { format: 'directory', inlineStylesheets: 'auto' },
+  // Load a page in the background when a visitor hovers or taps its link, so the click feels instant
+  prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   integrations: [sitemap({ filter: (page) => !/\/(thank-you|lab)\//.test(page) })],
   vite: { plugins: [tailwindcss()] },
 });

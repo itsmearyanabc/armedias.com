@@ -2,6 +2,7 @@
 // Lead form at the end of every page (Base renders it before the footer).
 import ContactForm from './ContactForm.astro';
 import { site } from '../data/site';
+import BirdMascot from './BirdMascot.astro';
 import Illustration from './illustrations/Illustration.astro';
 ---
 
@@ -9,7 +10,10 @@ import Illustration from './illustrations/Illustration.astro';
   <div aria-hidden="true" class="blob pointer-events-none absolute -left-32 top-10 size-[30rem] rounded-full bg-olive-300/30 blur-3xl"></div>
   <div class="container-x relative grid items-start gap-14 lg:grid-cols-[1fr_1.15fr]">
     <div class="lg:sticky lg:top-28">
-      <p class="eyebrow">Start your project</p>
+      <div class="flex items-end justify-between gap-4">
+        <p class="eyebrow">Start your project</p>
+        <BirdMascot say="We reply fast!" flip class="hidden w-20 sm:inline-block" />
+      </div>
       <h2 id="contact-section-heading" class="mt-4 text-4xl font-bold sm:text-5xl">Tell us what you want to build.</h2>
       <p class="mt-5 max-w-md text-lg leading-relaxed text-slate">Share a few details and we'll reply within one business day with next steps and a free consultation.</p>
       <ul class="mt-8 space-y-3 text-navy [&_a]:inline-flex [&_a]:items-center [&_a]:gap-2.5">

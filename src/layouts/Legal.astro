@@ -6,7 +6,7 @@ interface Props { title: string; heading: string; description: string; updated: 
 const { title, heading, description, updated } = Astro.props;
 ---
 
-<Base heroTone="light" {title} {description}>
+<Base {title} {description}>
   <article class="container-x max-w-3xl pb-24 pt-32 lg:pt-40">
     <p class="eyebrow">Legal</p>
     <h1 class="mt-4 text-5xl font-bold">{heading}</h1>
