@@ -5,6 +5,7 @@
 - Address: N-48, 1st Floor, Scooter Market, Kirti Nagar, New Delhi, India
 - Email: info@armedias.com
 - Phone: +91 77018 97557
+- GSTIN: 07BASPY7603N2ZN
 
 ## Services
 - [Website Development](https://armedias.com/services/website-development/)
@@ -17,8 +18,17 @@
 - [AI & Workflow Automation](https://armedias.com/services/ai-automation/)
 - [Maintenance & Support](https://armedias.com/services/maintenance-support/)
 
+## Industries
+- [Real Estate](https://armedias.com/industries/real-estate/)
+- [Healthcare](https://armedias.com/industries/healthcare/)
+- [Education](https://armedias.com/industries/education/)
+- [Retail & E-commerce](https://armedias.com/industries/retail-ecommerce/)
+- [Software Companies](https://armedias.com/industries/software-companies/)
+
 ## Company
 - [About](https://armedias.com/about/)
+- [Pricing](https://armedias.com/pricing/)
+- [Careers](https://armedias.com/careers/)
 - [Founder: Aryan Yadav](https://armedias.com/about/aryan-yadav/)
 - [Process](https://armedias.com/process/)
 - [Work](https://armedias.com/work/)

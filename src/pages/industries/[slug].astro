@@ -1,0 +1,163 @@
+---
+import Base from '../../layouts/Base.astro';
+import Illustration from '../../components/illustrations/Illustration.astro';
+import { site, markets } from '../../data/site';
+import { serviceBySlug } from '../../data/services';
+import { industries, type Industry } from '../../data/industries';
+
+export function getStaticPaths() {
+  return industries.map((i) => ({ params: { slug: i.slug }, props: { ind: i } }));
+}
+
+const { ind } = Astro.props as { ind: Industry };
+const url = `${site.url}/industries/${ind.slug}/`;
+const related = ind.services.map((s) => serviceBySlug[s]);
+const others = industries.filter((i) => i.slug !== ind.slug);
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: `Software development for ${ind.name}`,
+    description: ind.metaDescription,
+    url,
+    provider: { '@id': `${site.url}/#organization` },
+    audience: { '@type': 'BusinessAudience', name: ind.name },
+    areaServed: markets.map((m) => ({ '@type': 'Country', name: m.schemaName })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: ind.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Industries', item: `${site.url}/industries/` },
+      { '@type': 'ListItem', position: 3, name: ind.name, item: url },
+    ],
+  },
+];
+---
+
+<Base title={ind.metaTitle} description={ind.metaDescription} {schema}>
+  <section class="relative overflow-hidden pb-16 pt-32 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+      <div class="blob absolute -left-24 bottom-0 size-[26rem] rounded-full bg-ember/10 blur-3xl"></div>
+    </div>
+    <div class="container-x grid items-center gap-12 lg:grid-cols-[1.2fr_1fr]">
+      <div>
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero>
+          <a href="/" class="hover:text-olive">Home</a> / <a href="/industries/" class="hover:text-olive">Industries</a> / <span>{ind.name}</span>
+        </nav>
+        <p class="eyebrow mt-6" data-hero>{ind.name}</p>
+        <h1 class="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl xl:text-6xl" data-hero>{ind.h1}</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>{ind.lead}</p>
+        <div class="mt-9 flex flex-wrap gap-3" data-hero>
+          <a href="/contact/" class="btn-ember" data-magnetic>Get a free consultation</a>
+          <a href="#what-we-build" class="btn-ghost">What we build</a>
+        </div>
+      </div>
+      <div class="mx-auto w-full max-w-md" data-hero><Illustration name={ind.scene} title={`${ind.name} software illustration`} /></div>
+    </div>
+  </section>
+
+  <section class="bg-mist/60 py-24">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">The problem</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">What slows {ind.name.toLowerCase()} businesses down.</h2>
+      </div>
+      <ul class="mt-14 grid gap-5 md:grid-cols-2" data-reveal="stagger">
+        {ind.challenges.map((c, i) => (
+          <li data-tilt class="rounded-3xl bg-white p-8 ring-1 ring-navy/8">
+            <span class="font-display text-sm font-bold text-ember-600">0{i + 1}</span>
+            <h3 class="mt-3 text-2xl font-bold">{c.t}</h3>
+            <p class="mt-3 leading-relaxed text-slate">{c.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="what-we-build" class="relative scroll-mt-24 overflow-hidden bg-navy py-24 text-white">
+    <div aria-hidden="true" class="blob pointer-events-none absolute -right-40 top-10 size-[30rem] rounded-full bg-ember/20 blur-3xl"></div>
+    <div class="container-x relative">
+      <div class="max-w-2xl">
+        <p class="eyebrow text-ember-300!" data-reveal="fade">What we build</p>
+        <h2 class="mt-4 text-4xl font-bold text-white sm:text-5xl">Systems made for {ind.name.toLowerCase()}.</h2>
+      </div>
+      <ul class="mt-14 grid gap-5 md:grid-cols-2" data-reveal="stagger">
+        {ind.builds.map((b) => (
+          <li class="rounded-3xl bg-white/6 p-8 ring-1 ring-white/10 transition-colors hover:bg-white/10">
+            <h3 class="flex items-center gap-3 text-2xl font-bold text-white"><span class="size-2.5 rounded-full bg-ember"></span>{b.t}</h3>
+            <p class="mt-3 leading-relaxed text-white/70">{b.d}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-12" data-reveal="up">
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-white/60">Works with</p>
+        <ul class="mt-4 flex flex-wrap gap-2">{ind.tools.map((t) => <li class="rounded-full bg-white/10 px-4 py-2 text-sm font-medium">{t}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24">
+    <div class="container-x">
+      <h2 class="text-3xl font-bold sm:text-4xl">Services for {ind.name.toLowerCase()}</h2>
+      <ul class="mt-10 grid gap-5 md:grid-cols-3" data-reveal="stagger">
+        {related.map((r) => (
+          <li>
+            <a href={`/services/${r.slug}/`} data-tilt class="group flex h-full flex-col rounded-3xl bg-white p-7 ring-1 ring-navy/8">
+              <span class="grid size-12 place-items-center rounded-2xl bg-navy text-olive-300">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d={r.icon} /></svg>
+              </span>
+              <h3 class="mt-5 text-xl font-bold group-hover:text-olive">{r.name}</h3>
+              <p class="mt-2 flex-1 text-slate">{r.lead}</p>
+              <span class="mt-5 font-semibold text-olive">Learn more →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bg-mist/60 py-24">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+      <div>
+        <p class="eyebrow" data-reveal="fade">FAQ</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">{ind.name} questions.</h2>
+      </div>
+      <div class="divide-y divide-navy/10 border-y border-navy/10">
+        {ind.faqs.map((f) => (
+          <details class="group py-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-xl font-semibold">
+              {f.q}
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-white transition-transform duration-300 group-open:rotate-45 group-open:bg-olive group-open:text-white">+</span>
+            </summary>
+            <p class="mt-4 max-w-2xl leading-relaxed text-slate">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-navy/10 py-12">
+    <div class="container-x">
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate">Other industries</p>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {others.map((o) => <li><a href={`/industries/${o.slug}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-olive hover:text-olive">{o.name}</a></li>)}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { gsap } from 'gsap';
+  if (document.documentElement.classList.contains('js-motion')) {
+    gsap.from('[data-hero]', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.1 });
+  }
+</script>

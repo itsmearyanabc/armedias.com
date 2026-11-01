@@ -1,0 +1,28 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { site } from '../data/site';
+
+const updated = '2 November 2026';
+---
+
+<Legal title="Disclaimer | AR Medias" heading="Disclaimer" description="Important information about the content, results and trademarks shown on armedias.com." {updated}>
+  <p>The information on {site.url} is published by {site.legalName} for general information about our services.</p>
+
+  <h2>General information</h2>
+  <p>We keep the website accurate and up to date, but its content is not professional, legal, financial or technical advice for your specific situation. Details of any service, including scope, timelines and price, are confirmed only in a written proposal.</p>
+
+  <h2>Results</h2>
+  <p>Outcomes such as search rankings, traffic, leads, sales or time saved depend on many factors outside our control. Examples and guides on this website describe what is possible, not guaranteed results.</p>
+
+  <h2>Illustrations and examples</h2>
+  <p>Dashboards, figures and interface screens shown in illustrations are sample designs for presentation, not data from real clients unless a case study says so.</p>
+
+  <h2>Trademarks</h2>
+  <p>Technology and platform names and logos shown on this website, such as React, Shopify, WordPress, WhatsApp, LinkedIn and others, are trademarks of their respective owners. They are used only to identify the technologies we work with and do not imply endorsement or partnership.</p>
+
+  <h2>External links</h2>
+  <p>Links to other websites are provided for convenience. We are not responsible for their content, availability or privacy practices.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about this disclaimer? Email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+</Legal>

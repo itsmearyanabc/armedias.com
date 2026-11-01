@@ -1,17 +1,11 @@
 ---
-import Base from '../layouts/Base.astro';
+import Legal from '../layouts/Legal.astro';
 import { site } from '../data/site';
 
 const updated = '1 November 2026';
 ---
 
-<Base title="Terms of Use | AR Medias" description="Terms governing the use of the armedias.com website and the general basis on which AR Medias provides services.">
-  <article class="container-x max-w-3xl pb-24 pt-32 lg:pt-40">
-    <p class="eyebrow">Legal</p>
-    <h1 class="mt-4 text-5xl font-bold">Terms of Use</h1>
-    <p class="mt-4 text-slate">Last updated: {updated}</p>
-
-    <div class="legal mt-10">
+<Legal title="Terms of Use | AR Medias" heading="Terms of Use" description="Terms governing the use of the armedias.com website and the general basis on which AR Medias provides services." {updated}>
       <p>These terms apply to your use of {site.url} (the "website"), operated by {site.legalName} (GSTIN {site.gstin}), {site.address.street}, {site.address.locality}, {site.address.countryName} ("we", "us"). By using the website you agree to them.</p>
 
       <h2>Website content</h2>
@@ -40,12 +34,4 @@ const updated = '1 November 2026';
 
       <h2>Contact</h2>
       <p>Questions about these terms? Email <a href={`mailto:${site.email}`}>{site.email}</a> or call {site.phone}.</p>
-    </div>
-  </article>
-</Base>
-
-<style>
-  .legal h2 { margin-top: 2.5rem; font-size: 1.5rem; font-weight: 700; }
-  .legal p { margin-top: 1rem; line-height: 1.75; color: var(--color-slate); }
-  .legal a { color: var(--color-olive); font-weight: 600; }
-</style>
+</Legal>

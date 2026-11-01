@@ -1,0 +1,171 @@
+---
+import Base from '../layouts/Base.astro';
+import Illustration from '../components/illustrations/Illustration.astro';
+import { site, markets } from '../data/site';
+import { services } from '../data/services';
+import { engagementModels } from '../data/engagement';
+
+const title = 'Pricing | Fixed Quotes for Websites, Apps, CRM/ERP & AI | AR Medias';
+const description = 'How AR Medias prices projects: fixed quotes after a free call, milestone payments, GST invoices for India and billing in your currency. See what affects the cost of each service.';
+
+const included = [
+  'Free discovery call and written scope',
+  'Fixed quote with clear deliverables',
+  'Design approval before development',
+  'Weekly progress demos',
+  'Testing, speed and SEO checks',
+  'Full ownership of code and designs',
+  'Launch support and team training',
+  'Fixes for anything that does not match the agreed scope',
+];
+
+const faqs = [
+  { q: 'Why don\'t you list fixed prices?', a: 'Every project is different. A five-page website and a website with bookings, payments and CRM integration are very different builds. After a free call we send a fixed quote, so you know the exact cost before anything starts.' },
+  { q: 'How do payments work?', a: 'Fixed-price projects are paid in milestones agreed in your quote, usually an advance and then payments as each stage is delivered. Monthly plans are billed at the start of each month.' },
+  { q: 'Do you charge GST?', a: `Indian clients receive GST invoices (GSTIN ${site.gstin}). International clients are invoiced in their own currency.` },
+  { q: 'Can the price change during the project?', a: 'Not for the agreed scope. If you ask for new features along the way, we quote them separately so you can decide before any extra work begins.' },
+  { q: 'What if I need to cancel?', a: 'You pay only for completed work. See our Refund & Cancellation Policy for details.' },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Pricing', item: `${site.url}/pricing/` },
+    ],
+  },
+];
+---
+
+<Base {title} {description} {schema}>
+  <!-- HERO -->
+  <section class="relative overflow-hidden pb-16 pt-32 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+      <div class="blob absolute -left-24 bottom-0 size-[26rem] rounded-full bg-ember/10 blur-3xl"></div>
+    </div>
+    <div class="container-x grid items-center gap-12 lg:grid-cols-[1.2fr_1fr]">
+      <div>
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero><a href="/" class="hover:text-olive">Home</a> / <span>Pricing</span></nav>
+        <p class="eyebrow mt-6" data-hero>Pricing</p>
+        <h1 class="mt-4 text-5xl font-bold leading-[1.03] sm:text-6xl" data-hero>Clear, fixed quotes. <span class="text-olive">No surprise invoices.</span></h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>Tell us what you need on a free call. Within a few days you get a written scope and a fixed price, paid in milestones as the work is delivered.</p>
+        <div class="mt-9 flex flex-wrap gap-3" data-hero>
+          <a href="/contact/" class="btn-ember" data-magnetic>Get a free quote</a>
+          <a href="#services-cost" class="btn-ghost">What affects the price</a>
+        </div>
+      </div>
+      <div class="mx-auto w-full max-w-md" data-hero><Illustration name="quote" title="A fixed project quote with a fixed price stamp" /></div>
+    </div>
+  </section>
+
+  <!-- ENGAGEMENT MODELS -->
+  <section class="bg-mist/60 py-24">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">Ways to work together</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Pick the model that fits your project.</h2>
+      </div>
+      <ul class="mt-14 grid gap-5 lg:grid-cols-3" data-reveal="stagger">
+        {engagementModels.map((m, i) => (
+          <li data-tilt class={`flex flex-col rounded-[2rem] p-9 ${i === 0 ? 'bg-navy text-white shadow-2xl shadow-navy/25' : 'bg-white ring-1 ring-navy/8'}`}>
+            <span class={`self-start rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider ${i === 0 ? 'bg-ember text-navy' : 'bg-olive/10 text-olive'}`}>{m.tag}</span>
+            <h3 class={`mt-6 text-2xl font-bold ${i === 0 ? 'text-white' : ''}`}>{m.t}</h3>
+            <p class={`mt-3 flex-1 leading-relaxed ${i === 0 ? 'text-white/75' : 'text-slate'}`}>{m.d}</p>
+            <p class={`mt-6 font-display text-xl font-bold ${i === 0 ? 'text-ember-300' : 'text-navy'}`}>Fixed quote after a free call</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- WHAT AFFECTS THE COST -->
+  <section id="services-cost" class="scroll-mt-24 py-24">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">By service</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">What affects the price.</h2>
+        <p class="mt-5 text-lg text-slate" data-reveal="up">These are the main things we look at when we quote. Share them on the call and your quote will be faster and more accurate.</p>
+      </div>
+      <ul class="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {services.map((s) => (
+          <li data-tilt class="flex flex-col rounded-3xl bg-white p-7 ring-1 ring-navy/8">
+            <span class="grid size-12 place-items-center rounded-2xl bg-navy text-olive-300">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d={s.icon} /></svg>
+            </span>
+            <h3 class="mt-5 text-xl font-bold">{s.name}</h3>
+            <ul class="mt-4 flex-1 space-y-2">
+              {s.costFactors.map((f) => <li class="flex gap-2.5 text-slate"><span class="mt-2 size-1.5 shrink-0 rounded-full bg-ember"></span>{f}</li>)}
+            </ul>
+            <p class="mt-5 text-sm text-slate">{s.timeline}</p>
+            <a href={`/services/${s.slug}/`} class="mt-5 font-semibold text-olive hover:text-navy">About {s.name.toLowerCase()} →</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- INCLUDED + BILLING -->
+  <section class="relative overflow-hidden bg-navy py-24 text-white">
+    <div aria-hidden="true" class="blob pointer-events-none absolute -right-40 top-10 size-[30rem] rounded-full bg-ember/20 blur-3xl"></div>
+    <div class="container-x relative grid gap-14 lg:grid-cols-2">
+      <div>
+        <p class="eyebrow text-ember-300!" data-reveal="fade">Always included</p>
+        <h2 class="mt-4 text-4xl font-bold text-white sm:text-5xl">Every quote comes with this.</h2>
+        <ul class="mt-10 grid gap-3 sm:grid-cols-2" data-reveal="stagger">
+          {included.map((item) => (
+            <li class="flex items-start gap-3 rounded-2xl bg-white/6 px-5 py-4 ring-1 ring-white/10">
+              <svg class="mt-0.5 shrink-0 text-ember" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9" /></svg>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <p class="eyebrow text-ember-300!" data-reveal="fade">Billing</p>
+        <h2 class="mt-4 text-4xl font-bold text-white sm:text-5xl">Simple, transparent payments.</h2>
+        <dl class="mt-10 space-y-6" data-reveal="stagger">
+          <div><dt class="font-display text-xl font-bold text-white">Milestone payments</dt><dd class="mt-1 text-white/70">An advance to start, then payments as each agreed stage is delivered.</dd></div>
+          <div><dt class="font-display text-xl font-bold text-white">GST invoices for India</dt><dd class="mt-1 text-white/70">Proper tax invoices under GSTIN {site.gstin}.</dd></div>
+          <div><dt class="font-display text-xl font-bold text-white">Your currency abroad</dt><dd class="mt-1 text-white/70">Quotes and invoices for clients in {markets.filter((m) => m.code !== 'IN').map((m) => m.country).join(', ')} in their own currency.</dd></div>
+          <div><dt class="font-display text-xl font-bold text-white">Fair cancellation</dt><dd class="mt-1 text-white/70">Pay only for completed work. <a href="/refund-policy/" class="font-semibold text-ember-300 hover:text-white">Read the policy →</a></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-24">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+      <div>
+        <p class="eyebrow" data-reveal="fade">FAQ</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Pricing questions.</h2>
+      </div>
+      <div class="divide-y divide-navy/10 border-y border-navy/10">
+        {faqs.map((f) => (
+          <details class="group py-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-xl font-semibold">
+              {f.q}
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-mist transition-transform duration-300 group-open:rotate-45 group-open:bg-olive group-open:text-white">+</span>
+            </summary>
+            <p class="mt-4 max-w-2xl leading-relaxed text-slate">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { gsap } from 'gsap';
+  if (document.documentElement.classList.contains('js-motion')) {
+    gsap.from('[data-hero]', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.1 });
+  }
+</script>

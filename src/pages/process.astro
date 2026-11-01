@@ -2,17 +2,12 @@
 import Base from '../layouts/Base.astro';
 import { site } from '../data/site';
 import { process as steps } from '../data/process';
+import { engagementModels as models } from '../data/engagement';
 import Scribble from '../components/Scribble.astro';
 
 const title = 'Our Process | How AR Medias Delivers Software Projects';
 const description =
   'How AR Medias delivers websites, apps, CRM/ERP and AI automation: discovery, design, build, launch and support. Fixed quotes, weekly demos and full ownership of your code.';
-
-const models = [
-  { t: 'Fixed-price project', d: 'A clear scope, fixed quote and milestone payments. Best for websites, apps and well-defined builds.', tag: 'Most popular' },
-  { t: 'Dedicated team', d: 'Developers and designers working as an extension of your team, billed monthly. Best for ongoing products.', tag: 'Scale up' },
-  { t: 'Monthly retainer', d: 'A set number of hours each month for improvements, support, SEO and new features.', tag: 'After launch' },
-];
 
 const promises = [
   { t: 'Weekly demos', d: 'See working software every week on a private staging link.' },

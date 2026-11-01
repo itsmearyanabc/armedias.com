@@ -52,6 +52,21 @@ db.exec(`
     last_attempt INTEGER NOT NULL DEFAULT 0
   );
 
+  CREATE TABLE IF NOT EXISTS applications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT,
+    role TEXT NOT NULL,
+    experience TEXT,
+    location TEXT,
+    portfolio TEXT,
+    cv TEXT,
+    message TEXT,
+    email_sent INTEGER NOT NULL DEFAULT 0
+  );
+
   CREATE TABLE IF NOT EXISTS settings (
     key TEXT PRIMARY KEY,
     value TEXT NOT NULL,
@@ -71,3 +86,18 @@ db.exec(`
     expires_at INTEGER NOT NULL
   );
 `);
+
+/** Delete rows by id from an admin-managed table; returns how many were removed. */
+export function deleteRows(table: 'submissions' | 'applications', ids: number[]): number {
+  const del = db.prepare(`DELETE FROM ${table} WHERE id = ?`);
+  let deleted = 0;
+  db.exec('BEGIN');
+  try {
+    for (const id of ids) deleted += Number(del.run(id).changes);
+    db.exec('COMMIT');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
+  return deleted;
+}

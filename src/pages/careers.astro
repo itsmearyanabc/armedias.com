@@ -1,0 +1,170 @@
+---
+import Base from '../layouts/Base.astro';
+import Illustration from '../components/illustrations/Illustration.astro';
+import { site } from '../data/site';
+
+const title = 'Careers at AR Medias | Developer, Designer & AI Jobs in New Delhi';
+const description = 'Join AR Medias in New Delhi or remotely. We are always looking for web and mobile developers, UI/UX designers, AI automation engineers and business development talent.';
+
+const roles = [
+  { t: 'Web Developer', d: 'React, Next.js, Astro, Node.js, Laravel' },
+  { t: 'Mobile App Developer', d: 'Flutter, React Native, Swift, Kotlin' },
+  { t: 'UI/UX Designer', d: 'Figma, design systems, prototyping' },
+  { t: 'AI & Automation Engineer', d: 'Python, LLM APIs, n8n, Make' },
+  { t: 'Business Development', d: 'Sales, client relationships, proposals' },
+  { t: 'Intern', d: 'Development, design or marketing' },
+];
+
+const perks = [
+  { t: 'Real client projects', d: 'Ship work used by businesses in seven countries.' },
+  { t: 'Learn the whole stack', d: 'Web, mobile, CRM, ERP and AI, all in one team.' },
+  { t: 'Direct mentorship', d: 'Work closely with the founder on every project.' },
+  { t: 'Flexible working', d: 'Office in Kirti Nagar, New Delhi, with remote options for the right role.' },
+];
+
+const experience = ['Fresher / student', 'Less than 1 year', '1–3 years', '3–5 years', '5+ years'];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Careers', item: `${site.url}/careers/` },
+    ],
+  },
+];
+---
+
+<Base {title} {description} {schema} hideContact>
+  <section class="relative overflow-hidden pb-16 pt-32 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+      <div class="blob absolute -left-24 bottom-0 size-[26rem] rounded-full bg-ember/10 blur-3xl"></div>
+    </div>
+    <div class="container-x grid items-center gap-12 lg:grid-cols-[1.2fr_1fr]">
+      <div>
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero><a href="/" class="hover:text-olive">Home</a> / <span>Careers</span></nav>
+        <p class="eyebrow mt-6" data-hero>Careers</p>
+        <h1 class="mt-4 text-5xl font-bold leading-[1.03] sm:text-6xl" data-hero>Build software that <span class="text-olive">businesses run on.</span></h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>We're a growing team in New Delhi building websites, apps, CRMs, ERPs and AI automation for clients worldwide. If you love building things, we'd like to hear from you.</p>
+        <div class="mt-9 flex flex-wrap gap-3" data-hero>
+          <a href="#apply" class="btn-ember" data-magnetic>Apply now</a>
+          <a href="/about/" class="btn-ghost">About us</a>
+        </div>
+      </div>
+      <div class="mx-auto w-full max-w-md" data-hero><Illustration name="launch" title="A rocket launching from a laptop" /></div>
+    </div>
+  </section>
+
+  <section class="bg-mist/60 py-24">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">Why AR Medias</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Grow faster with us.</h2>
+      </div>
+      <ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-reveal="stagger">
+        {perks.map((p, i) => (
+          <li data-tilt class="rounded-3xl bg-white p-7 ring-1 ring-navy/8">
+            <span class="font-display text-4xl font-bold text-ember">0{i + 1}</span>
+            <h3 class="mt-4 text-xl font-bold">{p.t}</h3>
+            <p class="mt-2 leading-relaxed text-slate">{p.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="py-24">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">Roles we hire for</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Open applications, all year round.</h2>
+        <p class="mt-5 text-lg text-slate" data-reveal="up">We may not have an opening right now, but we keep every application and get in touch when a role matches your skills.</p>
+      </div>
+      <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {roles.map((r) => (
+          <li>
+            <a href="#apply" data-role={r.t} class="group flex items-center justify-between gap-4 rounded-3xl border border-navy/10 p-6 transition-colors hover:border-olive hover:bg-olive hover:text-white">
+              <span>
+                <span class="block font-display text-xl font-bold">{r.t}</span>
+                <span class="mt-1 block text-sm text-slate group-hover:text-white/80">{r.d}</span>
+              </span>
+              <span aria-hidden="true" class="text-xl transition-transform group-hover:translate-x-1">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="apply" class="scroll-mt-24 bg-mist py-24">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.3fr]">
+      <div>
+        <p class="eyebrow" data-reveal="fade">Apply</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Tell us about yourself.</h2>
+        <p class="mt-5 max-w-md text-lg text-slate">Share a link to your CV (Google Drive, Dropbox or your website) and any portfolio or GitHub. We read every application.</p>
+      </div>
+
+      <div class="relative">
+        <form data-ajax-form action="/api/careers/" method="post" class="relative rounded-[2rem] bg-white p-7 shadow-2xl shadow-navy/10 ring-1 ring-navy/5 sm:p-10" novalidate>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <label class="field"><span>Full name *</span><input name="name" required autocomplete="name" maxlength="100" /></label>
+            <label class="field"><span>Email *</span><input name="email" type="email" required autocomplete="email" maxlength="150" /></label>
+            <label class="field"><span>Phone / WhatsApp</span><input name="phone" type="tel" autocomplete="tel" maxlength="30" /></label>
+            <label class="field"><span>City / country</span><input name="location" maxlength="100" /></label>
+            <label class="field">
+              <span>Role *</span>
+              <select name="role" required>
+                <option value="">Choose a role</option>
+                {roles.map((r) => <option>{r.t}</option>)}
+                <option>Other</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Experience</span>
+              <select name="experience">
+                <option value="">Select (optional)</option>
+                {experience.map((e) => <option>{e}</option>)}
+              </select>
+            </label>
+            <label class="field sm:col-span-2"><span>Link to your CV *</span><input name="cv" type="url" required inputmode="url" maxlength="300" placeholder="https://drive.google.com/…" /></label>
+            <label class="field sm:col-span-2"><span>Portfolio, GitHub or LinkedIn</span><input name="portfolio" type="url" inputmode="url" maxlength="300" placeholder="https://" /></label>
+            <label class="field sm:col-span-2"><span>Why do you want to join us?</span><textarea name="message" rows="4" maxlength="3000"></textarea></label>
+            <label class="absolute -left-[9999px]" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off" /></label>
+          </div>
+          <p class="mt-5 text-sm text-slate">We use your details only to consider your application. See our <a href="/privacy-policy/" class="font-semibold text-olive hover:underline">privacy policy</a>.</p>
+          <p data-form-error role="alert" class="mt-4 hidden rounded-2xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700"></p>
+          <button type="submit" class="btn-primary mt-6 w-full justify-center py-4 text-base disabled:opacity-60" data-magnetic>
+            <span data-label>Send application</span>
+          </button>
+        </form>
+
+        <div data-form-success hidden class="absolute inset-0 grid place-items-center rounded-[2rem] bg-navy p-10 text-center text-white">
+          <div>
+            <svg class="mx-auto text-ember" width="84" height="84" viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <circle class="success-circle" cx="26" cy="26" r="23" />
+              <path class="success-check" d="M15 27l7 7 15-16" />
+            </svg>
+            <h2 class="mt-6 text-3xl font-bold text-white" data-no-split>Application received!</h2>
+            <p class="mx-auto mt-3 max-w-sm text-white/75">Thank you. We'll review it and get in touch if your skills match a current or upcoming role.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { gsap } from 'gsap';
+  import { initForms } from '../scripts/forms';
+  initForms();
+
+  // Clicking a role pre-selects it in the form
+  const select = document.querySelector<HTMLSelectElement>('#apply select[name=role]')!;
+  document.querySelectorAll<HTMLAnchorElement>('[data-role]').forEach((a) => a.addEventListener('click', () => { select.value = a.dataset.role!; }));
+
+  if (document.documentElement.classList.contains('js-motion')) {
+    gsap.from('[data-hero]', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.1 });
+  }
+</script>

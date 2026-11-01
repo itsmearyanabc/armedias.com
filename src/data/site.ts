@@ -57,7 +57,9 @@ export const pillars = pillarDefs.map((p) => ({
 
 export const nav = [
   { label: 'Services', href: '/services/' },
+  { label: 'Industries', href: '/industries/' },
   { label: 'Work', href: '/work/' },
+  { label: 'Pricing', href: '/pricing/' },
   { label: 'Process', href: '/process/' },
   { label: 'About', href: '/about/' },
   { label: 'Blog', href: '/blog/' },

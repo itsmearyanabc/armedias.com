@@ -46,7 +46,10 @@ const year = new Date().getFullYear();
       <ul class="mt-4 space-y-2">
         <li><a class="hover:text-ember-300" href="/about/">About</a></li>
         <li><a class="hover:text-ember-300" href="/work/">Work</a></li>
+        <li><a class="hover:text-ember-300" href="/industries/">Industries</a></li>
         <li><a class="hover:text-ember-300" href="/process/">Process</a></li>
+        <li><a class="hover:text-ember-300" href="/pricing/">Pricing</a></li>
+        <li><a class="hover:text-ember-300" href="/careers/">Careers</a></li>
         <li><a class="hover:text-ember-300" href="/blog/">Blog</a></li>
         <li><a class="hover:text-ember-300" href="/contact/">Contact</a></li>
         <li><a class="hover:text-ember-300" href={site.founder.linkedin} rel="noopener" target="_blank">Founder on LinkedIn</a></li>
@@ -60,7 +63,7 @@ const year = new Date().getFullYear();
     <div class="container-x flex flex-col gap-4 py-6 pr-24 text-sm sm:flex-row sm:items-center sm:justify-between">
       <p>© {year} {site.legalName}. All rights reserved.</p>
       <SocialIcons />
-      <p><a class="hover:text-ember-300" href="/privacy-policy/">Privacy</a> · <a class="hover:text-ember-300" href="/terms/">Terms</a></p>
+      <p class="flex flex-wrap gap-x-2"><a class="hover:text-ember-300" href="/privacy-policy/">Privacy</a><span aria-hidden="true">·</span><a class="hover:text-ember-300" href="/terms/">Terms</a><span aria-hidden="true">·</span><a class="hover:text-ember-300" href="/refund-policy/">Refunds</a><span aria-hidden="true">·</span><a class="hover:text-ember-300" href="/disclaimer/">Disclaimer</a></p>
     </div>
   </div>
 </footer>

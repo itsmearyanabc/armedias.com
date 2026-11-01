@@ -1,0 +1,38 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { site } from '../data/site';
+
+const updated = '2 November 2026';
+---
+
+<Legal title="Refund & Cancellation Policy | AR Medias" heading="Refund & Cancellation Policy" description="How cancellations, refunds and delivery work for AR Medias projects and monthly plans." {updated}>
+  <p>This policy explains how cancellations and refunds work for services bought from {site.legalName} (GSTIN {site.gstin}). Your signed proposal or agreement always takes priority where it says something different.</p>
+
+  <h2>How we bill</h2>
+  <p>Fixed-price projects are billed in milestones agreed in your proposal, usually an advance before work begins and the balance on delivery of each stage. Monthly plans are billed in advance for each month. All prices are quoted before work starts and include applicable GST for Indian clients.</p>
+
+  <h2>Cancelling a project</h2>
+  <ul>
+    <li><strong>Before work begins:</strong> the advance is refunded in full, less any payment-gateway or bank charges.</li>
+    <li><strong>After work has started:</strong> you pay only for work completed up to the cancellation date, measured against the agreed milestones. Any unused part of the advance is refunded.</li>
+    <li><strong>Approved milestones:</strong> work you have reviewed and approved is not refundable.</li>
+  </ul>
+
+  <h2>Cancelling a monthly plan</h2>
+  <p>You can cancel maintenance, support or growth plans at any time. The cancellation takes effect at the end of the current billing month; the month already paid for is not refunded.</p>
+
+  <h2>Third-party costs</h2>
+  <p>Domains, hosting, software licences, app store fees, paid APIs, advertising spend and other costs paid to third parties on your behalf are not refundable once purchased.</p>
+
+  <h2>If something is not right</h2>
+  <p>If delivered work does not match the agreed scope, tell us within 14 days of delivery. We will fix it at no extra cost. Refunds are considered only where we are unable to deliver what was agreed.</p>
+
+  <h2>How refunds are paid</h2>
+  <p>Approved refunds are paid to the original payment method within 7–10 business days. International payments may take longer depending on your bank.</p>
+
+  <h2>Delivery of services</h2>
+  <p>All our services are delivered digitally: design files, source code, staging links, live websites and apps, and documentation are shared online. Delivery timelines are set out in your proposal. Nothing is shipped physically.</p>
+
+  <h2>Contact</h2>
+  <p>To cancel or request a refund, email <a href={`mailto:${site.email}`}>{site.email}</a> or call {site.phone}. {site.address.street}, {site.address.locality}, {site.address.countryName}.</p>
+</Legal>

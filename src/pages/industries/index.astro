@@ -1,0 +1,65 @@
+---
+import Base from '../../layouts/Base.astro';
+import Illustration from '../../components/illustrations/Illustration.astro';
+import { site } from '../../data/site';
+import { industries } from '../../data/industries';
+
+const title = 'Industries | Software for Real Estate, Healthcare, Education, Retail & SaaS | AR Medias';
+const description = 'AR Medias builds CRMs, ERPs, apps, websites and AI automation for real estate, healthcare, education, retail and e-commerce, and software companies.';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: industries.map((i, n) => ({ '@type': 'ListItem', position: n + 1, name: i.name, url: `${site.url}/industries/${i.slug}/` })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Industries', item: `${site.url}/industries/` },
+    ],
+  },
+];
+---
+
+<Base {title} {description} {schema}>
+  <section class="relative overflow-hidden pb-14 pt-32 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+    </div>
+    <div class="container-x">
+      <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero><a href="/" class="hover:text-olive">Home</a> / <span>Industries</span></nav>
+      <p class="eyebrow mt-6" data-hero>Industries</p>
+      <h1 class="mt-4 max-w-4xl text-5xl font-bold leading-[1.03] sm:text-6xl" data-hero>Software built around how <span class="text-olive">your industry works.</span></h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate" data-hero>Every sector has its own workflows, rules and customers. We build for the way yours runs.</p>
+    </div>
+  </section>
+
+  <section class="container-x pb-24">
+    <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+      {industries.map((i) => (
+        <li>
+          <a href={`/industries/${i.slug}/`} data-tilt class="group flex h-full flex-col overflow-hidden rounded-[2rem] bg-white ring-1 ring-navy/8 transition-shadow hover:shadow-2xl hover:shadow-navy/10">
+            <div class="grid aspect-[5/3] place-items-center bg-gradient-to-br from-navy to-navy-700 p-4">
+              <div class="aspect-[4/3] h-full transition-transform duration-500 group-hover:scale-105"><Illustration name={i.scene} title={i.name} /></div>
+            </div>
+            <div class="flex flex-1 flex-col p-7">
+              <h2 class="text-2xl font-bold group-hover:text-olive" data-no-split>{i.name}</h2>
+              <p class="mt-2 flex-1 text-slate">{i.lead}</p>
+              <span class="mt-5 font-semibold text-olive">Explore {i.name.toLowerCase()} →</span>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
+
+<script>
+  import { gsap } from 'gsap';
+  if (document.documentElement.classList.contains('js-motion')) {
+    gsap.from('[data-hero]', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.1 });
+  }
+</script>

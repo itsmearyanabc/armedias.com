@@ -1,0 +1,24 @@
+---
+// Shared shell for legal pages: heading, last-updated date and readable body styles.
+import Base from './Base.astro';
+
+interface Props { title: string; heading: string; description: string; updated: string }
+const { title, heading, description, updated } = Astro.props;
+---
+
+<Base heroTone="light" {title} {description}>
+  <article class="container-x max-w-3xl pb-24 pt-32 lg:pt-40">
+    <p class="eyebrow">Legal</p>
+    <h1 class="mt-4 text-5xl font-bold">{heading}</h1>
+    <p class="mt-4 text-slate">Last updated: {updated}</p>
+    <div class="legal mt-10"><slot /></div>
+  </article>
+</Base>
+
+<style>
+  .legal :global(h2) { margin-top: 2.5rem; font-size: 1.5rem; font-weight: 700; }
+  .legal :global(p), .legal :global(li) { margin-top: 1rem; line-height: 1.75; color: var(--color-slate); }
+  .legal :global(ul) { margin-top: 0.5rem; list-style: disc; padding-left: 1.25rem; }
+  .legal :global(li) { margin-top: 0.4rem; }
+  .legal :global(a) { color: var(--color-olive); font-weight: 600; }
+</style>

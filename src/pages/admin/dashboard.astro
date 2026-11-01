@@ -22,6 +22,12 @@ interface Lead {
   visitor_country: string | null; email_sent: number;
 }
 const leads = db.prepare('SELECT * FROM submissions ORDER BY created_at DESC LIMIT 2000').all() as unknown as Lead[];
+
+interface Application {
+  id: number; created_at: string; name: string; email: string; phone: string | null; role: string; experience: string | null;
+  location: string | null; portfolio: string | null; cv: string; message: string | null;
+}
+const applications = db.prepare('SELECT * FROM applications ORDER BY created_at DESC LIMIT 2000').all() as unknown as Application[];
 const since = new Date(Date.now() - (days - 1) * 86_400_000).toISOString().slice(0, 10);
 const leadsInRange = leads.filter((l) => l.created_at.slice(0, 10) >= since).length;
 const whatsapp = getWhatsApp();
@@ -58,6 +64,7 @@ const cards = [
       <nav class="flex items-center gap-1 text-sm font-semibold">
         <a href="#overview" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Overview</a>
         <a href="#leads" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Leads <span class="ml-1 rounded-full bg-olive px-2 py-0.5 text-xs text-white">{leads.length}</span></a>
+        <a href="#applications" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Applications <span class="ml-1 rounded-full bg-navy px-2 py-0.5 text-xs text-white">{applications.length}</span></a>
         <a href="#settings" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Settings</a>
         <a href="/" target="_blank" rel="noopener" class="rounded-full px-3 py-2 text-navy hover:bg-mist">View site ↗</a>
         <button data-logout class="rounded-full px-3 py-2 text-red-700 hover:bg-red-50">Sign out</button>
@@ -180,7 +187,7 @@ const cards = [
     </section>
 
     <!-- LEADS -->
-    <section id="leads" class="scroll-mt-20 rounded-3xl bg-white ring-1 ring-navy/5">
+    <section id="leads" data-records data-endpoint="/api/admin/submissions/" data-noun="lead" data-fields="created_at:Date,name:Name,email:Email,phone:Phone,company:Company,service:Service,country:Country,budget:Budget,message:Message,page:Page" class="scroll-mt-20 rounded-3xl bg-white ring-1 ring-navy/5">
       <div class="flex flex-wrap items-center justify-between gap-3 border-b border-navy/10 p-6">
         <div>
           <h2 class="text-2xl font-bold">Leads</h2>
@@ -214,7 +221,7 @@ const cards = [
             </thead>
             <tbody>
               {leads.map((l) => (
-                <tr data-lead={JSON.stringify(l)} class="border-b border-navy/5 align-top hover:bg-mist/60">
+                <tr data-row={JSON.stringify(l)} class="border-b border-navy/5 align-top hover:bg-mist/60">
                   <td class="p-4"><input type="checkbox" data-pick value={l.id} aria-label={`Select lead from ${l.name}`} class="size-4 accent-olive" /></td>
                   <td class="whitespace-nowrap p-4 text-slate"><time data-local datetime={l.created_at}>{l.created_at.replace('T', ' ').slice(0, 16)} UTC</time></td>
                   <td class="p-4">
@@ -233,6 +240,61 @@ const cards = [
                     <p class="whitespace-pre-wrap text-slate">{l.message}</p>
                     <p class="mt-1 text-xs text-slate/70">{l.page ? `Sent from ${l.page}` : ''}{l.email_sent ? '' : ' · email not delivered'}</p>
                   </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+
+    <!-- APPLICATIONS -->
+    <section id="applications" data-records data-endpoint="/api/admin/applications/" data-noun="application" data-fields="created_at:Date,name:Name,email:Email,phone:Phone,role:Role,experience:Experience,location:Location,cv:CV,portfolio:Portfolio,message:Message" class="scroll-mt-20 rounded-3xl bg-white ring-1 ring-navy/5">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-navy/10 p-6">
+        <div>
+          <h2 class="text-2xl font-bold">Job applications</h2>
+          <p class="text-sm text-slate">From the Careers page, newest first.</p>
+        </div>
+        <input data-search type="search" placeholder="Search name, role, email…" class="w-full rounded-full border border-navy/15 bg-mist px-4 py-2 text-sm sm:w-72" />
+      </div>
+      <div class="flex flex-wrap items-center gap-2 border-b border-navy/10 bg-mist/50 px-6 py-3 text-sm">
+        <span data-count class="mr-auto font-semibold text-navy">0 selected</span>
+        <button data-copy class="tool">Copy selected</button>
+        <button data-copy-all class="tool">Copy all</button>
+        <button data-csv class="tool">Download CSV</button>
+        <button data-delete class="tool tool--danger" disabled>Delete selected</button>
+      </div>
+      <p data-toast role="status" class="hidden px-6 py-2 text-sm font-medium text-olive"></p>
+      {applications.length === 0 ? <p class="p-10 text-center text-slate">No applications yet.</p> : (
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[56rem] text-left text-sm">
+            <thead class="text-xs uppercase tracking-wider text-slate">
+              <tr class="border-b border-navy/10">
+                <th class="w-10 p-4"><input type="checkbox" data-all aria-label="Select all applications" class="size-4 accent-olive" /></th>
+                <th class="p-4">Date &amp; time</th>
+                <th class="p-4">Applicant</th>
+                <th class="p-4">Role</th>
+                <th class="p-4">Links</th>
+                <th class="p-4">Message</th>
+              </tr>
+            </thead>
+            <tbody>
+              {applications.map((a) => (
+                <tr data-row={JSON.stringify(a)} class="border-b border-navy/5 align-top hover:bg-mist/60">
+                  <td class="p-4"><input type="checkbox" data-pick value={a.id} aria-label={`Select application from ${a.name}`} class="size-4 accent-olive" /></td>
+                  <td class="whitespace-nowrap p-4 text-slate"><time data-local datetime={a.created_at}>{a.created_at.replace('T', ' ').slice(0, 16)} UTC</time></td>
+                  <td class="p-4">
+                    <p class="font-semibold text-navy">{a.name}</p>
+                    <a href={`mailto:${a.email}`} class="block text-olive hover:underline">{a.email}</a>
+                    {a.phone && <a href={`tel:${a.phone}`} class="block text-slate">{a.phone}</a>}
+                    {a.location && <p class="text-slate">{a.location}</p>}
+                  </td>
+                  <td class="p-4 text-navy">{a.role}{a.experience && <span class="block text-xs text-slate">{a.experience}</span>}</td>
+                  <td class="p-4">
+                    <a href={a.cv} target="_blank" rel="noopener noreferrer" class="block font-semibold text-olive hover:underline">CV ↗</a>
+                    {a.portfolio && <a href={a.portfolio} target="_blank" rel="noopener noreferrer" class="block text-olive hover:underline">Portfolio ↗</a>}
+                  </td>
+                  <td class="max-w-md p-4"><p class="whitespace-pre-wrap text-slate">{a.message ?? '–'}</p></td>
                 </tr>
               ))}
             </tbody>
@@ -293,11 +355,6 @@ const cards = [
 </style>
 
 <script>
-  interface Lead {
-    id: number; created_at: string; name: string; email: string; phone: string | null; company: string | null;
-    service: string | null; country: string | null; budget: string | null; message: string; page: string | null;
-  }
-
   const dateFmt = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
   document.querySelectorAll<HTMLTimeElement>('time[data-local]').forEach((t) => { t.textContent = dateFmt.format(new Date(t.dateTime)); });
 
@@ -339,94 +396,95 @@ const cards = [
     location.assign('/admin/');
   });
 
-  const rows = [...document.querySelectorAll<HTMLTableRowElement>('tr[data-lead]')];
-  const all = document.querySelector<HTMLInputElement>('[data-all]');
-  const count = document.querySelector<HTMLElement>('[data-count]')!;
-  const del = document.querySelector<HTMLButtonElement>('[data-delete]')!;
-  const toast = document.querySelector<HTMLElement>('[data-toast]')!;
-  const search = document.querySelector<HTMLInputElement>('[data-search]')!;
+  // Leads and job applications share one table manager: select, search, copy, CSV, delete.
+  // Each section declares its delete endpoint, noun and the fields to copy/export.
+  document.querySelectorAll<HTMLElement>('[data-records]').forEach((section) => {
+    const { endpoint, noun } = section.dataset as { endpoint: string; noun: string };
+    const fields = section.dataset.fields!.split(',').map((f) => f.split(':') as [string, string]);
+    const plural = (n: number) => `${n} ${noun}${n === 1 ? '' : 's'}`;
+    const $ = <T extends Element>(sel: string) => section.querySelector<T>(sel);
 
-  const lead = (r: HTMLTableRowElement) => JSON.parse(r.dataset.lead!) as Lead;
-  const visible = () => rows.filter((r) => !r.hidden);
-  const picked = () => rows.filter((r) => r.querySelector<HTMLInputElement>('[data-pick]')!.checked);
+    const rows = [...section.querySelectorAll<HTMLTableRowElement>('tr[data-row]')];
+    const all = $<HTMLInputElement>('[data-all]');
+    const count = $<HTMLElement>('[data-count]')!;
+    const del = $<HTMLButtonElement>('[data-delete]')!;
+    const toast = $<HTMLElement>('[data-toast]')!;
+    const search = $<HTMLInputElement>('[data-search]')!;
 
-  const say = (text: string) => {
-    toast.textContent = text;
-    toast.classList.remove('hidden');
-    setTimeout(() => toast.classList.add('hidden'), 3000);
-  };
+    const record = (r: HTMLTableRowElement) => JSON.parse(r.dataset.row!) as Record<string, string | number | null>;
+    const visible = () => rows.filter((r) => !r.hidden);
+    const picked = () => rows.filter((r) => r.querySelector<HTMLInputElement>('[data-pick]')!.checked);
 
-  const sync = () => {
-    const n = picked().length;
-    count.textContent = `${n} selected`;
-    del.disabled = n === 0;
-    if (all) {
-      const vis = visible();
-      all.checked = vis.length > 0 && vis.every((r) => r.querySelector<HTMLInputElement>('[data-pick]')!.checked);
-      all.indeterminate = n > 0 && !all.checked;
-    }
-  };
+    const say = (text: string) => {
+      toast.textContent = text;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3000);
+    };
 
-  rows.forEach((r) => r.querySelector('[data-pick]')!.addEventListener('change', sync));
-  all?.addEventListener('change', () => {
-    visible().forEach((r) => (r.querySelector<HTMLInputElement>('[data-pick]')!.checked = all.checked));
-    sync();
-  });
+    const sync = () => {
+      const n = picked().length;
+      count.textContent = `${n} selected`;
+      del.disabled = n === 0;
+      if (all) {
+        const vis = visible();
+        all.checked = vis.length > 0 && vis.every((r) => r.querySelector<HTMLInputElement>('[data-pick]')!.checked);
+        all.indeterminate = n > 0 && !all.checked;
+      }
+    };
 
-  search.addEventListener('input', () => {
-    const q = search.value.trim().toLowerCase();
-    rows.forEach((r) => (r.hidden = !!q && !r.dataset.lead!.toLowerCase().includes(q)));
-    sync();
-  });
-
-  const asText = (l: Lead) => [
-    `Date: ${dateFmt.format(new Date(l.created_at))}`,
-    `Name: ${l.name}`,
-    `Email: ${l.email}`,
-    l.phone && `Phone: ${l.phone}`,
-    l.company && `Company: ${l.company}`,
-    `Service: ${l.service ?? ''}`,
-    `Country: ${l.country ?? ''}`,
-    l.budget && `Budget: ${l.budget}`,
-    `Message: ${l.message}`,
-  ].filter(Boolean).join('\n');
-
-  const copy = async (list: HTMLTableRowElement[]) => {
-    if (!list.length) return say('Select at least one lead first.');
-    await navigator.clipboard.writeText(list.map((r) => asText(lead(r))).join('\n\n---\n\n'));
-    say(`Copied ${list.length} lead${list.length === 1 ? '' : 's'} to the clipboard.`);
-  };
-  document.querySelector('[data-copy]')!.addEventListener('click', () => copy(picked()));
-  document.querySelector('[data-copy-all]')!.addEventListener('click', () => copy(visible()));
-
-  document.querySelector('[data-csv]')!.addEventListener('click', () => {
-    const list = picked().length ? picked() : visible();
-    const cols: (keyof Lead)[] = ['created_at', 'name', 'email', 'phone', 'company', 'service', 'country', 'budget', 'message', 'page'];
-    const cell = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-    const csv = [cols.join(','), ...list.map((r) => { const l = lead(r); return cols.map((c) => cell(l[c])).join(','); })].join('\r\n');
-    const a = Object.assign(document.createElement('a'), {
-      href: URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })),
-      download: `armedias-leads-${new Date().toISOString().slice(0, 10)}.csv`,
+    rows.forEach((r) => r.querySelector('[data-pick]')!.addEventListener('change', sync));
+    all?.addEventListener('change', () => {
+      visible().forEach((r) => (r.querySelector<HTMLInputElement>('[data-pick]')!.checked = all.checked));
+      sync();
     });
-    a.click();
-    URL.revokeObjectURL(a.href);
-  });
 
-  del.addEventListener('click', async () => {
-    const list = picked();
-    if (!list.length || !confirm(`Permanently delete ${list.length} lead${list.length === 1 ? '' : 's'}? This cannot be undone.`)) return;
-    del.disabled = true;
-    const res = await fetch('/api/admin/submissions/', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ids: list.map((r) => lead(r).id) }),
+    search.addEventListener('input', () => {
+      const q = search.value.trim().toLowerCase();
+      rows.forEach((r) => (r.hidden = !!q && !r.dataset.row!.toLowerCase().includes(q)));
+      sync();
     });
-    const data = await res.json().catch(() => ({}));
-    if (res.status === 401) return location.assign('/admin/');
-    if (!data.ok) { say(data.error || 'Delete failed.'); return sync(); }
-    list.forEach((r) => r.remove());
-    rows.splice(0, rows.length, ...rows.filter((r) => !list.includes(r)));
-    say(`Deleted ${data.deleted} lead${data.deleted === 1 ? '' : 's'}.`);
-    sync();
+
+    const asText = (rec: Record<string, string | number | null>) => fields
+      .filter(([key]) => rec[key] !== null && rec[key] !== '')
+      .map(([key, label]) => `${label}: ${key === 'created_at' ? dateFmt.format(new Date(String(rec[key]))) : rec[key]}`)
+      .join('\n');
+
+    const copy = async (list: HTMLTableRowElement[]) => {
+      if (!list.length) return say(`Select at least one ${noun} first.`);
+      await navigator.clipboard.writeText(list.map((r) => asText(record(r))).join('\n\n---\n\n'));
+      say(`Copied ${plural(list.length)} to the clipboard.`);
+    };
+    $('[data-copy]')!.addEventListener('click', () => copy(picked()));
+    $('[data-copy-all]')!.addEventListener('click', () => copy(visible()));
+
+    $('[data-csv]')!.addEventListener('click', () => {
+      const list = picked().length ? picked() : visible();
+      const cell = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+      const csv = [fields.map(([, label]) => label).join(','), ...list.map((r) => { const rec = record(r); return fields.map(([key]) => cell(rec[key])).join(','); })].join('\r\n');
+      const a = Object.assign(document.createElement('a'), {
+        href: URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' })),
+        download: `armedias-${noun}s-${new Date().toISOString().slice(0, 10)}.csv`,
+      });
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    del.addEventListener('click', async () => {
+      const list = picked();
+      if (!list.length || !confirm(`Permanently delete ${plural(list.length)}? This cannot be undone.`)) return;
+      del.disabled = true;
+      const res = await fetch(endpoint, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: list.map((r) => record(r).id) }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 401) return location.assign('/admin/');
+      if (!data.ok) { say(data.error || 'Delete failed.'); return sync(); }
+      list.forEach((r) => r.remove());
+      rows.splice(0, rows.length, ...rows.filter((r) => !list.includes(r)));
+      say(`Deleted ${plural(data.deleted)}.`);
+      sync();
+    });
   });
 </script>

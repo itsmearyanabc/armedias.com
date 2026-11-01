@@ -14,6 +14,7 @@ export interface Service {
   deliverables: string[];
   tech: string[];
   timeline: string;
+  costFactors: string[]; // what moves the price, shown on /pricing/
   faqs: { q: string; a: string }[];
   related: string[];
 }
@@ -38,6 +39,7 @@ export const services: Service[] = [
     deliverables: ['UX strategy and sitemap', 'Custom UI design in Figma', 'Responsive development', 'CMS for your team', 'On-page and technical SEO', 'Analytics and conversion tracking', 'Speed and accessibility optimisation', 'Hosting, SSL and launch'],
     tech: ['Astro', 'Next.js', 'React', 'WordPress', 'Webflow', 'Tailwind CSS', 'GSAP'],
     timeline: 'A business website typically takes 3–6 weeks from approved design to launch.',
+    costFactors: ['Number of pages and templates', 'CMS, blog and multilingual needs', 'Integrations: CRM, booking, payments, WhatsApp'],
     faqs: [
       { q: 'How much does a website cost?', a: 'It depends on the number of pages, features and integrations. After a free call we send a fixed quote, so the price does not change midway.' },
       { q: 'Will my website be mobile-friendly?', a: 'Yes. Every site is designed mobile-first and tested on phones, tablets and desktops.' },
@@ -65,6 +67,7 @@ export const services: Service[] = [
     deliverables: ['Product discovery and feature roadmap', 'UX flows and UI design', 'iOS and Android development', 'Backend, admin panel and APIs', 'Payments, maps, chat and push notifications', 'Testing on real devices', 'App Store and Play Store launch', 'Post-launch updates'],
     tech: ['Flutter', 'React Native', 'Swift', 'Kotlin', 'Firebase', 'Node.js', 'Supabase'],
     timeline: 'An MVP typically takes 8–12 weeks. Larger apps are delivered in phased releases.',
+    costFactors: ['iOS, Android or both', 'Number of screens and user roles', 'Backend, admin panel and third-party integrations'],
     faqs: [
       { q: 'Should I build native or cross-platform?', a: 'For most business apps cross-platform (Flutter or React Native) is faster and more cost-effective. We recommend native when an app relies heavily on device hardware or platform-specific features.' },
       { q: 'Do you publish the app to the stores?', a: 'Yes. We prepare listings, screenshots and compliance details and submit the app under your developer accounts.' },
@@ -91,6 +94,7 @@ export const services: Service[] = [
     deliverables: ['Store design and UX', 'Product catalogue setup and migration', 'Payment gateways (Stripe, Razorpay, PayPal, Tabby and more)', 'Shipping and tax configuration', 'ERP, POS and inventory integration', 'Email, WhatsApp and abandoned-cart automation', 'Product SEO and schema', 'Analytics and conversion tracking'],
     tech: ['Shopify', 'WooCommerce', 'Next.js Commerce', 'Medusa', 'Stripe', 'Razorpay'],
     timeline: 'Shopify stores typically launch in 3–6 weeks; custom platforms in 2–4 months.',
+    costFactors: ['Platform: Shopify, WooCommerce or custom', 'Catalogue size and product options', 'Payments, shipping, ERP and marketplace integrations'],
     faqs: [
       { q: 'Shopify or custom build?', a: 'Shopify suits most stores and launches fastest. Custom builds make sense for complex pricing, B2B workflows or very high order volumes.' },
       { q: 'Can you migrate my products and customers?', a: 'Yes. We migrate products, customers and order history and set up redirects so you keep your search rankings.' },
@@ -116,6 +120,7 @@ export const services: Service[] = [
     deliverables: ['User research and competitor review', 'User flows and wireframes', 'High-fidelity UI design', 'Clickable prototypes', 'Design system and component library', 'Developer handoff in Figma'],
     tech: ['Figma', 'FigJam', 'Framer', 'Lottie', 'Rive'],
     timeline: 'Most design projects take 2–6 weeks depending on the number of screens.',
+    costFactors: ['Number of screens and user flows', 'Research and usability testing depth', 'Design system and prototype fidelity'],
     faqs: [
       { q: 'Can you design only, without development?', a: 'Yes. We deliver Figma files and a design system your own developers can build from.' },
       { q: 'Do you test designs with users?', a: 'Yes. We run quick usability tests on prototypes and refine before handoff.' },
@@ -141,6 +146,7 @@ export const services: Service[] = [
     deliverables: ['Sales process mapping', 'Lead capture from web, ads, WhatsApp and portals', 'Custom pipelines, stages and fields', 'Role-based access for teams', 'WhatsApp, email and SMS automation', 'Quotations, invoices and payments', 'Dashboards and reports', 'Mobile app or responsive access', 'Data migration from your current tools'],
     tech: ['Laravel', 'Node.js', 'React', 'PostgreSQL', 'WhatsApp Business API', 'Zoho', 'HubSpot', 'Salesforce'],
     timeline: 'A custom CRM core typically goes live in 6–10 weeks, with further modules added in phases.',
+    costFactors: ['Custom build or Zoho/HubSpot/Salesforce setup', 'Pipelines, roles and automations', 'WhatsApp, telephony, portal and data migration'],
     faqs: [
       { q: 'Custom CRM or Zoho/HubSpot/Salesforce?', a: 'If an off-the-shelf CRM fits your process with light configuration, we will set it up for you. A custom CRM makes sense when your workflow is unique, you have many users, or licence costs are growing.' },
       { q: 'Can the CRM connect to WhatsApp?', a: 'Yes. We integrate the official WhatsApp Business API for lead capture, automated replies, broadcasts and conversation history inside the CRM.' },
@@ -168,6 +174,7 @@ export const services: Service[] = [
     deliverables: ['Process study and module plan', 'Inventory and warehouse management', 'Purchase and vendor management', 'Sales, quotations and invoicing', 'Production and BOM planning', 'HR, attendance and payroll', 'Accounting integration and tax reports', 'Role-based dashboards', 'Training and go-live support'],
     tech: ['Odoo', 'ERPNext', 'Laravel', 'Node.js', 'PostgreSQL', 'React', 'Tally integration'],
     timeline: 'ERP projects are delivered in phases; the first modules usually go live within 8–14 weeks.',
+    costFactors: ['Number of modules and departments', 'Odoo/ERPNext or custom build', 'Accounting/Tally integration and data migration'],
     faqs: [
       { q: 'Custom ERP or Odoo/ERPNext?', a: 'Open-source ERPs like Odoo and ERPNext are fast to deploy and fit many businesses. We build custom when your processes are specialised or you need a lighter, faster system.' },
       { q: 'Can the ERP integrate with Tally?', a: 'Yes. We sync vouchers, ledgers and invoices with Tally, or connect to Zoho Books, QuickBooks or Xero.' },
@@ -193,6 +200,7 @@ export const services: Service[] = [
     deliverables: ['Requirements and solution architecture', 'UI/UX design', 'Frontend and backend development', 'APIs and third-party integrations', 'Admin panels and dashboards', 'Automated testing and CI/CD', 'Cloud deployment and monitoring', 'Documentation and handover'],
     tech: ['React', 'Next.js', 'Node.js', 'Python', 'Laravel', 'PostgreSQL', 'AWS', 'Docker'],
     timeline: 'MVPs typically take 8–12 weeks; larger platforms are delivered in two-week sprints.',
+    costFactors: ['Features and user roles', 'Integrations and data volume', 'Security, scaling and compliance needs'],
     faqs: [
       { q: 'Do you sign NDAs?', a: 'Yes. We sign an NDA before discussing your idea in detail.' },
       { q: 'Who owns the source code?', a: 'You do. Full IP and source code are transferred to you.' },
@@ -219,6 +227,7 @@ export const services: Service[] = [
     deliverables: ['Automation and AI opportunity audit', 'AI chatbots for WhatsApp, web and social', 'Custom AI agents connected to your data', 'Document and email processing', 'n8n, Make and Zapier workflows', 'CRM, ERP and spreadsheet integrations', 'Human review steps where accuracy matters', 'Monitoring and usage reporting'],
     tech: ['OpenAI', 'Claude', 'n8n', 'Make', 'Zapier', 'LangChain', 'Python', 'WhatsApp Business API'],
     timeline: 'Single workflows go live in 1–3 weeks; AI agents and larger automation programmes in 4–8 weeks.',
+    costFactors: ['Number of workflows and connected tools', 'AI usage and accuracy checks needed', 'Channels: WhatsApp, website, email, documents'],
     faqs: [
       { q: 'Will AI replace my team?', a: 'No. Automation removes repetitive tasks so your team can spend time on customers and decisions. We add human approval steps wherever accuracy matters.' },
       { q: 'Is our data safe with AI?', a: 'We use business-grade AI APIs that do not train on your data, restrict what each workflow can access, and can self-host components when required.' },
@@ -246,6 +255,7 @@ export const services: Service[] = [
     deliverables: ['Managed hosting and SSL', 'Security updates and patches', 'Daily backups', 'Uptime and error monitoring', 'Speed optimisation', 'Monthly SEO work and reports', 'Content and feature updates', 'Priority support'],
     tech: ['AWS', 'Cloudflare', 'Hostinger', 'Google Search Console', 'GA4', 'Sentry'],
     timeline: 'Plans start any time and run month to month.',
+    costFactors: ['Hours included each month', 'Hosting, monitoring and backup scope', 'SEO and new-feature work'],
     faqs: [
       { q: 'Can you maintain a site or app you did not build?', a: 'Yes. We start with an audit, fix urgent issues, then move it onto a regular maintenance plan.' },
       { q: 'Is SEO included?', a: 'Growth plans include monthly technical SEO, content optimisation and ranking reports.' },

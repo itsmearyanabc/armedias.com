@@ -10,6 +10,9 @@ export default defineConfig({
   // Pages are prerendered to static HTML (served by nginx); only /api/* runs on Node.
   output: 'static',
   adapter: node({ mode: 'standalone' }),
+  // nginx forwards the public host and HTTPS scheme. Trusting them for armedias.com lets
+  // Astro's origin check accept form posts from https://armedias.com behind the proxy.
+  security: { allowedDomains: [{ hostname: 'armedias.com', protocol: 'https' }] },
   build: { format: 'directory', inlineStylesheets: 'auto' },
   integrations: [sitemap({ filter: (page) => !/\/(thank-you|lab)\//.test(page) })],
   vite: { plugins: [tailwindcss()] },
