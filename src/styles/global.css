@@ -138,3 +138,31 @@ html.lenis, html.lenis body { height: auto; }
 .spark { position: absolute; width: 6px; height: 6px; border-radius: 999px; background: var(--color-sun);
   box-shadow: 0 0 12px 2px rgb(255 201 60 / 0.7); animation: spark 6s ease-in-out infinite; opacity: 0; }
 @keyframes spark { 0%, 100% { opacity: 0; transform: translateY(0) scale(0.6); } 40% { opacity: 1; } 70% { opacity: 0.8; transform: translateY(-60px) scale(1); } }
+
+/* Illustrations (src/components/illustrations). Pieces opt into motion with these classes;
+   transform-box makes rotations and scales happen around each piece's own centre. */
+.illo { width: 100%; height: auto; overflow: visible; }
+.illo :is(.i-float, .i-float-2, .i-spin, .i-spin-rev, .i-pulse, .i-pop, .i-bob, .i-slide) { transform-box: fill-box; transform-origin: center; }
+.illo .i-float { animation: i-float 6s ease-in-out infinite; }
+.illo .i-float-2 { animation: i-float 7s ease-in-out -2.5s infinite; }
+.illo .i-bob { animation: i-bob 2.6s ease-in-out infinite; }
+.illo .i-spin { animation: i-spin 14s linear infinite; }
+.illo .i-spin-rev { animation: i-spin 10s linear infinite reverse; }
+.illo .i-pulse { animation: i-pulse 2.4s ease-in-out infinite; }
+.illo .i-pop { animation: i-pop 4s ease-in-out infinite; }
+.illo .i-blink { animation: i-blink 1.6s steps(1) infinite; }
+.illo .i-draw { stroke-dasharray: 400; animation: i-draw 4s ease-in-out infinite; }
+.illo .i-dash { stroke-dasharray: 6 8; animation: i-dash 1.2s linear infinite; }
+.illo .i-slide { animation: i-slide 5s ease-in-out infinite; }
+.illo .i-grow { transform-box: fill-box; transform-origin: bottom; animation: i-grow 3.5s ease-in-out infinite; }
+.illo .d1 { animation-delay: -0.6s; } .illo .d2 { animation-delay: -1.2s; } .illo .d3 { animation-delay: -1.8s; } .illo .d4 { animation-delay: -2.4s; }
+@keyframes i-float { 50% { transform: translateY(-10px); } }
+@keyframes i-bob { 50% { transform: translateY(-5px) rotate(-3deg); } }
+@keyframes i-spin { to { transform: rotate(360deg); } }
+@keyframes i-pulse { 50% { transform: scale(1.12); opacity: 0.75; } }
+@keyframes i-pop { 0%, 15% { transform: scale(0); opacity: 0; } 25%, 80% { transform: scale(1); opacity: 1; } 90%, 100% { transform: scale(0); opacity: 0; } }
+@keyframes i-blink { 50% { opacity: 0; } }
+@keyframes i-draw { 0% { stroke-dashoffset: 400; } 45%, 75% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -400; } }
+@keyframes i-dash { to { stroke-dashoffset: -28; } }
+@keyframes i-slide { 0%, 10% { transform: translateX(0); } 45%, 60% { transform: translateX(var(--slide, 110px)); } 95%, 100% { transform: translateX(0); } }
+@keyframes i-grow { 0% { transform: scaleY(0.2); } 40%, 70% { transform: scaleY(1); } 100% { transform: scaleY(0.2); } }

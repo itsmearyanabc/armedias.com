@@ -1,0 +1,42 @@
+---
+// Picks the illustration for a service slug or a named scene. All are inline SVG in brand
+// colours (navy #13213a, green #204a2b/#556b2f/#a9c46c, orange #ff7a1a, gold #ffc93c).
+import Website from './Website.astro';
+import MobileApp from './MobileApp.astro';
+import Ecommerce from './Ecommerce.astro';
+import UiUx from './UiUx.astro';
+import Crm from './Crm.astro';
+import Erp from './Erp.astro';
+import Software from './Software.astro';
+import Ai from './Ai.astro';
+import Support from './Support.astro';
+import Globe from './Globe.astro';
+import Launch from './Launch.astro';
+import Message from './Message.astro';
+
+const scenes = {
+  'website-development': Website,
+  'mobile-app-development': MobileApp,
+  'ecommerce-development': Ecommerce,
+  'ui-ux-design': UiUx,
+  'crm-development': Crm,
+  'erp-development': Erp,
+  'custom-software-development': Software,
+  'ai-automation': Ai,
+  'maintenance-support': Support,
+  globe: Globe,
+  launch: Launch,
+  message: Message,
+} as const;
+
+interface Props { name: keyof typeof scenes; title: string; class?: string }
+const { name, title, class: className } = Astro.props;
+const Scene = scenes[name];
+---
+
+<svg class:list={['illo', className]} viewBox="0 0 480 360" role="img" aria-label={title} xmlns="http://www.w3.org/2000/svg">
+  <title>{title}</title>
+  <circle cx="240" cy="180" r="160" fill="#f4f6ef" />
+  <ellipse cx="240" cy="330" rx="150" ry="12" fill="#13213a" opacity="0.08" />
+  <Scene />
+</svg>

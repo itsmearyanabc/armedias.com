@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import FounderAvatar from '../../components/FounderAvatar.astro';
+import Illustration from '../../components/illustrations/Illustration.astro';
 import { site, markets, pillars } from '../../data/site';
 
 const title = 'About AR Medias | IT Company in New Delhi Since 2024';
@@ -78,6 +79,7 @@ const schema = [
       <div class="lg:sticky lg:top-28 lg:self-start">
         <p class="eyebrow" data-reveal="fade">Our story</p>
         <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Started in New Delhi. Trusted across seven countries.</h2>
+        <div class="mt-8 max-w-sm" data-reveal="up"><Illustration name="launch" title="A rocket launching from a laptop" /></div>
       </div>
       <ol class="timeline relative space-y-12 pl-10">
         <span aria-hidden="true" class="timeline-line absolute left-[0.6rem] top-2 h-[calc(100%-1rem)] w-0.5 origin-top bg-olive"></span>

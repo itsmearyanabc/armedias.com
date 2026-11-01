@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import ClientLogos from '../components/ClientLogos.astro';
 import Scribble from '../components/Scribble.astro';
+import Illustration from '../components/illustrations/Illustration.astro';
 import PostCard from '../components/PostCard.astro';
 import { getPosts } from '../lib/blog';
 import { site, pillars, markets, tech } from '../data/site';
@@ -209,12 +210,13 @@ const faqSchema = {
   <!-- MARKETS with live clocks -->
   <section aria-labelledby="markets-heading" class="py-24 lg:py-32">
     <div class="container-x">
-      <div class="grid gap-6 lg:grid-cols-2 lg:items-end" data-reveal="up">
+      <div class="grid items-center gap-10 lg:grid-cols-2">
         <div>
-          <p class="eyebrow">Where we work</p>
+          <p class="eyebrow" data-reveal="fade">Where we work</p>
           <h2 id="markets-heading" class="mt-4 text-4xl font-bold sm:text-5xl">Built in New Delhi. Shipped to <Scribble>7 countries.</Scribble></h2>
+          <p class="mt-5 text-lg text-slate" data-reveal="up">We schedule calls in your working hours and handle data according to your local privacy rules.</p>
         </div>
-        <p class="text-lg text-slate">We schedule calls in your working hours and handle data according to your local privacy rules.</p>
+        <div class="mx-auto w-full max-w-md" data-reveal="up"><Illustration name="globe" title="Globe showing routes from New Delhi to seven countries" /></div>
       </div>
       <ul class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal="stagger">
         {markets.map((m) => (

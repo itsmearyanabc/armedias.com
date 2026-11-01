@@ -2,6 +2,7 @@
 // Lead form at the end of every page (Base renders it before the footer).
 import ContactForm from './ContactForm.astro';
 import { site } from '../data/site';
+import Illustration from './illustrations/Illustration.astro';
 ---
 
 <section id="contact" aria-labelledby="contact-section-heading" class="relative overflow-hidden bg-mist py-24 lg:py-32">
@@ -21,6 +22,7 @@ import { site } from '../data/site';
         <li><span class="block font-display text-2xl font-bold text-navy">24h</span>Reply time</li>
         <li><span class="block font-display text-2xl font-bold text-navy">Free</span>Consultation</li>
       </ul>
+      <div class="mt-8 hidden max-w-sm lg:block"><Illustration name="message" title="Chat bubbles and a paper plane" /></div>
     </div>
     <div data-reveal="up"><ContactForm title="Get a free quote" /></div>
   </div>

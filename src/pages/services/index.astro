@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { site, pillars } from '../../data/site';
 import { serviceBySlug } from '../../data/services';
+import Illustration from '../../components/illustrations/Illustration.astro';
 
 const title = 'IT Services | Web, App, CRM/ERP & AI Automation Development | AR Medias';
 const description =
@@ -63,6 +64,7 @@ const schema = [
           <span class="font-display text-7xl font-bold text-olive/20" data-reveal="fade">0{i + 1}</span>
           <h2 class="mt-2 text-4xl font-bold sm:text-5xl">{g.title}</h2>
           <p class="mt-4 max-w-sm text-lg text-slate" data-reveal="up">{g.lead}</p>
+          <div class="mt-6 hidden max-w-xs lg:block" data-reveal="up"><Illustration name={g.services[0].slug as any} title={`${g.title} illustration`} /></div>
         </div>
         <ul class="grid gap-5 sm:grid-cols-2" data-reveal="stagger">
           {g.services.map((s) => (

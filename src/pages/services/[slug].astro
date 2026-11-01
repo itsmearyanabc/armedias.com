@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import { site, markets } from '../../data/site';
 import { services, serviceBySlug, type Service } from '../../data/services';
 import { process as steps } from '../../data/process';
+import Illustration from '../../components/illustrations/Illustration.astro';
 
 export function getStaticPaths() {
   return services.map((s) => ({ params: { slug: s.slug }, props: { s } }));
@@ -103,9 +104,13 @@ const schema = [
   <!-- PROBLEMS WE SOLVE -->
   <section class="py-24 lg:py-28">
     <div class="container-x">
-      <div class="max-w-2xl">
-        <p class="eyebrow" data-reveal="fade">Problems we solve</p>
-        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Sound familiar?</h2>
+      <div class="grid items-center gap-10 lg:grid-cols-2">
+        <div class="max-w-2xl">
+          <p class="eyebrow" data-reveal="fade">Problems we solve</p>
+          <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Sound familiar?</h2>
+          <p class="mt-5 text-lg text-slate" data-reveal="up">{s.lead}</p>
+        </div>
+        <div class="mx-auto w-full max-w-md" data-reveal="up"><Illustration name={s.slug as any} title={`${s.name} illustration`} /></div>
       </div>
       <ul class="mt-14 grid gap-5 md:grid-cols-2" data-reveal="stagger">
         {s.problems.map((p, i) => (
