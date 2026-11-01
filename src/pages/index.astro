@@ -295,10 +295,11 @@ const faqSchema = {
 
   <!-- CTA -->
   <section class="container-x pb-24">
-    <div class="cta relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-navy via-[#1f3d2a] to-olive px-8 py-16 text-center text-white sm:px-16 lg:py-24" data-reveal="up">
+    <div class="cta relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-navy via-[#1f3d2a] to-olive px-8 pb-16 pt-32 text-center text-white sm:px-16 lg:pb-24 lg:pt-36" data-reveal="up">
       <div aria-hidden="true" class="blob pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-ember/35 blur-3xl"></div>
-      <BirdMascot say="Let's build it!" class="relative mx-auto mb-4 hidden w-24 md:block" />
-      <h2 class="relative mx-auto max-w-3xl text-4xl font-bold text-white sm:text-5xl">Have a project in mind? Let's scope it together.</h2>
+      <!-- Ari flies in, lands on "mind?", waves now and then and reacts to taps (script below) -->
+      <BirdMascot interactive id="cta-bird" class="cta-bird absolute left-0 top-0 z-10 w-16 opacity-0 sm:w-20" />
+      <h2 class="relative mx-auto max-w-3xl text-4xl font-bold text-white sm:text-5xl">Have a project in <span class="relative inline-block" data-perch>mind?</span> Let's scope it together.</h2>
       <p class="relative mx-auto mt-5 max-w-xl text-lg text-white/85">Free 30-minute call. You leave with a clear plan, timeline and price, whether or not you hire us.</p>
       <div class="relative mt-9 flex flex-wrap justify-center gap-3">
         <a href="/contact/" class="btn-ember" data-magnetic>Book a free call</a>
@@ -315,6 +316,7 @@ const faqSchema = {
       linear-gradient(160deg, #4b2a8c 0%, #3b1f73 45%, #1f1040 100%);
   }
   .hero-waves :global(canvas) { display: block; }
+  .cta :global(.cta-spark) { position: absolute; left: 0; top: 0; z-index: 2; font-size: 1.1rem; pointer-events: none; }
   .typer-caret { display: inline-block; width: 2px; height: 1.1em; margin-left: 2px; vertical-align: -0.15em; background: var(--color-olive); animation: blink 1s steps(1) infinite; }
   .hero .typer-caret { background: var(--color-ember); }
   @keyframes blink { 50% { opacity: 0; } }
@@ -339,6 +341,100 @@ const faqSchema = {
   setInterval(tick, 30_000);
 
   const motion = document.documentElement.classList.contains('js-motion');
+
+
+  // CTA bird: flies in when the box is on screen, perches on the word "mind?", waves now
+  // and then, and hops and talks back when tapped. It re-perches when the layout changes.
+  {
+    const box = document.querySelector<HTMLElement>('.cta');
+    const bird = document.getElementById('cta-bird');
+    const word = box?.querySelector<HTMLElement>('[data-perch]');
+    if (box && bird && word) {
+      const say = bird.querySelector<HTMLElement>('[data-say]')!;
+      const lines = ["Hi, I'm Ari! 👋", "Let's build it!", 'Tap "Book a free call" 👇', 'We reply within 24h!', 'Fixed quote, no surprises', '7 countries and counting 🌍'];
+      let line = 0;
+      let landed = false;
+      let sayTimer: ReturnType<typeof setTimeout> | undefined;
+
+      const speak = (text: string, ms = 2600) => {
+        say.textContent = text;
+        clearTimeout(sayTimer);
+        sayTimer = setTimeout(() => { say.textContent = ''; }, ms);
+      };
+
+      // Where the bird's feet should rest: centred on the word, on top of the heading's first
+      // line (when the heading wraps and the word drops to a later line, the bird still sits
+      // above the text instead of on top of the line before it).
+      const heading = word.closest('h2')!;
+      const perch = () => {
+        const b = box.getBoundingClientRect();
+        const w = word.getBoundingClientRect();
+        const top = Math.min(w.top, heading.getBoundingClientRect().top);
+        const size = bird.getBoundingClientRect();
+        const fontSize = parseFloat(getComputedStyle(word).fontSize);
+        return { x: w.left - b.left + w.width / 2 - size.width / 2, y: top - b.top - size.height + fontSize * 0.22 };
+      };
+
+      const place = () => { if (landed) gsap.set(bird, { ...perch() }); };
+      addEventListener('resize', place);
+
+      const land = () => {
+        landed = true;
+        bird.classList.remove('is-flying');
+        speak("Hi, I'm Ari! 👋", 2400);
+        bird.classList.add('is-waving');
+        setTimeout(() => bird.classList.remove('is-waving'), 1500);
+      };
+
+      const flyIn = () => {
+        const end = perch();
+        const b = box.getBoundingClientRect();
+        if (!motion) { gsap.set(bird, { ...end, opacity: 1 }); landed = true; return; }
+        bird.classList.add('is-flying');
+        gsap.timeline({ onComplete: land })
+          .set(bird, { x: b.width + 40, y: -60, opacity: 1, rotation: -8 })
+          .to(bird, { x: end.x + (b.width - end.x) * 0.45, y: end.y - 90, rotation: 6, duration: 1.1, ease: 'sine.inOut' })
+          .to(bird, { x: end.x, y: end.y, rotation: 0, duration: 0.9, ease: 'power2.out' })
+          .to(bird, { y: end.y + 4, duration: 0.12, yoyo: true, repeat: 1, ease: 'power1.out' });
+      };
+
+      new IntersectionObserver(([e], io) => {
+        if (e.isIntersecting) { io.disconnect(); setTimeout(flyIn, 300); }
+      }, { threshold: 0.5 }).observe(box);
+
+      // A friendly wave every so often while the box is visible
+      setInterval(() => {
+        const r = box.getBoundingClientRect();
+        if (!landed || !motion || r.bottom < 0 || r.top > innerHeight) return;
+        bird.classList.add('is-waving');
+        setTimeout(() => bird.classList.remove('is-waving'), 1500);
+      }, 7000);
+
+      // Tap: happy hop, a burst of hearts and sparkles, and the next line
+      bird.addEventListener('click', () => {
+        if (!landed) return;
+        line = (line + 1) % lines.length;
+        speak(lines[line]);
+        bird.classList.remove('is-happy');
+        void bird.offsetWidth;
+        bird.classList.add('is-happy');
+        navigator.vibrate?.(12);
+        if (!motion) return;
+        const origin = perch();
+        const size = bird.getBoundingClientRect();
+        ['♥', '✦', '♥', '✦', '♥'].forEach((ch, i) => {
+          const s = Object.assign(document.createElement('span'), { textContent: ch, className: 'cta-spark' });
+          s.style.color = i % 2 ? '#ffc93c' : '#ff7a1a';
+          box.append(s);
+          gsap.set(s, { x: origin.x + size.width / 2, y: origin.y + size.height / 3 });
+          gsap.to(s, {
+            x: `+=${(i - 2) * 28}`, y: `-=${50 + Math.random() * 40}`, opacity: 0, scale: 1.4,
+            duration: 1.1, ease: 'power2.out', onComplete: () => s.remove(),
+          });
+        });
+      });
+    }
+  }
 
   // Typer: rotates service words; static first word when motion is off
   const typer = document.querySelector<HTMLElement>('[data-typer]');

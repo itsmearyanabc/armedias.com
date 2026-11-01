@@ -1,12 +1,21 @@
 ---
 // "Ari", the bird from the AR Medias logo, as a small mascot. It bobs, blinks, tilts its
 // head, follows the cursor with its eye, flaps when hovered and can say a short line.
-interface Props { say?: string; class?: string; flip?: boolean }
-const { say, class: className, flip = false } = Astro.props;
+// Pages can drive extra states by toggling classes: is-flying, is-waving, is-happy.
+interface Props { say?: string; class?: string; flip?: boolean; style?: string; interactive?: boolean; id?: string }
+const { say, class: className, flip = false, style, interactive = false, id } = Astro.props;
+const Tag = interactive ? 'button' : 'div';
 ---
 
-<div class:list={['mascot group/bird', className, flip && 'mascot--flip']} data-mascot>
-  {say && <span class="mascot-say">{say}</span>}
+<Tag
+  class:list={['mascot group/bird', className, flip && 'mascot--flip', interactive && 'mascot--interactive']}
+  data-mascot
+  {id}
+  {style}
+  type={interactive ? 'button' : undefined}
+  aria-label={interactive ? 'Ari the bird. Tap to say hi' : undefined}
+>
+  {(say || interactive) && <span class="mascot-say" data-say aria-live="polite">{say}</span>}
   <svg viewBox="0 0 120 100" aria-hidden="true" class="mascot-svg">
     <g class="m-body">
       <path d="M18 70c-8 2-14 0-16-3 8 0 14-3 18-7z" fill="#556b2f" />
@@ -22,14 +31,20 @@ const { say, class: className, flip = false } = Astro.props;
         <circle cx="80" cy="39" r="3" fill="#ff7a1a" opacity="0.35" />
       </g>
       <path class="m-wing" d="M40 52c10-6 26-6 34 2-8 10-24 14-36 8z" fill="#a9c46c" />
-      <path d="M50 79l-2 9M62 79l2 9" stroke="#ff7a1a" stroke-width="3" stroke-linecap="round" />
-      <path d="M44 89h10M58 89h10" stroke="#ff7a1a" stroke-width="3" stroke-linecap="round" />
+      <g class="m-legs">
+        <path d="M50 79l-2 9M62 79l2 9" stroke="#ff7a1a" stroke-width="3" stroke-linecap="round" />
+        <path d="M44 89h10M58 89h10" stroke="#ff7a1a" stroke-width="3" stroke-linecap="round" />
+      </g>
     </g>
   </svg>
-</div>
+</Tag>
 
 <style>
-  .mascot { position: relative; display: inline-block; width: 7rem; }
+  /* Base box in Tailwind's components layer, so utility classes passed in (w-20, hidden,
+     absolute…) override it */
+  @layer components {
+    .mascot { position: relative; display: inline-block; width: 7rem; }
+  }
   .mascot--flip .mascot-svg { transform: scaleX(-1); }
   .mascot-svg { display: block; width: 100%; height: auto; overflow: visible; }
   .mascot :is(.m-body, .m-head, .m-wing, .m-lid) { transform-box: fill-box; }
@@ -40,6 +55,22 @@ const { say, class: className, flip = false } = Astro.props;
   .m-pupil { transition: transform 0.2s ease-out; }
   .group\/bird:hover .m-wing { animation: m-flap 0.25s ease-in-out infinite alternate; }
   .group\/bird:hover .m-body { animation: m-hop 0.6s ease-in-out infinite; }
+
+  /* Interactive bird: a real button, so it can be tapped and focused */
+  .mascot--interactive { cursor: pointer; border: 0; background: none; padding: 0; -webkit-tap-highlight-color: transparent; }
+  .mascot--interactive:focus-visible { outline: 3px solid var(--color-ember); outline-offset: 6px; border-radius: 999px; }
+  .mascot-say:empty { display: none; }
+  /* Flying: fast flaps, legs tucked, no idle bob */
+  .mascot.is-flying .m-wing { animation: m-flap 0.11s ease-in-out infinite alternate; }
+  .mascot.is-flying .m-body { animation: none; }
+  .mascot.is-flying .m-legs { opacity: 0; }
+  .m-legs { transition: opacity 0.2s; }
+  /* Waving hello with the wing */
+  .mascot.is-waving .m-wing { animation: m-wave 0.35s ease-in-out 4 alternate; }
+  /* Happy hop after a tap */
+  .mascot.is-happy .m-body { animation: m-happy 0.55s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @keyframes m-wave { from { transform: rotate(10deg); } to { transform: rotate(-55deg); } }
+  @keyframes m-happy { 0% { transform: translateY(0) scale(1); } 30% { transform: translateY(2px) scale(1.08, 0.9); } 60% { transform: translateY(-14px) rotate(-6deg); } 100% { transform: none; } }
 
   .mascot-say {
     position: absolute; bottom: 100%; left: 50%; translate: -50% -0.25rem; white-space: nowrap;
