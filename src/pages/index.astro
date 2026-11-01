@@ -1,11 +1,16 @@
 ---
 import Base from '../layouts/Base.astro';
+import ClientLogos from '../components/ClientLogos.astro';
+import PostCard from '../components/PostCard.astro';
+import { getPosts } from '../lib/blog';
 import { site, pillars, markets, tech } from '../data/site';
 import { process as steps } from '../data/process';
 
 const title = 'AR Medias | Software, App, CRM/ERP & AI Automation Company';
 const description =
   'AR Medias builds websites, mobile apps, custom CRM/ERP software and AI automation for businesses in India, UAE, USA, Canada, Australia, Japan and China. Founder-led team in New Delhi since 2024.';
+
+const latest = (await getPosts()).slice(0, 3);
 
 const stats: { label: string; value?: number; suffix?: string; text?: string }[] = [
   { value: site.projectsDelivered, suffix: '+', label: 'Projects delivered' },
@@ -121,7 +126,9 @@ const faqSchema = {
     </div>
   </section>
 
-  <!-- TECH MARQUEE (client-logo marquee goes here once logos are supplied) -->
+  <ClientLogos />
+
+  <!-- TECH MARQUEE -->
   <section aria-labelledby="tech-heading" class="border-y border-navy/8 bg-mist/60 py-10">
     <h2 id="tech-heading" class="container-x mb-6 text-center text-sm font-semibold uppercase tracking-[0.2em] text-slate">Technologies we build with</h2>
     {[tech.slice(0, 11), tech.slice(11)].map((row, i) => (
@@ -238,6 +245,24 @@ const faqSchema = {
       </div>
     </div>
   </section>
+
+  <!-- LATEST ARTICLES -->
+  {latest.length > 0 && (
+    <section aria-labelledby="blog-heading" class="bg-mist/60 py-24 lg:py-28">
+      <div class="container-x">
+        <div class="flex flex-wrap items-end justify-between gap-6">
+          <div class="max-w-2xl">
+            <p class="eyebrow" data-reveal="fade">From the blog</p>
+            <h2 id="blog-heading" class="mt-4 text-4xl font-bold sm:text-5xl">Guides for growing businesses.</h2>
+          </div>
+          <a href="/blog/" class="btn-ghost">All articles</a>
+        </div>
+        <ul class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+          {latest.map((p) => <li><PostCard post={p} /></li>)}
+        </ul>
+      </div>
+    </section>
+  )}
 
   <!-- FAQ -->
   <section aria-labelledby="faq-heading" class="py-24 lg:py-32">

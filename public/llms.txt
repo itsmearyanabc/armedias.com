@@ -6,8 +6,24 @@
 - Email: info@armedias.com
 - Phone: +91 77018 97557
 
-## Pages
-- [Services](https://armedias.com/services/)
-- [Work](https://armedias.com/work/)
+## Services
+- [Website Development](https://armedias.com/services/website-development/)
+- [Mobile App Development](https://armedias.com/services/mobile-app-development/)
+- [E-commerce Development](https://armedias.com/services/ecommerce-development/)
+- [UI/UX Design](https://armedias.com/services/ui-ux-design/)
+- [CRM Development](https://armedias.com/services/crm-development/)
+- [ERP Development](https://armedias.com/services/erp-development/)
+- [Custom Software Development](https://armedias.com/services/custom-software-development/)
+- [AI & Workflow Automation](https://armedias.com/services/ai-automation/)
+- [Maintenance & Support](https://armedias.com/services/maintenance-support/)
+
+## Company
 - [About](https://armedias.com/about/)
+- [Founder: Aryan Yadav](https://armedias.com/about/aryan-yadav/)
+- [Process](https://armedias.com/process/)
+- [Work](https://armedias.com/work/)
+- [Blog](https://armedias.com/blog/)
 - [Contact](https://armedias.com/contact/)
+
+## Markets
+- India, UAE, USA, Canada, Australia, Japan, China: https://armedias.com/locations/india/ (and /uae/, /usa/, /canada/, /australia/, /japan/, /china/)

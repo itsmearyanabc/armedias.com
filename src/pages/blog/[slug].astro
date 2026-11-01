@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
 import PostCover from '../../components/PostCover.astro';
+import FounderAvatar from '../../components/FounderAvatar.astro';
 import { site } from '../../data/site';
 import { serviceBySlug } from '../../data/services';
 import { categories } from '../../content.config';
@@ -66,7 +67,7 @@ const schema = [
         <p class="mt-5 text-xl leading-relaxed text-slate" data-hero>{post.data.description}</p>
         <div class="mt-8 flex flex-wrap items-center gap-4 text-sm text-slate" data-hero>
           <a href="/about/aryan-yadav/" class="flex items-center gap-3 font-semibold text-navy hover:text-olive">
-            <span class="grid size-10 place-items-center rounded-full bg-navy font-display text-sm font-bold text-olive-300">AY</span>
+            <FounderAvatar size={40} class="size-10" />
             {site.founder.name}
           </a>
           <span aria-hidden="true">·</span>
@@ -105,7 +106,7 @@ const schema = [
     <section class="container-x max-w-6xl pb-20">
       <div class="grid gap-6 lg:grid-cols-2">
         <a href="/about/aryan-yadav/" data-tilt class="flex items-start gap-5 rounded-[2rem] bg-mist p-8">
-          <span class="grid size-16 shrink-0 place-items-center rounded-full bg-navy font-display text-xl font-bold text-olive-300">AY</span>
+          <FounderAvatar size={64} class="size-16 shrink-0" />
           <span>
             <span class="block text-sm text-slate">Written by</span>
             <span class="mt-1 block font-display text-xl font-bold text-navy">{site.founder.name}</span>

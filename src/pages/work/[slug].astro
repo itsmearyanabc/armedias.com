@@ -1,0 +1,92 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { site } from '../../data/site';
+import { serviceBySlug } from '../../data/services';
+import { projects, type Project } from '../../data/projects';
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+
+const { p } = Astro.props as { p: Project };
+const who = p.client || p.business;
+const others = projects.filter((x) => x.slug !== p.slug).slice(0, 2);
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: p.title,
+    description: p.summary,
+    url: `${site.url}/work/${p.slug}/`,
+    creator: { '@id': `${site.url}/#organization` },
+    dateCreated: String(p.year),
+    keywords: p.tech.join(', '),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Work', item: `${site.url}/work/` },
+      { '@type': 'ListItem', position: 3, name: p.title, item: `${site.url}/work/${p.slug}/` },
+    ],
+  },
+];
+---
+
+<Base title={`${p.title} | ${who} Case Study | AR Medias`} description={p.summary} {schema}>
+  <article>
+    <header class="relative overflow-hidden pb-12 pt-32 lg:pt-40">
+      <div aria-hidden="true" class="blob pointer-events-none absolute -right-24 -top-24 -z-10 size-[34rem] rounded-full bg-olive-300/30 blur-3xl"></div>
+      <div class="container-x max-w-5xl">
+        <nav aria-label="Breadcrumb" class="text-sm text-slate"><a href="/" class="hover:text-olive">Home</a> / <a href="/work/" class="hover:text-olive">Work</a> / <span>{who}</span></nav>
+        <p class="eyebrow mt-6">{who} · {p.country} · {p.year}</p>
+        <h1 class="mt-4 text-4xl font-bold leading-[1.06] sm:text-5xl lg:text-6xl">{p.title}</h1>
+        <p class="mt-5 max-w-3xl text-xl text-slate">{p.summary}</p>
+        <ul class="mt-6 flex flex-wrap gap-2">
+          {p.services.map((s) => serviceBySlug[s] && <li><a href={`/services/${s}/`} class="rounded-full bg-olive/10 px-4 py-1.5 text-sm font-semibold text-olive hover:bg-olive hover:text-white">{serviceBySlug[s].name}</a></li>)}
+        </ul>
+      </div>
+      {p.image && (
+        <div class="container-x mt-12 max-w-6xl" data-reveal="up">
+          <Image src={p.image} alt={`${p.title} screenshot`} widths={[640, 1024, 1600]} sizes="(min-width: 1152px) 1152px, 100vw" loading="eager" class="w-full rounded-[2rem] shadow-2xl shadow-navy/20" />
+        </div>
+      )}
+    </header>
+
+    <div class="container-x grid max-w-6xl gap-10 pb-20 lg:grid-cols-[1fr_20rem]">
+      <div class="space-y-10">
+        <section><h2 class="text-3xl font-bold">The challenge</h2><p class="mt-4 text-lg leading-relaxed text-slate">{p.challenge}</p></section>
+        <section><h2 class="text-3xl font-bold">What we built</h2><p class="mt-4 text-lg leading-relaxed text-slate">{p.solution}</p></section>
+        {p.results.length > 0 && (
+          <section>
+            <h2 class="text-3xl font-bold">Results</h2>
+            <ul class="mt-6 grid gap-4 sm:grid-cols-2" data-reveal="stagger">
+              {p.results.map((r) => <li class="rounded-3xl bg-navy p-6 font-display text-xl font-semibold text-white">{r}</li>)}
+            </ul>
+          </section>
+        )}
+      </div>
+      <aside class="space-y-4 lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-3xl bg-mist p-6">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate">Tech stack</p>
+          <ul class="mt-4 flex flex-wrap gap-2">{p.tech.map((t) => <li class="rounded-full bg-white px-3 py-1.5 text-sm font-medium text-navy">{t}</li>)}</ul>
+        </div>
+        {p.url && <a href={p.url} rel="noopener" target="_blank" class="btn-ghost w-full justify-center">Visit live project ↗</a>}
+      </aside>
+    </div>
+  </article>
+
+  {others.length > 0 && (
+    <section class="bg-mist/60 py-20">
+      <div class="container-x">
+        <h2 class="text-3xl font-bold sm:text-4xl">More work</h2>
+        <ul class="mt-10 grid gap-6 md:grid-cols-2">
+          {others.map((o) => <li><a href={`/work/${o.slug}/`} data-tilt class="block rounded-[2rem] bg-white p-8 ring-1 ring-navy/8 hover:text-olive"><p class="text-sm text-slate">{o.client || o.business} · {o.country}</p><p class="mt-2 font-display text-2xl font-bold">{o.title}</p></a></li>)}
+        </ul>
+      </div>
+    </section>
+  )}
+</Base>

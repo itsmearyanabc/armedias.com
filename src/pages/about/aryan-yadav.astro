@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import FounderAvatar from '../../components/FounderAvatar.astro';
 import { site, markets, pillars } from '../../data/site';
 
 const { founder } = site;
@@ -59,7 +60,7 @@ const schema = [
       <div class="founder-visual relative mx-auto grid size-72 place-items-center sm:size-80" aria-hidden="true">
         <span class="ring-a absolute inset-0 rounded-full border-2 border-dashed border-olive/40"></span>
         <span class="ring-b absolute inset-6 rounded-full border border-navy/15"></span>
-        <div class="grid size-56 place-items-center rounded-full bg-navy font-display text-7xl font-bold text-olive-300 shadow-2xl shadow-navy/30 sm:size-60">AY</div>
+        <FounderAvatar size={240} class="size-56 shadow-2xl shadow-navy/30 sm:size-60" />
         {['Web', 'Apps', 'CRM', 'AI'].map((t, i) => (
           <span class="chip absolute rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-navy shadow-lg ring-1 ring-navy/5" style={`--i:${i}`}>{t}</span>
         ))}

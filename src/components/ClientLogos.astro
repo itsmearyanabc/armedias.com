@@ -1,0 +1,33 @@
+---
+// Rolling client-logo strip. Renders nothing until projects.ts has named clients with logos.
+import { Image } from 'astro:assets';
+import { clientLogos } from '../data/projects';
+
+const rows = clientLogos.length >= 8
+  ? [clientLogos.filter((_, i) => i % 2 === 0), clientLogos.filter((_, i) => i % 2 === 1)]
+  : [clientLogos];
+---
+
+{clientLogos.length > 0 && (
+  <section aria-labelledby="clients-heading" class="py-14">
+    <h2 id="clients-heading" class="container-x mb-8 text-center text-sm font-semibold uppercase tracking-[0.2em] text-slate" data-no-split>Trusted by growing businesses</h2>
+    {rows.map((row, i) => (
+      <div class="marquee mb-6 last:mb-0" data-reverse={i === 1 ? '' : undefined} style="--speed: 40s; --gap: 3.5rem">
+        {[0, 1].map((copy) => (
+          <ul class="marquee__track items-center" aria-hidden={copy === 1 ? 'true' : undefined}>
+            {[...row, ...row].map((c) => (
+              <li class="client-logo grid h-16 place-items-center">
+                <Image src={c.logo} alt={copy === 0 ? c.client : ''} height={48} class="h-10 w-auto max-w-[10rem] object-contain" />
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    ))}
+  </section>
+)}
+
+<style>
+  .client-logo :global(img) { filter: grayscale(1); opacity: 0.6; transition: filter 0.3s, opacity 0.3s, transform 0.3s; }
+  .client-logo:hover :global(img) { filter: none; opacity: 1; transform: scale(1.08); }
+</style>

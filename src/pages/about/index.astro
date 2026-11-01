@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import FounderAvatar from '../../components/FounderAvatar.astro';
 import { site, markets, pillars } from '../../data/site';
 
 const title = 'About AR Medias | IT Company in New Delhi Since 2024';
@@ -96,8 +97,8 @@ const schema = [
   <section class="bg-mist/60 py-24 lg:py-28">
     <div class="container-x">
       <a href="/about/aryan-yadav/" data-tilt class="group grid items-center gap-10 overflow-hidden rounded-[2.5rem] bg-white p-8 ring-1 ring-navy/5 sm:p-12 lg:grid-cols-[auto_1fr]">
-        <div class="founder-avatar relative mx-auto grid size-48 place-items-center rounded-full bg-navy font-display text-6xl font-bold text-olive-300 sm:size-56">
-          AY
+        <div class="founder-avatar relative mx-auto size-48 sm:size-56">
+          <FounderAvatar size={224} class="size-full" />
           <span aria-hidden="true" class="founder-ring absolute -inset-3 rounded-full border-2 border-dashed border-olive/40"></span>
         </div>
         <div>

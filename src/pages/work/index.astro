@@ -1,0 +1,119 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { site, markets } from '../../data/site';
+import { services, serviceBySlug } from '../../data/services';
+import { projects } from '../../data/projects';
+
+const title = 'Our Work | Websites, Apps, CRM/ERP & AI Projects | AR Medias';
+const description = `Case studies from ${site.projectsDelivered}+ projects delivered by AR Medias: websites, mobile apps, custom CRM and ERP software and AI automation for clients in ${markets.length} countries.`;
+
+const usedServices = services.filter((s) => projects.some((p) => p.services.includes(s.slug)));
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'AR Medias case studies',
+    url: `${site.url}/work/`,
+    hasPart: projects.map((p) => ({ '@type': 'CreativeWork', name: p.title, url: `${site.url}/work/${p.slug}/` })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Work', item: `${site.url}/work/` },
+    ],
+  },
+];
+---
+
+<Base {title} {description} {schema}>
+  <section class="relative overflow-hidden pb-14 pt-32 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+      <div class="blob absolute -left-24 bottom-0 size-[26rem] rounded-full bg-navy/10 blur-3xl"></div>
+    </div>
+    <div class="container-x">
+      <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero><a href="/" class="hover:text-olive">Home</a> / <span>Work</span></nav>
+      <p class="eyebrow mt-6" data-hero>Our work</p>
+      <h1 class="mt-4 max-w-5xl text-5xl font-bold leading-[1.03] sm:text-6xl xl:text-7xl" data-hero>
+        {site.projectsDelivered}+ projects. <span class="text-olive">Real results.</span>
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate" data-hero>
+        Websites, apps, CRM and ERP systems and AI automation for businesses across {markets.map((m) => m.country).join(', ')}.
+      </p>
+      {usedServices.length > 1 && (
+        <div class="mt-10 flex flex-wrap gap-2" data-hero role="group" aria-label="Filter by service">
+          <button data-filter="" aria-pressed="true" class="chip">All</button>
+          {usedServices.map((s) => <button data-filter={s.slug} aria-pressed="false" class="chip">{s.name}</button>)}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="container-x pb-24">
+    {projects.length === 0 ? (
+      <div class="relative overflow-hidden rounded-[2.5rem] bg-navy px-8 py-16 text-white sm:px-14" data-reveal="up">
+        <div aria-hidden="true" class="blob pointer-events-none absolute -right-24 -top-24 size-96 rounded-full bg-olive/40 blur-3xl"></div>
+        <div class="relative max-w-2xl">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-olive-300">Case studies</p>
+          <h2 class="mt-4 text-4xl font-bold text-white sm:text-5xl" data-no-split>Detailed case studies are on their way.</h2>
+          <p class="mt-5 text-lg text-white/75">Many of our projects are under NDA, so we're writing them up with our clients' approval. In the meantime, we're happy to walk you through relevant work on a call.</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="/contact/" class="btn bg-olive text-white hover:bg-white hover:text-navy" data-magnetic>See work relevant to you</a>
+            <a href="/services/" class="btn border-2 border-white/30 text-white hover:border-white">Explore services</a>
+          </div>
+        </div>
+      </div>
+    ) : (
+      <ul class="grid gap-6 md:grid-cols-2" data-reveal="stagger">
+        {projects.map((p) => (
+          <li data-services={p.services.join(' ')}>
+            <a href={`/work/${p.slug}/`} data-tilt class="group flex h-full flex-col overflow-hidden rounded-[2rem] bg-white ring-1 ring-navy/8 transition-shadow hover:shadow-2xl hover:shadow-navy/10">
+              <div class="relative aspect-[16/10] overflow-hidden bg-navy">
+                {p.image && <Image src={p.image} alt={`${p.title} screenshot`} widths={[480, 800, 1200]} sizes="(min-width: 768px) 50vw, 100vw" class="size-full object-cover transition-transform duration-700 group-hover:scale-105" />}
+                {p.logo && <span class="absolute left-5 top-5 rounded-2xl bg-white/95 p-3 shadow-lg"><Image src={p.logo} alt={p.client} height={28} class="h-7 w-auto" /></span>}
+              </div>
+              <div class="flex flex-1 flex-col p-7">
+                <p class="text-sm text-slate">{p.client || p.business} · {p.country} · {p.year}</p>
+                <h2 class="mt-3 text-2xl font-bold group-hover:text-olive" data-no-split>{p.title}</h2>
+                <p class="mt-3 flex-1 text-slate">{p.summary}</p>
+                <ul class="mt-5 flex flex-wrap gap-1.5">
+                  {p.services.map((s) => <li class="rounded-full bg-olive/10 px-3 py-1 text-xs font-semibold text-olive">{serviceBySlug[s]?.name}</li>)}
+                </ul>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</Base>
+
+<style>
+  .chip { border-radius: 999px; border: 1px solid rgb(19 33 58 / 0.1); background: #fff; padding: 0.6rem 1.25rem;
+    font-size: 0.875rem; font-weight: 600; color: var(--color-navy); transition: background-color 0.2s, color 0.2s; }
+  .chip:hover { border-color: var(--color-olive); color: var(--color-olive); }
+  .chip[aria-pressed='true'] { background: var(--color-navy); border-color: var(--color-navy); color: #fff; }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  if (document.documentElement.classList.contains('js-motion')) {
+    gsap.from('[data-hero]', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.1 });
+  }
+
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  const items = [...document.querySelectorAll<HTMLElement>('[data-services]')];
+  chips.forEach((chip) => chip.addEventListener('click', () => {
+    const f = chip.dataset.filter!;
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+    items.forEach((el) => {
+      const show = !f || el.dataset.services!.split(' ').includes(f);
+      if (show && el.hidden) { el.hidden = false; gsap.fromTo(el, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }); }
+      else el.hidden = !show;
+    });
+  }));
+</script>
