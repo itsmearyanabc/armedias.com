@@ -12,6 +12,7 @@ export const site = {
     linkedin: 'https://in.linkedin.com/in/aryan-yadav-9b954a2a6',
   },
   email: 'info@armedias.com',
+  gstin: '07BASPY7603N2ZN',
   phone: '+91 77018 97557',
   phoneE164: '+917701897557',
   // Every WhatsApp link goes through this redirect, so the destination can be changed in

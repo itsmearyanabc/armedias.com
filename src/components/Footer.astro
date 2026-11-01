@@ -22,6 +22,7 @@ const year = new Date().getFullYear();
         <p>{site.address.street},<br />{site.address.locality}, {site.address.countryName}</p>
         <p><a class="hover:text-ember-300" href={`tel:${site.phoneE164}`}>{site.phone}</a></p>
         <p><a class="hover:text-ember-300" href={`mailto:${site.email}`}>{site.email}</a></p>
+        <p class="text-sm text-white/55">GSTIN: {site.gstin}</p>
       </address>
     </div>
 
