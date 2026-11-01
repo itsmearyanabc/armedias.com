@@ -2,6 +2,8 @@ import { services } from './services';
 
 export const site = {
   name: 'AR Medias',
+  // Other spellings people search for, so search engines connect them to this site
+  alternateNames: ['ARMedias', 'Armedias', 'AR Medias IT Company'],
   legalName: 'AR Medias',
   url: 'https://armedias.com',
   founded: '2024-01-01',

@@ -20,6 +20,9 @@ pm2 start "$APP/current/deploy/ecosystem.config.cjs"
 pm2 save
 nginx -t && systemctl reload nginx
 
+# Ask IndexNow search engines to recrawl the pages (never fails the deploy)
+(cd "$APP/current" && node scripts/indexnow.mjs) || true
+
 # Keep the five most recent releases
 ls -1dt "$APP"/releases/* | tail -n +6 | xargs -r rm -rf
 echo "Deployed $RELEASE"

@@ -28,6 +28,8 @@ const organization = {
   '@type': 'ProfessionalService',
   '@id': `${site.url}/#organization`,
   name: site.name,
+  alternateName: site.alternateNames,
+  legalName: site.legalName,
   url: site.url,
   logo: `${site.url}/icon-512.png`,
   image: `${site.url}/icon-512.png`,
@@ -64,6 +66,7 @@ const website = {
   '@type': 'WebSite',
   '@id': `${site.url}/#website`,
   name: site.name,
+  alternateName: site.alternateNames,
   url: site.url,
   inLanguage: 'en',
   publisher: { '@id': `${site.url}/#organization` },
@@ -80,7 +83,8 @@ const jsonLd = [organization, website, ...schema];
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title="AR Medias Blog" href="/rss.xml" />
