@@ -31,7 +31,7 @@ export function initWaves(el: HTMLElement) {
         minWidth: 200.0,
         scale: 1.0,
         scaleMobile: 1.0,
-        color: 0x204a2b,
+        color: 0x3b1f73, // deep purple
       }) as Effect;
       el.classList.add('is-live');
     })().finally(() => { loading = undefined; });
