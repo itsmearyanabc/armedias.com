@@ -8,7 +8,7 @@ const { post, featured = false } = Astro.props;
 ---
 
 <a href={`/blog/${post.id}/`} data-tilt class:list={['group flex h-full overflow-hidden rounded-[2rem] bg-white ring-1 ring-navy/8 transition-shadow hover:shadow-2xl hover:shadow-navy/10', featured ? 'flex-col lg:flex-row' : 'flex-col']}>
-  <PostCover category={post.data.category} class={featured ? 'aspect-[16/9] lg:aspect-auto lg:w-1/2' : 'aspect-[16/9]'} />
+  <PostCover category={post.data.category} class={featured ? 'aspect-[5/2] lg:aspect-auto lg:min-h-80 lg:w-1/2' : 'aspect-[5/2]'} />
   <div class:list={['flex flex-1 flex-col p-7', featured && 'lg:p-12']}>
     <p class="flex flex-wrap items-center gap-2 text-sm text-slate">
       <span class="rounded-full bg-olive/10 px-3 py-1 font-semibold text-olive">{categories[post.data.category]}</span>

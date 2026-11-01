@@ -32,7 +32,7 @@ export async function initMotion() {
     splitWords(h);
     gsap.from(h.querySelectorAll('.w > span'), {
       yPercent: 110, duration: 0.9, ease: 'power4.out', stagger: 0.04,
-      scrollTrigger: { trigger: h, start: 'top 88%', once: true },
+      scrollTrigger: { trigger: h, start: 'top 96%', once: true },
     });
   });
 
@@ -52,7 +52,7 @@ export async function initMotion() {
       { opacity: 0, y: kind === 'fade' ? 0 : 40 },
       {
         opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.08,
-        scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+        scrollTrigger: { trigger: el, start: 'top 96%', once: true },
       },
     );
   });
@@ -63,7 +63,7 @@ export async function initMotion() {
     const obj = { v: 0 };
     gsap.to(obj, {
       v: end, duration: 1.6, ease: 'power2.out',
-      scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+      scrollTrigger: { trigger: el, start: 'top 96%', once: true },
       onUpdate: () => { el.textContent = Math.round(obj.v).toString(); },
     });
   });
