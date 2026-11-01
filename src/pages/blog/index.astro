@@ -5,7 +5,7 @@ import { site } from '../../data/site';
 import { getPosts } from '../../lib/blog';
 
 const posts = await getPosts();
-const title = 'Blog | Guides on Web, Apps, CRM, ERP & AI Automation | AR Medias';
+const title = 'Blog: Web, App, CRM/ERP & AI Automation Guides | AR Medias';
 const description = 'Practical guides for business owners on websites, mobile apps, custom CRM and ERP software, WhatsApp and AI automation, written by the AR Medias team.';
 
 const schema = [
@@ -21,7 +21,6 @@ const schema = [
 ---
 
 <Base {title} {description} {schema}>
-  <link slot="head" rel="alternate" type="application/rss+xml" title="AR Medias Blog" href="/rss.xml" />
   <BlogList
     {posts}
     heading="Guides for growing businesses."

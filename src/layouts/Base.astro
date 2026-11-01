@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import ContactSection from '../components/ContactSection.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import { site, markets } from '../data/site';
+import { ogPathFor } from '../lib/og';
 // The two font files every page needs first; preloading them avoids a visible font swap
 import displayFont from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
 import bodyFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
@@ -19,7 +20,7 @@ interface Props {
   hideContact?: boolean;
 }
 
-const { title, description, ogImage = '/og-default.png', noindex = false, schema = [], hideContact = false } = Astro.props;
+const { title, description, ogImage = ogPathFor(Astro.url.pathname) ?? '/og-default.png', noindex = false, schema = [], hideContact = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 
 const organization = {
@@ -34,18 +35,40 @@ const organization = {
   telephone: site.phoneE164,
   foundingDate: site.founded,
   taxID: site.gstin,
-  founder: { '@type': 'Person', name: site.founder.name, sameAs: site.founder.linkedin },
+  founder: { '@type': 'Person', '@id': `${site.url}/about/aryan-yadav/#person`, name: site.founder.name, sameAs: site.founder.linkedin },
+  slogan: site.tagline,
+  description: site.tagline,
+  knowsAbout: ['Website development', 'Mobile app development', 'E-commerce development', 'UI/UX design', 'CRM development', 'ERP development', 'Custom software development', 'AI automation', 'WhatsApp automation'],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'sales',
+    telephone: site.phoneE164,
+    email: site.email,
+    areaServed: markets.map((m) => m.code),
+    availableLanguage: ['English', 'Hindi'],
+  },
+  hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`AR Medias, ${site.address.street}, ${site.address.locality}`)}`,
   address: {
     '@type': 'PostalAddress',
     streetAddress: site.address.street,
     addressLocality: site.address.locality,
     addressRegion: site.address.region,
+    postalCode: site.address.postalCode,
     addressCountry: site.address.country,
   },
   areaServed: markets.map((m) => ({ '@type': 'Country', name: m.schemaName })),
   sameAs: site.sameAs,
 };
-const jsonLd = [organization, ...schema];
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${site.url}/#website`,
+  name: site.name,
+  url: site.url,
+  inLanguage: 'en',
+  publisher: { '@id': `${site.url}/#organization` },
+};
+const jsonLd = [organization, website, ...schema];
 ---
 
 <!doctype html>
@@ -60,11 +83,13 @@ const jsonLd = [organization, ...schema];
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="AR Medias Blog" href="/rss.xml" />
     <meta name="theme-color" content="#13213a" />
     <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_IN" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

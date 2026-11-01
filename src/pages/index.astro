@@ -5,6 +5,7 @@ import Scribble from '../components/Scribble.astro';
 import Illustration from '../components/illustrations/Illustration.astro';
 import TechLogo from '../components/TechLogo.astro';
 import FeatureCard from '../components/FeatureCard.astro';
+import { industries } from '../data/industries';
 import BirdMascot from '../components/BirdMascot.astro';
 import TechSprite from '../components/TechSprite.astro';
 import PostCard from '../components/PostCard.astro';
@@ -14,7 +15,7 @@ import { process as steps } from '../data/process';
 
 const title = 'AR Medias | Software, App, CRM/ERP & AI Automation Company';
 const description =
-  'AR Medias builds websites, mobile apps, custom CRM/ERP software and AI automation for businesses in India, UAE, USA, Canada, Australia, Japan and China. Founder-led team in New Delhi since 2024.';
+  'AR Medias builds websites, mobile apps, CRM/ERP software and AI automation for businesses in India, UAE, USA, Canada, Australia, Japan and China.';
 
 const latest = (await getPosts()).slice(0, 3);
 // React Native shares React's logo, so it is shown once in the logo strip
@@ -187,6 +188,31 @@ const faqSchema = {
           </article>
         ))}
       </div>
+    </div>
+  </section>
+
+  <!-- INDUSTRIES -->
+  <section aria-labelledby="industries-heading" class="pb-24 lg:pb-32">
+    <div class="container-x">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div class="max-w-2xl">
+          <p class="eyebrow" data-reveal="fade">Industries</p>
+          <h2 id="industries-heading" class="mt-4 text-4xl font-bold sm:text-5xl">Built for the way your industry works.</h2>
+        </div>
+        <a href="/industries/" class="btn-ghost">All industries</a>
+      </div>
+      <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5" data-reveal="stagger">
+        {industries.map((ind) => (
+          <li>
+            <a href={`/industries/${ind.slug}/`} data-tilt class="group flex h-full flex-col justify-between gap-6 rounded-3xl bg-mist p-6 transition-colors duration-300 hover:bg-navy">
+              <span class="font-display text-xl font-bold text-navy transition-colors group-hover:text-white">{ind.name}</span>
+              <span class="flex items-center justify-between text-sm font-semibold text-olive transition-colors group-hover:text-ember-300">
+                Explore <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 

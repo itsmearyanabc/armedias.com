@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import { site, markets } from '../../data/site';
 import { services, serviceBySlug, type Service } from '../../data/services';
 import { process as steps } from '../../data/process';
+import { industries } from '../../data/industries';
 import Illustration from '../../components/illustrations/Illustration.astro';
 
 export function getStaticPaths() {
@@ -12,6 +13,7 @@ export function getStaticPaths() {
 const { s } = Astro.props as { s: Service };
 const related = s.related.map((slug) => serviceBySlug[slug]);
 const url = `${site.url}/services/${s.slug}/`;
+const forIndustries = industries.filter((i) => i.services.includes(s.slug));
 
 // Orbit visual: split the stack into an inner and outer ring
 const orbitTech = s.tech.map((t) => t.replace('WhatsApp Business API', 'WhatsApp API'));
@@ -203,6 +205,17 @@ const schema = [
       </div>
     </div>
   </section>
+
+  {forIndustries.length > 0 && (
+    <section class="border-t border-navy/8 py-12">
+      <div class="container-x flex flex-wrap items-center gap-3">
+        <p class="mr-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate">{s.name} for</p>
+        {forIndustries.map((i) => (
+          <a href={`/industries/${i.slug}/`} class="rounded-full border border-navy/10 px-4 py-2 text-sm font-semibold text-navy transition-colors hover:border-ember hover:bg-ember">{i.name}</a>
+        ))}
+      </div>
+    </section>
+  )}
 
   <!-- RELATED -->
   <section class="bg-mist/60 py-20">

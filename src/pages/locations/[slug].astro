@@ -12,9 +12,10 @@ const services = pillars.flatMap((p) => p.items);
 const others = markets.filter((x) => x.slug !== m.slug);
 
 const title = `Software & App Development Company in ${m.country} | AR Medias`;
-const description = `AR Medias builds websites, mobile apps, custom CRM/ERP software and AI automation for businesses in ${m.area}. Fixed quotes, ${m.currency} billing and calls in your time zone.`;
+const description = `Websites, apps, CRM/ERP and AI automation for businesses in ${m.area}. Fixed quotes in ${m.currency} and calls in your time zone.`;
 
 const faqs = [
+  m.faq,
   { q: `Do you work with businesses in ${m.country}?`, a: `Yes. We work with clients across ${m.area}. Projects run remotely, with calls scheduled during ${m.city} business hours and billing in ${m.currency}.` },
   { q: `How do you handle data privacy for ${m.country} projects?`, a: `We design data storage, consent and access controls with ${m.privacyLaw} in mind, and can host data in the region you require.` },
   { q: 'How do we get started?', a: 'Book a free 30-minute call. We review your goals and send a written scope with a fixed quote and timeline.' },
@@ -75,6 +76,31 @@ const schema = [
   </section>
 
   <section class="py-20">
+    <div class="container-x grid gap-12 lg:grid-cols-2">
+      <div>
+        <p class="eyebrow" data-reveal="fade">Built for {m.country}</p>
+        <h2 class="mt-4 text-3xl font-bold sm:text-4xl">What {m.country} businesses often need.</h2>
+        <ul class="mt-8 space-y-3" data-reveal="stagger">
+          {m.needs.map((n) => (
+            <li class="flex items-start gap-3 text-lg text-slate">
+              <span class="mt-1.5 grid size-5 shrink-0 place-items-center rounded-full bg-gradient-to-br from-ember to-sun text-navy">
+                <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9" /></svg>
+              </span>{n}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <p class="eyebrow" data-reveal="fade">Integrations</p>
+        <h2 class="mt-4 text-3xl font-bold sm:text-4xl">Connected to the tools you use in {m.country}.</h2>
+        <ul class="mt-8 flex flex-wrap gap-2" data-reveal="stagger">
+          {m.integrations.map((t) => <li class="rounded-full bg-mist px-4 py-2 font-medium text-navy ring-1 ring-navy/5 transition-colors hover:bg-ember">{t}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-20">
     <div class="container-x grid gap-10 lg:grid-cols-3" data-reveal="stagger">
       <div data-tilt class="rounded-3xl bg-navy p-8 text-white">
         <p class="text-sm uppercase tracking-wider text-ember-300">Time zone</p>
