@@ -46,40 +46,38 @@ const faqSchema = {
 
 <Base {title} {description} schema={[faqSchema]}>
   <!-- HERO -->
-  <section class="relative overflow-hidden pb-20 pt-32 lg:pb-28 lg:pt-40">
-    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      <div class="blob absolute -right-24 -top-24 size-[38rem] rounded-full bg-olive-300/35 blur-3xl"></div>
-      <div class="blob absolute bottom-0 left-1/3 size-[30rem] rounded-full bg-navy/10 blur-3xl"></div>
-      <div class="hero-grid absolute inset-0" data-parallax="0.15"></div>
-    </div>
+  <section class="hero relative isolate overflow-hidden pb-20 pt-32 text-white lg:pb-28 lg:pt-40">
+    <!-- Vanta waves render into this layer; the gradient shows until (or instead of) WebGL -->
+    <div id="hero-waves" aria-hidden="true" class="hero-waves absolute inset-0 -z-10"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-[#0f2416]/70 via-[#0f2416]/25 to-transparent"></div>
     <div class="container-x grid items-center gap-14 lg:grid-cols-[1.15fr_1fr]">
       <div>
-        <p class="eyebrow" data-hero>
-          <span class="size-2 animate-pulse rounded-full bg-olive"></span> IT company · New Delhi · Since 2024
+        <p class="eyebrow text-olive-300!" data-hero>
+          <span class="size-2 animate-pulse rounded-full bg-olive-300"></span> IT company · New Delhi · Since 2024
         </p>
-        <h1 class="mt-5 text-5xl font-bold leading-[1.02] sm:text-6xl xl:text-7xl" data-hero>
-          The technology partner behind your <span class="text-olive">business growth.</span>
+        <h1 class="mt-5 text-5xl font-bold leading-[1.02] text-white sm:text-6xl xl:text-7xl" data-hero>
+          The technology partner behind your <span class="text-olive-300">business growth.</span>
         </h1>
-        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-white/80" data-hero>
           We build{' '}
-          <span class="relative inline-block font-semibold text-navy">
+          <span class="relative inline-block font-semibold text-white">
             <span data-typer data-words={JSON.stringify(words)}>{words[0]}</span><span class="typer-caret" aria-hidden="true"></span>
           </span>{' '}
           <br class="hidden sm:block" />
           for growing businesses in India, the UAE, USA, Canada, Australia, Japan and China.
         </p>
         <div class="mt-9 flex flex-wrap gap-3" data-hero>
-          <a href="/contact/" class="btn-primary" data-magnetic>
+          <a href="/contact/" class="btn bg-olive-300 text-navy shadow-lg shadow-black/20 hover:bg-white" data-magnetic>
             Get your free consultation
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
           </a>
-          <a href="/work/" class="btn-ghost">See our work</a>
+          <a href="/work/" class="btn border-2 border-white/30 text-white hover:border-white">See our work</a>
         </div>
-        <dl class="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-navy/10 pt-8" data-hero>
+        <dl class="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/15 pt-8" data-hero>
           {stats.map((s) => (
             <div class="flex flex-col">
-              <dt class="text-sm text-slate">{s.label}</dt>
-              <dd class="order-first font-display text-3xl font-bold text-navy sm:text-4xl">
+              <dt class="text-sm text-white/65">{s.label}</dt>
+              <dd class="order-first font-display text-3xl font-bold text-white sm:text-4xl">
                 {s.value !== undefined ? <><span data-count={s.value}>{s.value}</span>{s.suffix}</> : s.text}
               </dd>
             </div>
@@ -89,7 +87,7 @@ const faqSchema = {
 
       <!-- Hero visual: CSS-built product cards, no stock imagery -->
       <div class="hero-cards relative mx-auto aspect-[5/4] w-full max-w-[34rem]" aria-hidden="true">
-        <div data-float="0.6" class="card absolute left-0 top-0 w-[68%] rounded-3xl bg-navy p-5 text-white shadow-2xl shadow-navy/30">
+        <div data-float="0.6" class="card absolute left-0 top-0 w-[68%] rounded-3xl bg-navy/90 p-5 text-white shadow-2xl shadow-black/40 ring-1 ring-white/10 backdrop-blur">
           <div class="flex items-center justify-between text-xs text-white/60"><span>CRM · Pipeline</span><span>This month</span></div>
           <p class="mt-3 font-display text-3xl font-bold">₹48.2L</p>
           <div class="mt-4 flex h-20 items-end gap-1.5">
@@ -300,11 +298,12 @@ const faqSchema = {
 </Base>
 
 <style>
-  .hero-grid {
-    background-image: linear-gradient(rgb(19 33 58 / 0.05) 1px, transparent 1px), linear-gradient(90deg, rgb(19 33 58 / 0.05) 1px, transparent 1px);
-    background-size: 56px 56px;
-    mask-image: radial-gradient(ellipse 70% 60% at 70% 30%, #000, transparent 75%);
+  .hero-waves {
+    background:
+      radial-gradient(60rem 30rem at 80% 10%, rgb(85 107 47 / 0.55), transparent 60%),
+      linear-gradient(160deg, #2a5a36 0%, #204a2b 45%, #142f1c 100%);
   }
+  .hero-waves :global(canvas) { display: block; }
   .typer-caret { display: inline-block; width: 2px; height: 1.1em; margin-left: 2px; vertical-align: -0.15em; background: var(--color-olive); animation: blink 1s steps(1) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
   .bar { transform-origin: bottom; }
@@ -314,6 +313,10 @@ const faqSchema = {
 
 <script>
   import { gsap } from 'gsap';
+  import { initWaves } from '../scripts/waves';
+
+  const waves = document.getElementById('hero-waves');
+  if (waves) initWaves(waves);
 
   // Live clocks (cheap: one formatter per zone, ticks every 30s)
   const clocks = [...document.querySelectorAll<HTMLTimeElement>('[data-clock]')].map((el) => ({
