@@ -166,3 +166,11 @@ html.lenis, html.lenis body { height: auto; }
 @keyframes i-dash { to { stroke-dashoffset: -28; } }
 @keyframes i-slide { 0%, 10% { transform: translateX(0); } 45%, 60% { transform: translateX(var(--slide, 110px)); } 95%, 100% { transform: translateX(0); } }
 @keyframes i-grow { 0% { transform: scaleY(0.2); } 40%, 70% { transform: scaleY(1); } 100% { transform: scaleY(0.2); } }
+
+/* FAQ answers open and close smoothly (browsers without ::details-content just snap) */
+:root { interpolate-size: allow-keywords; }
+details::details-content {
+  block-size: 0; overflow: hidden; opacity: 0;
+  transition: block-size 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s, content-visibility 0.45s allow-discrete;
+}
+details[open]::details-content { block-size: auto; opacity: 1; }

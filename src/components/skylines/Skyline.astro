@@ -1,0 +1,100 @@
+---
+// Animated city skyline for a country page. The sky follows the city's real local time
+// (dawn, day, dusk or night with stars, moon and lit windows), and clouds and birds drift by.
+import India from './India.astro';
+import Uae from './Uae.astro';
+import Usa from './Usa.astro';
+import Canada from './Canada.astro';
+import Australia from './Australia.astro';
+import Japan from './Japan.astro';
+import China from './China.astro';
+
+const cities = { india: India, uae: Uae, usa: Usa, canada: Canada, australia: Australia, japan: Japan, china: China } as const;
+
+interface Props { slug: keyof typeof cities; tz: string; city: string }
+const { slug, tz, city } = Astro.props;
+const City = cities[slug];
+const uid = `sky-${slug}`;
+---
+
+<figure class="skyline" data-skyline data-tz={tz} data-phase="day">
+  <svg viewBox="0 0 600 300" role="img" aria-label={`${city} skyline at local time`} class="block h-auto w-full">
+    <defs>
+      <linearGradient id={`${uid}-sky`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" class="sky-top" /><stop offset="1" class="sky-bottom" />
+      </linearGradient>
+      <clipPath id={`${uid}-clip`}><rect width="600" height="300" rx="28" /></clipPath>
+    </defs>
+    <g clip-path={`url(#${uid}-clip)`}>
+      <rect width="600" height="300" fill={`url(#${uid}-sky)`} />
+      <g class="stars" fill="#fff">
+        {[[60, 40], [140, 70], [210, 30], [330, 55], [400, 25], [470, 60], [540, 35], [100, 110], [500, 100]].map(([x, y], i) => (
+          <circle cx={x} cy={y} r={i % 3 ? 1.4 : 2} class="twinkle" style={`animation-delay:${i * 0.4}s`} />
+        ))}
+      </g>
+      <g class="sun"><circle cx="480" cy="80" r="28" fill="#ffc93c" /><circle cx="480" cy="80" r="42" fill="#ffc93c" opacity="0.25" class="glow" /></g>
+      <g class="moon"><circle cx="480" cy="70" r="20" fill="#fff5d6" /><circle cx="490" cy="64" r="18" class="moon-cut" /></g>
+      <g class="cloud" fill="#fff"><ellipse cx="100" cy="70" rx="34" ry="12" /><ellipse cx="124" cy="62" rx="22" ry="12" /></g>
+      <g class="cloud cloud--2" fill="#fff"><ellipse cx="300" cy="44" rx="28" ry="9" /><ellipse cx="318" cy="38" rx="18" ry="9" /></g>
+      <g class="birds" fill="none" stroke="var(--b1)" stroke-width="2" stroke-linecap="round">
+        <path class="wing" d="M0 0q6-6 12 0q6-6 12 0" /><path class="wing" d="M30 10q5-5 10 0q5-5 10 0" style="animation-delay:-0.3s" />
+      </g>
+      <City />
+      <rect y="258" width="600" height="42" class="ground" />
+      <path d="M0 266h600" stroke="#fff" stroke-opacity="0.15" stroke-width="2" class="ripple" />
+    </g>
+  </svg>
+  <figcaption class="sr-only">{city}</figcaption>
+</figure>
+
+<style>
+  .skyline { --b1: #13213a; --b2: rgb(19 33 58 / 0.45); --win: transparent; --tower: #ff7a1a; --sail: #fff;
+    border-radius: 28px; box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.5); overflow: hidden; }
+  .sky-top, .sky-bottom { transition: stop-color 1.2s; }
+  .ground { fill: var(--b1); }
+
+  /* Phases, chosen from the city's local hour by the script below */
+  .skyline[data-phase='dawn'] .sky-top { stop-color: #ff9a5a; } .skyline[data-phase='dawn'] .sky-bottom { stop-color: #ffe3b8; }
+  .skyline[data-phase='day'] .sky-top { stop-color: #5fb2ea; } .skyline[data-phase='day'] .sky-bottom { stop-color: #d8f0fb; }
+  .skyline[data-phase='dusk'] .sky-top { stop-color: #5b3aa8; } .skyline[data-phase='dusk'] .sky-bottom { stop-color: #ff8a3d; }
+  .skyline[data-phase='night'] .sky-top { stop-color: #0b1026; } .skyline[data-phase='night'] .sky-bottom { stop-color: #253870; }
+  .skyline[data-phase='night'], .skyline[data-phase='dusk'] { --win: #ffc93c; }
+  .skyline[data-phase='night'] { --b1: #070b1a; --b2: rgb(255 255 255 / 0.08); }
+
+  .stars, .moon { opacity: 0; transition: opacity 1s; }
+  .skyline[data-phase='night'] :is(.stars, .moon) { opacity: 1; }
+  .skyline[data-phase='night'] .sun, .skyline[data-phase='night'] .cloud { opacity: 0; }
+  .moon-cut { fill: #182553; }
+  .skyline[data-phase='dawn'] .sun { transform: translateY(110px); }
+  .skyline[data-phase='dusk'] .sun { transform: translateY(120px); }
+  .sun { transition: transform 1.2s, opacity 1s; }
+
+  .cloud { opacity: 0.85; animation: drift-x 40s linear infinite; }
+  .cloud--2 { animation-duration: 55s; animation-delay: -20s; opacity: 0.6; }
+  .birds { animation: fly 22s linear infinite; }
+  .wing { animation: flap 0.6s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+  .glow { animation: glow 4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .twinkle { animation: twinkle 2.4s ease-in-out infinite; }
+  /* Window lights live in the city components, outside this component's scope */
+  :global(.sky-win rect) { animation: twinkle 3s ease-in-out infinite; }
+  .ripple { animation: ripple 3s ease-in-out infinite; }
+
+  @keyframes drift-x { from { transform: translateX(-200px); } to { transform: translateX(700px); } }
+  @keyframes fly { from { transform: translate(-80px, 120px); } to { transform: translate(680px, 50px); } }
+  @keyframes flap { to { transform: scaleY(0.4); } }
+  @keyframes glow { 50% { transform: scale(1.15); opacity: 0.4; } }
+  @keyframes twinkle { 50% { opacity: 0.3; } }
+  @keyframes ripple { 50% { transform: translateX(-12px); opacity: 0.4; } }
+  @media (prefers-reduced-motion: reduce) { .cloud, .birds, .wing, .glow, .twinkle, .ripple { animation: none; } .birds { display: none; } }
+</style>
+
+<script>
+  // Pick dawn/day/dusk/night from each skyline's own city time; re-check every 5 minutes
+  const phaseOf = (h: number) => (h >= 5 && h < 8 ? 'dawn' : h >= 8 && h < 17 ? 'day' : h >= 17 && h < 20 ? 'dusk' : 'night');
+  const update = () => document.querySelectorAll<HTMLElement>('[data-skyline]').forEach((el) => {
+    const hour = Number(new Intl.DateTimeFormat('en-GB', { timeZone: el.dataset.tz, hour: 'numeric', hourCycle: 'h23' }).format(new Date()));
+    el.dataset.phase = phaseOf(hour);
+  });
+  update();
+  setInterval(update, 300_000);
+</script>

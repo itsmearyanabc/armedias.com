@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Skyline from '../../components/skylines/Skyline.astro';
 import { site, pillars, markets } from '../../data/site';
 
 export function getStaticPaths() {
@@ -47,15 +48,18 @@ const schema = [
 <Base {title} {description} {schema}>
   <section class="relative overflow-hidden pb-20 pt-32 lg:pt-40">
     <div aria-hidden="true" class="blob pointer-events-none absolute -right-32 -top-20 -z-10 size-[36rem] rounded-full bg-olive-300/30 blur-3xl"></div>
-    <div class="container-x">
+    <div class="container-x grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
+      <div>
       <nav aria-label="Breadcrumb" class="text-sm text-slate"><a href="/" class="hover:text-olive">Home</a> / <span>{m.country}</span></nav>
       <p class="eyebrow mt-6">{m.city} · <time data-clock={m.tz}>--:--</time> local time</p>
-      <h1 class="mt-4 max-w-4xl text-5xl font-bold leading-[1.05] sm:text-6xl">Software, app &amp; AI automation company for {m.country}</h1>
+      <h1 class="mt-4 max-w-4xl text-5xl font-bold leading-[1.05] sm:text-6xl lg:text-5xl xl:text-6xl">Software, app &amp; AI automation company for {m.country}</h1>
       <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate">{m.intro}</p>
       <div class="mt-9 flex flex-wrap gap-3">
         <a href="/contact/" class="btn-primary" data-magnetic>Book a free call</a>
         <a href="/work/" class="btn-ghost">See our work</a>
       </div>
+      </div>
+      <Skyline slug={m.slug as any} tz={m.tz} city={m.city} />
     </div>
   </section>
 
