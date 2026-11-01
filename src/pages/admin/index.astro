@@ -1,6 +1,7 @@
 ---
-import { Image } from 'astro:assets';
 import Admin from '../../layouts/Admin.astro';
+// Plain <img>: admin pages are rendered on request, where <Image> would point at the
+// runtime /_image endpoint that nginx does not serve.
 import logo from '../../assets/logo-mark.png';
 import { clientIp, isAuthenticated, lockRemaining } from '../../server/auth';
 
@@ -17,7 +18,7 @@ const lockedMs = lockRemaining(clientIp(Astro.request, Astro.clientAddress));
 
     <form id="login" class="relative w-full max-w-md rounded-[2rem] bg-white p-8 shadow-2xl shadow-navy/15 ring-1 ring-navy/5 sm:p-10" novalidate data-locked-ms={lockedMs}>
       <div class="flex items-center gap-3">
-        <Image src={logo} alt="" width={56} height={42} class="h-9 w-auto" />
+        <img src={logo.src} alt="" width="56" height="40" class="h-9 w-auto" />
         <span class="font-display text-lg font-bold tracking-[0.18em]"><span class="text-olive">AR</span> <span class="text-navy">MEDIAS</span></span>
       </div>
       <h1 class="mt-8 text-3xl font-bold">Admin sign in</h1>

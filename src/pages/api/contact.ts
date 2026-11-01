@@ -27,7 +27,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const email = line(form, 'email', 150);
   const phone = line(form, 'phone', 30);
   const company = line(form, 'company', 120);
-  const service = line(form, 'service', 80);
+  const picked = line(form, 'service', 80);
+  // "Other" comes with the visitor's own wording
+  const service = picked === 'Other' ? (line(form, 'service_other', 80) ? `Other: ${line(form, 'service_other', 80)}` : '') : picked;
   const country = line(form, 'country', 60);
   const budget = line(form, 'budget', 40);
   const message = text(form, 'message', 5000);

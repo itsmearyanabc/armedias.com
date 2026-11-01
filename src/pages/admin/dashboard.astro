@@ -1,6 +1,7 @@
 ---
-import { Image } from 'astro:assets';
 import Admin from '../../layouts/Admin.astro';
+// Plain <img>: admin pages are rendered on request, where <Image> would point at the
+// runtime /_image endpoint that nginx does not serve.
 import logo from '../../assets/logo-mark.png';
 import { isAuthenticated } from '../../server/auth';
 import { getStats } from '../../server/analytics';
@@ -57,7 +58,7 @@ const cards = [
   <header class="sticky top-0 z-20 border-b border-navy/10 bg-white/90 backdrop-blur">
     <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
       <a href="/admin/dashboard/" class="flex items-center gap-2.5">
-        <Image src={logo} alt="" width={56} height={42} class="h-8 w-auto" />
+        <img src={logo.src} alt="" width="56" height="40" class="h-8 w-auto" />
         <span class="font-display font-bold tracking-[0.18em]"><span class="text-olive">AR</span> <span class="text-navy">MEDIAS</span></span>
         <span class="rounded-full bg-navy px-2.5 py-0.5 text-xs font-semibold text-white">Admin</span>
       </a>

@@ -17,6 +17,9 @@
 - [Custom Software Development](https://armedias.com/services/custom-software-development/)
 - [AI & Workflow Automation](https://armedias.com/services/ai-automation/)
 - [Maintenance & Support](https://armedias.com/services/maintenance-support/)
+- [AI & Machine Learning](https://armedias.com/services/ai-machine-learning/)
+- [Blockchain Development](https://armedias.com/services/blockchain-development/)
+- [Cybersecurity](https://armedias.com/services/cybersecurity/)
 
 ## Industries
 - [Real Estate](https://armedias.com/industries/real-estate/)
@@ -24,6 +27,9 @@
 - [Education](https://armedias.com/industries/education/)
 - [Retail & E-commerce](https://armedias.com/industries/retail-ecommerce/)
 - [Software Companies](https://armedias.com/industries/software-companies/)
+- [AI & ML Companies](https://armedias.com/industries/ai-ml/)
+- [Blockchain & Web3](https://armedias.com/industries/blockchain-web3/)
+- [Cybersecurity](https://armedias.com/industries/cybersecurity/)
 
 ## Company
 - [About](https://armedias.com/about/)

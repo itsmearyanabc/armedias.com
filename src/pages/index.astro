@@ -6,6 +6,7 @@ import Illustration from '../components/illustrations/Illustration.astro';
 import TechLogo from '../components/TechLogo.astro';
 import FeatureCard from '../components/FeatureCard.astro';
 import { industries } from '../data/industries';
+import IndustryIcon from '../components/IndustryIcon.astro';
 import BirdMascot from '../components/BirdMascot.astro';
 import TechSprite from '../components/TechSprite.astro';
 import PostCard from '../components/PostCard.astro';
@@ -141,8 +142,6 @@ const faqSchema = {
     </div>
   </section>
 
-  <ClientLogos />
-
   <!-- TECH MARQUEE -->
   <section aria-labelledby="tech-heading" class="border-y border-navy/8 bg-mist/60 py-10">
     <TechSprite names={marqueeTech} />
@@ -191,6 +190,9 @@ const faqSchema = {
     </div>
   </section>
 
+  <!-- CLIENT LOGO BELT (appears once src/data/clients.ts has entries) -->
+  <ClientLogos />
+
   <!-- INDUSTRIES -->
   <section aria-labelledby="industries-heading" class="pb-24 lg:pb-32">
     <div class="container-x">
@@ -201,10 +203,13 @@ const faqSchema = {
         </div>
         <a href="/industries/" class="btn-ghost">All industries</a>
       </div>
-      <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5" data-reveal="stagger">
+      <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal="stagger">
         {industries.map((ind) => (
           <li>
             <a href={`/industries/${ind.slug}/`} data-tilt class="group flex h-full flex-col justify-between gap-6 rounded-3xl bg-mist p-6 transition-colors duration-300 hover:bg-navy">
+              <span class="grid size-20 place-items-center rounded-2xl bg-white p-3 shadow-sm transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                <IndustryIcon slug={ind.slug} class="size-full" />
+              </span>
               <span class="font-display text-xl font-bold text-navy transition-colors group-hover:text-white">{ind.name}</span>
               <span class="flex items-center justify-between text-sm font-semibold text-olive transition-colors group-hover:text-ember-300">
                 Explore <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>

@@ -46,5 +46,3 @@ export interface Project {
 
 export const projects: Project[] = [];
 
-/** Clients shown in the rolling logo strip: named clients that supplied a logo. */
-export const clientLogos = projects.filter((p) => p.client && p.logo) as (Project & { logo: ImageMetadata })[];

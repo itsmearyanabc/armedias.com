@@ -6,7 +6,7 @@ import { services } from '../data/services';
 
 interface Props { title?: string }
 const { title = 'Get a free quote' } = Astro.props;
-const budgets = ['Under $2,000', '$2,000 – $5,000', '$5,000 – $15,000', '$15,000 – $50,000', '$50,000+', 'Not sure yet'];
+const budgets = ['Under $2,000', '$2,000 – $5,000', '$5,000 – $15,000', '$15,000 – $50,000', '$50,000+', "Let's talk", 'Not sure yet'];
 ---
 
 <div class="relative">
@@ -33,11 +33,17 @@ const budgets = ['Under $2,000', '$2,000 – $5,000', '$5,000 – $15,000', '$15
       </label>
       <label class="field">
         <span>Service *</span>
-        <select name="service" required>
+        <select name="service" required data-other="service_other">
           <option value="">Choose a service</option>
           {services.map((s) => <option>{s.name}</option>)}
+          <option value="Other">Other (write your own)</option>
           <option>Not sure yet</option>
         </select>
+      </label>
+      <!-- Shown only when "Other" is picked above -->
+      <label class="field sm:col-span-2" data-other-field="service_other" hidden>
+        <span>Which service do you need? *</span>
+        <input name="service_other" maxlength="80" placeholder="e.g. IoT dashboard, chatbot for our clinic…" />
       </label>
       <label class="field">
         <span>Country *</span>

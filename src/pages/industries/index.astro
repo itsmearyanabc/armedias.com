@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Illustration from '../../components/illustrations/Illustration.astro';
+import IndustryIcon from '../../components/IndustryIcon.astro';
 import { site } from '../../data/site';
 import { industries } from '../../data/industries';
 
@@ -46,6 +47,7 @@ const schema = [
               <div class="aspect-[4/3] h-full transition-transform duration-500 group-hover:scale-105"><Illustration name={i.scene} title={i.name} /></div>
             </div>
             <div class="flex flex-1 flex-col p-7">
+              <span class="-mt-14 mb-3 grid size-16 place-items-center rounded-2xl bg-white p-2.5 shadow-lg shadow-navy/15 ring-1 ring-navy/5 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110"><IndustryIcon slug={i.slug} class="size-full" /></span>
               <h2 class="text-2xl font-bold group-hover:text-olive" data-no-split>{i.name}</h2>
               <p class="mt-2 flex-1 text-slate">{i.lead}</p>
               <span class="mt-5 font-semibold text-olive">Explore {i.name.toLowerCase()} →</span>

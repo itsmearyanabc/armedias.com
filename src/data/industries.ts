@@ -3,7 +3,8 @@
 export interface Industry {
   slug: string;
   name: string;
-  scene: 'crm-development' | 'erp-development' | 'ai-automation' | 'ecommerce-development' | 'custom-software-development';
+  scene: 'crm-development' | 'erp-development' | 'ai-automation' | 'ecommerce-development' | 'custom-software-development'
+    | 'blockchain-development' | 'cybersecurity' | 'ai-machine-learning';
   metaTitle: string;
   metaDescription: string;
   h1: string;
@@ -154,6 +155,90 @@ export const industries: Industry[] = [
       { q: 'Can you work inside our existing codebase?', a: 'Yes. We follow your code standards, pull-request reviews, tools and sprint rituals.' },
       { q: 'Do you sign NDAs and assign IP?', a: 'Yes. We sign an NDA before seeing your product, and all code and IP is assigned to you.' },
       { q: 'How do you handle time zones?', a: 'We overlap with your working hours for stand-ups and reviews, and share progress daily in your tools.' },
+    ],
+  },
+  {
+    slug: 'ai-ml',
+    name: 'AI & ML Companies',
+    scene: 'ai-machine-learning',
+    metaTitle: 'Engineering for AI & ML Companies | AR Medias',
+    metaDescription: 'Product engineering for AI and ML companies: AI SaaS apps, model APIs, data pipelines, labelling tools, dashboards and MLOps, built with your team.',
+    h1: 'The product team behind your AI.',
+    lead: 'Your models are only as useful as the product around them. We build the apps, APIs, data pipelines and dashboards that put AI and ML into customers\' hands.',
+    challenges: [
+      { t: 'Great model, rough product', d: 'Research prototypes need a polished interface, accounts, billing and onboarding to sell.' },
+      { t: 'Data plumbing', d: 'Collecting, cleaning and versioning data takes engineers away from model work.' },
+      { t: 'Serving at scale', d: 'Getting models into production with low latency, monitoring and cost control is hard.' },
+      { t: 'Human review', d: 'Labelling and review tools are needed to keep accuracy high.' },
+    ],
+    builds: [
+      { t: 'AI SaaS products', d: 'Web and mobile apps with auth, billing, usage limits and clean UX around your models.' },
+      { t: 'Model APIs and serving', d: 'Scalable inference APIs with queues, caching, logging and cost monitoring.' },
+      { t: 'Data pipelines', d: 'Ingestion, cleaning, labelling and dataset versioning workflows.' },
+      { t: 'Evaluation dashboards', d: 'Accuracy, drift and usage dashboards for your team and customers.' },
+    ],
+    tools: ['Python', 'PyTorch', 'OpenAI', 'Claude', 'LangChain', 'AWS', 'Docker', 'Stripe'],
+    services: ['ai-machine-learning', 'custom-software-development', 'ui-ux-design'],
+    faqs: [
+      { q: 'Do you work with our existing models?', a: 'Yes. We wrap, serve and integrate the models you already have, or help train new ones.' },
+      { q: 'Can you handle usage-based billing?', a: 'Yes. We build metering, plans, limits and Stripe billing for AI products.' },
+      { q: 'Who owns the code and data?', a: 'You do. All code, data and IP are yours, under NDA from the first conversation.' },
+    ],
+  },
+  {
+    slug: 'blockchain-web3',
+    name: 'Blockchain & Web3',
+    scene: 'blockchain-development',
+    metaTitle: 'Blockchain & Web3 Development Partner | AR Medias',
+    metaDescription: 'Engineering for blockchain and Web3 teams: smart contracts, dApps, wallets, indexers, dashboards and secure backends, fully tested and documented.',
+    h1: 'Build Web3 products people can actually use.',
+    lead: 'From smart contracts to the apps and dashboards around them, we help Web3 teams ship secure, well-tested products with a user experience that feels familiar.',
+    challenges: [
+      { t: 'Security first', d: 'Bugs in smart contracts can be irreversible, so every line needs testing and review.' },
+      { t: 'Confusing UX', d: 'Wallets, gas and signatures scare off mainstream users.' },
+      { t: 'On-chain data', d: 'Reading and indexing blockchain data for apps and analytics takes specialist work.' },
+      { t: 'Shipping fast', d: 'Small teams need to move quickly without cutting corners on safety.' },
+    ],
+    builds: [
+      { t: 'Smart contracts', d: 'Tokens, NFTs, staking, escrow and custom logic with full test coverage.' },
+      { t: 'dApps', d: 'Web apps with wallet connection, clear transaction flows and mobile support.' },
+      { t: 'Indexers and APIs', d: 'Backends that index chain events and serve fast, reliable data to your apps.' },
+      { t: 'Admin and analytics', d: 'Dashboards for treasury, users, transactions and on-chain activity.' },
+    ],
+    tools: ['Solidity', 'Ethereum', 'Polygon', 'Hardhat', 'Foundry', 'ethers.js', 'The Graph', 'IPFS'],
+    services: ['blockchain-development', 'cybersecurity', 'custom-software-development'],
+    faqs: [
+      { q: 'Do you build on Solana or other non-EVM chains?', a: 'Our focus is Ethereum and EVM chains. For other chains we will tell you honestly in the first call whether we are the right fit.' },
+      { q: 'Do you provide audits?', a: 'We test and review all contracts, and recommend an independent audit before launching contracts that hold significant value.' },
+      { q: 'Can you improve an existing dApp?', a: 'Yes. We review the code, fix issues and improve UX and performance.' },
+    ],
+  },
+  {
+    slug: 'cybersecurity',
+    name: 'Cybersecurity',
+    scene: 'cybersecurity',
+    metaTitle: 'Software for Cybersecurity Companies | AR Medias',
+    metaDescription: 'Engineering for cybersecurity firms and MSSPs: client portals, security dashboards, alert automation, reporting and compliance tools, built securely.',
+    h1: 'Software for teams that keep others secure.',
+    lead: 'Security firms and managed service providers need portals, dashboards and automation that are as secure as the service they sell. We build them with you.',
+    challenges: [
+      { t: 'Alert overload', d: 'Analysts drown in alerts from many tools with no single view.' },
+      { t: 'Manual reporting', d: 'Client reports are assembled by hand from screenshots and spreadsheets.' },
+      { t: 'Client communication', d: 'Customers want a portal to see findings, status and evidence.' },
+      { t: 'Compliance evidence', d: 'Collecting proof for audits takes weeks every cycle.' },
+    ],
+    builds: [
+      { t: 'Client security portals', d: 'Findings, remediation status, reports and documents per client, with strict access control.' },
+      { t: 'Unified dashboards', d: 'Alerts and metrics from your tools in one view, with filtering and assignment.' },
+      { t: 'Alert and response automation', d: 'Triage, enrichment and notification workflows with human approval steps.' },
+      { t: 'Reporting and compliance tools', d: 'Automatic report generation and evidence collection for audits.' },
+    ],
+    tools: ['Python', 'Elastic', 'Grafana', 'AWS', 'Cloudflare', 'Slack', 'Jira', 'Docker'],
+    services: ['cybersecurity', 'custom-software-development', 'ai-automation'],
+    faqs: [
+      { q: 'How do you handle sensitive client data?', a: 'Least-privilege access, encryption, audit logs and hosting in the region you choose, all agreed in writing before we start.' },
+      { q: 'Can you integrate with our security tools?', a: 'Usually yes, through their APIs or exports. We confirm each integration during discovery.' },
+      { q: 'Do you sign NDAs?', a: 'Always, before any details are shared.' },
     ],
   },
 ];

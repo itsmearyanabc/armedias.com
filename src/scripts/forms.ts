@@ -8,6 +8,21 @@ export function initForms() {
   document.querySelectorAll<HTMLFormElement>('[data-ajax-form]').forEach((form) => {
     if (form.dataset.bound) return; // several components may call initForms on one page
     form.dataset.bound = '1';
+
+    // "Other" choices reveal a write-in field, which becomes required while shown
+    form.querySelectorAll<HTMLSelectElement>('select[data-other]').forEach((select) => {
+      const wrap = form.querySelector<HTMLElement>(`[data-other-field="${select.dataset.other}"]`);
+      const input = wrap?.querySelector<HTMLInputElement>('input');
+      if (!wrap || !input) return;
+      const sync = () => {
+        const on = select.value === 'Other';
+        wrap.hidden = !on;
+        input.required = on;
+        if (on) input.focus();
+      };
+      select.addEventListener('change', sync);
+      form.addEventListener('reset', () => setTimeout(sync));
+    });
     const error = form.querySelector<HTMLElement>('[data-form-error]')!;
     const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
     const label = button.querySelector<HTMLElement>('[data-label]')!;

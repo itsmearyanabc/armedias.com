@@ -29,11 +29,17 @@ that decides rankings. Work through "Launch week" first, then the monthly routin
 | `/services/custom-software-development/` | custom software development company | SaaS development, web app development |
 | `/services/ai-automation/` | AI automation agency | WhatsApp chatbot, n8n automation, AI agents for business |
 | `/services/maintenance-support/` | website maintenance services | website support, app maintenance |
+| `/services/ai-machine-learning/` | AI and machine learning development | custom AI models, RAG apps, computer vision |
+| `/services/blockchain-development/` | blockchain development company | smart contract development, dApp development |
+| `/services/cybersecurity/` | cybersecurity services | security audit, vulnerability testing, server hardening |
 | `/industries/real-estate/` | real estate CRM | property website, real estate lead management |
 | `/industries/healthcare/` | clinic management software | appointment booking system, hospital software |
 | `/industries/education/` | education CRM | school ERP, coaching institute software, LMS development |
 | `/industries/retail-ecommerce/` | retail software | Shopify store development, inventory management |
 | `/industries/software-companies/` | software development partner | outsourced development team, SaaS development partner |
+| `/industries/ai-ml/` | AI product development | AI SaaS development, MLOps |
+| `/industries/blockchain-web3/` | Web3 development company | dApp and smart contract partner |
+| `/industries/cybersecurity/` | software for cybersecurity companies | security dashboards, client portals |
 | `/locations/india/` | software company in Delhi / India | app development company Delhi NCR |
 | `/locations/uae/` | software company in Dubai / UAE | app developers Dubai, CRM Dubai |
 | `/locations/usa/` | offshore software development USA | app development company for US startups |

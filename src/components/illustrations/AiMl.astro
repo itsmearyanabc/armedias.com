@@ -1,0 +1,18 @@
+<!-- Neural network with signals flowing between layers and a rising accuracy chart -->
+<g class="i-float">
+  <g stroke="#13213a" stroke-opacity="0.15" stroke-width="2">
+    {[110, 180, 250].flatMap((y1) => [90, 150, 210, 270].map((y2) => <path d={`M110 ${y1} L210 ${y2}`} />))}
+    {[90, 150, 210, 270].flatMap((y1) => [140, 220].map((y2) => <path d={`M210 ${y1} L310 ${y2}`} />))}
+  </g>
+  <g stroke="#ff7a1a" stroke-width="2.5" fill="none" class="i-dash"><path d="M110 180L210 150L310 140" /><path d="M110 110L210 210L310 220" /></g>
+  {[110, 180, 250].map((y, i) => <circle cx="110" cy={y} r="14" fill="#13213a" class={`i-pulse d${i + 1}`} />)}
+  {[90, 150, 210, 270].map((y, i) => <circle cx="210" cy={y} r="14" fill="#204a2b" class={`i-pulse d${(i % 4) + 1}`} />)}
+  {[140, 220].map((y, i) => <circle cx="310" cy={y} r="16" fill="#ff7a1a" class={`i-pulse d${i + 2}`} />)}
+</g>
+<g class="i-float-2">
+  <rect x="340" y="200" width="110" height="100" rx="16" fill="#fff" stroke="#13213a" stroke-opacity="0.08" />
+  <text x="356" y="224" font-family="Space Grotesk Variable, sans-serif" font-size="11" font-weight="700" fill="#555d6b">ACCURACY</text>
+  <path d="M356 280l18-14 18 6 18-22 22-14" stroke="#a9c46c" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" class="i-draw" />
+  <text x="430" y="224" text-anchor="end" font-family="Space Grotesk Variable, sans-serif" font-size="13" font-weight="700" fill="#204a2b">94%</text>
+</g>
+<g class="i-pop"><rect x="330" y="72" width="130" height="44" rx="14" fill="#13213a" /><text x="346" y="99" font-family="Space Grotesk Variable, sans-serif" font-size="13" font-weight="700" fill="#ffc93c">Model trained ✓</text></g>

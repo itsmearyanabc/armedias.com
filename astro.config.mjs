@@ -7,11 +7,13 @@ import { readdirSync, readFileSync } from 'node:fs';
 
 // Real last-modified dates for blog posts (from their frontmatter) so the sitemap only
 // claims a change date where one is known.
+// Resolved from this file, so builds work from any working directory
+const blogDir = new URL('./src/content/blog/', import.meta.url);
 const postDates = Object.fromEntries(
-  readdirSync('./src/content/blog')
+  readdirSync(blogDir)
     .filter((f) => f.endsWith('.md'))
     .map((f) => {
-      const fm = readFileSync(`./src/content/blog/${f}`, 'utf8');
+      const fm = readFileSync(new URL(f, blogDir), 'utf8');
       const date = fm.match(/^updated:\s*(\S+)/m)?.[1] ?? fm.match(/^published:\s*(\S+)/m)?.[1];
       return [`/blog/${f.replace(/\.md$/, '')}/`, date];
     }),
