@@ -1,0 +1,258 @@
+---
+import Base from '../../layouts/Base.astro';
+import { site, markets } from '../../data/site';
+import { services, serviceBySlug, type Service } from '../../data/services';
+import { process as steps } from '../../data/process';
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { slug: s.slug }, props: { s } }));
+}
+
+const { s } = Astro.props as { s: Service };
+const related = s.related.map((slug) => serviceBySlug[slug]);
+const url = `${site.url}/services/${s.slug}/`;
+
+// Orbit visual: split the stack into an inner and outer ring
+const orbitTech = s.tech.map((t) => t.replace('WhatsApp Business API', 'WhatsApp API'));
+const inner = orbitTech.slice(0, Math.ceil(orbitTech.length / 2));
+const outer = orbitTech.slice(inner.length);
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${url}#service`,
+    name: s.name,
+    description: s.metaDescription,
+    url,
+    provider: { '@id': `${site.url}/#organization` },
+    areaServed: markets.map((m) => ({ '@type': 'Country', name: m.schemaName })),
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: `${s.name} deliverables`,
+      itemListElement: s.deliverables.map((d) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: d } })),
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: s.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Services', item: `${site.url}/services/` },
+      { '@type': 'ListItem', position: 3, name: s.name, item: url },
+    ],
+  },
+];
+---
+
+<Base title={s.metaTitle} description={s.metaDescription} {schema}>
+  <!-- HERO -->
+  <section class="relative overflow-hidden pb-16 pt-32 lg:pb-24 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+      <div class="blob absolute bottom-0 left-1/4 size-[26rem] rounded-full bg-navy/10 blur-3xl"></div>
+    </div>
+    <div class="container-x grid items-center gap-14 lg:grid-cols-[1.2fr_1fr]">
+      <div>
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero>
+          <a href="/" class="hover:text-olive">Home</a> / <a href="/services/" class="hover:text-olive">Services</a> / <span>{s.name}</span>
+        </nav>
+        <p class="eyebrow mt-6" data-hero>{s.name}</p>
+        <h1 class="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl xl:text-6xl" data-hero>{s.h1}</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>{s.lead}</p>
+        <div class="mt-9 flex flex-wrap gap-3" data-hero>
+          <a href="/contact/" class="btn-primary" data-magnetic>Get a free quote</a>
+          <a href="#deliverables" class="btn-ghost">What you get</a>
+        </div>
+      </div>
+
+      <!-- Orbit motion graphic: service icon with its tech stack circling it -->
+      <div class="orbit relative mx-auto aspect-square w-[72%] max-w-[26rem] sm:w-full" aria-hidden="true">
+        <div class="orbit-ring absolute inset-[18%] rounded-full border border-dashed border-navy/15">
+          {inner.map((t, i) => (
+            <span class="orbit-item" style={`--a:${(360 / inner.length) * i}deg`}><span class="orbit-fix"><span class="orbit-label">{t}</span></span></span>
+          ))}
+        </div>
+        <div class="orbit-ring orbit-ring--outer absolute inset-0 rounded-full border border-navy/10">
+          {outer.map((t, i) => (
+            <span class="orbit-item" style={`--a:${(360 / outer.length) * i + 30}deg`}><span class="orbit-fix"><span class="orbit-label">{t}</span></span></span>
+          ))}
+        </div>
+        <div class="orbit-core absolute left-1/2 top-1/2 grid size-20 -translate-x-1/2 sm:size-28 -translate-y-1/2 place-items-center rounded-[2rem] bg-navy text-olive-300 shadow-2xl shadow-navy/40">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path class="icon-draw" d={s.icon} /></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IT'S FOR -->
+  <section class="border-y border-navy/8 bg-mist/60 py-10">
+    <div class="container-x">
+      <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-slate" data-no-split>Who it's for</h2>
+      <ul class="mt-5 flex flex-wrap gap-3" data-reveal="stagger">
+        {s.forWho.map((w) => <li class="rounded-full bg-white px-5 py-2.5 font-medium text-navy ring-1 ring-navy/8">{w}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- PROBLEMS WE SOLVE -->
+  <section class="py-24 lg:py-28">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">Problems we solve</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Sound familiar?</h2>
+      </div>
+      <ul class="mt-14 grid gap-5 md:grid-cols-2" data-reveal="stagger">
+        {s.problems.map((p, i) => (
+          <li data-tilt class="rounded-3xl bg-white p-8 ring-1 ring-navy/8">
+            <span class="font-display text-sm font-bold text-olive">0{i + 1}</span>
+            <h3 class="mt-3 text-2xl font-bold">{p.t}</h3>
+            <p class="mt-3 leading-relaxed text-slate">{p.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- DELIVERABLES -->
+  <section id="deliverables" class="relative overflow-hidden bg-navy py-24 text-white lg:py-28">
+    <div aria-hidden="true" class="blob pointer-events-none absolute -right-40 top-10 size-[30rem] rounded-full bg-olive/30 blur-3xl"></div>
+    <div class="container-x relative grid gap-14 lg:grid-cols-[1fr_1.3fr]">
+      <div>
+        <p class="eyebrow text-olive-300!" data-reveal="fade">What you get</p>
+        <h2 class="mt-4 text-4xl font-bold text-white sm:text-5xl">Everything included in your {s.name.toLowerCase()} project.</h2>
+        <p class="mt-6 text-lg text-white/70" data-reveal="up">{s.timeline}</p>
+      </div>
+      <ul class="grid gap-3 sm:grid-cols-2" data-reveal="stagger">
+        {s.deliverables.map((d) => (
+          <li class="flex items-start gap-3 rounded-2xl bg-white/6 px-5 py-4 ring-1 ring-white/10">
+            <svg class="mt-0.5 shrink-0 text-olive-300" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9" /></svg>
+            <span>{d}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="py-24 lg:py-28">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">How it works</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">A clear path from idea to launch.</h2>
+      </div>
+      <ol class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5" data-reveal="stagger">
+        {steps.map((st, i) => (
+          <li class="group relative overflow-hidden rounded-3xl bg-mist p-6 transition-colors duration-300 hover:bg-olive hover:text-white">
+            <span class="font-display text-5xl font-bold text-navy/10 transition-colors group-hover:text-white/25">0{i + 1}</span>
+            <h3 class="mt-4 text-xl font-bold group-hover:text-white">{st.t}</h3>
+            <p class="mt-1 text-sm text-slate group-hover:text-white/80">{st.short}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- TECH MARQUEE -->
+  <section class="border-y border-navy/8 py-8" aria-label={`Technologies for ${s.name}`}>
+    <div class="marquee" style="--speed: 30s">
+      {[0, 1].map((copy) => (
+        <ul class="marquee__track" aria-hidden={copy === 1 ? 'true' : undefined}>
+          {[...s.tech, ...s.tech].map((t) => <li class="whitespace-nowrap font-display text-3xl font-bold text-navy/15 sm:text-5xl">{t} <span class="text-olive/40">✦</span></li>)}
+        </ul>
+      ))}
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-24 lg:py-28">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+      <div>
+        <p class="eyebrow" data-reveal="fade">FAQ</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">{s.name} questions, answered.</h2>
+      </div>
+      <div class="divide-y divide-navy/10 border-y border-navy/10">
+        {s.faqs.map((f) => (
+          <details class="group py-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-xl font-semibold">
+              {f.q}
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-mist transition-transform duration-300 group-open:rotate-45 group-open:bg-olive group-open:text-white">+</span>
+            </summary>
+            <p class="mt-4 max-w-2xl leading-relaxed text-slate">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- RELATED -->
+  <section class="bg-mist/60 py-20">
+    <div class="container-x">
+      <h2 class="text-3xl font-bold sm:text-4xl">Often paired with</h2>
+      <ul class="mt-10 grid gap-5 md:grid-cols-3" data-reveal="stagger">
+        {related.map((r) => (
+          <li>
+            <a href={`/services/${r.slug}/`} data-tilt class="group flex h-full flex-col rounded-3xl bg-white p-7 ring-1 ring-navy/5">
+              <span class="grid size-12 place-items-center rounded-2xl bg-navy text-olive-300">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d={r.icon} /></svg>
+              </span>
+              <h3 class="mt-5 text-xl font-bold group-hover:text-olive">{r.name}</h3>
+              <p class="mt-2 flex-1 text-slate">{r.lead}</p>
+              <span class="mt-5 font-semibold text-olive">Learn more →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="container-x py-24">
+    <div class="relative overflow-hidden rounded-[2.5rem] bg-olive px-8 py-16 text-center text-white sm:px-16 lg:py-20" data-reveal="up">
+      <div aria-hidden="true" class="blob pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-olive-300/40 blur-3xl"></div>
+      <h2 class="relative mx-auto max-w-3xl text-4xl font-bold text-white sm:text-5xl">Let's plan your {s.name.toLowerCase()} project.</h2>
+      <p class="relative mx-auto mt-5 max-w-xl text-lg text-white/85">Free 30-minute call. Leave with a scope, timeline and fixed quote.</p>
+      <div class="relative mt-9 flex flex-wrap justify-center gap-3">
+        <a href="/contact/" class="btn bg-white text-navy hover:bg-navy hover:text-white" data-magnetic>Book a free call</a>
+        <a href={site.whatsapp} class="btn border-2 border-white/40 text-white hover:border-white" rel="noopener" target="_blank">WhatsApp us</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Each item sits on the ring edge; .orbit-fix undoes its placement angle and
+     .orbit-label counter-spins against the ring, so labels stay upright. */
+  .orbit-ring { container-type: inline-size; animation: spin 40s linear infinite; }
+  .orbit-ring--outer { animation-duration: 60s; animation-direction: reverse; }
+  .orbit-item { position: absolute; left: 50%; top: 50%; transform: rotate(var(--a)) translateY(-50cqw); }
+  .orbit-fix { position: absolute; transform: rotate(calc(-1 * var(--a))); }
+  .orbit-label { display: block; transform: translate(-50%, -50%); white-space: nowrap;
+    padding: 0.4rem 0.9rem; border-radius: 999px; background: #fff; font-size: 0.8rem; font-weight: 600;
+    color: var(--color-navy); box-shadow: 0 8px 24px -10px rgb(19 33 58 / 0.35); outline: 1px solid rgb(19 33 58 / 0.06);
+    animation: counter 40s linear infinite; }
+  .orbit-ring--outer .orbit-label { animation-duration: 60s; animation-direction: reverse; }
+  @media (max-width: 639px) { .orbit-label { font-size: 0.68rem; padding: 0.3rem 0.65rem; } }
+  @keyframes counter { from { transform: translate(-50%, -50%) rotate(0); } to { transform: translate(-50%, -50%) rotate(-360deg); } }
+  .orbit-core { animation: pulse 3.2s ease-in-out infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 18px rgb(169 196 108 / 0.15), 0 25px 50px -12px rgb(19 33 58 / 0.4); } }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  if (document.documentElement.classList.contains('js-motion')) {
+    gsap.from('[data-hero]', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.1 });
+    gsap.from('.orbit', { scale: 0.85, opacity: 0, duration: 1.2, ease: 'power3.out', delay: 0.2 });
+    const path = document.querySelector<SVGPathElement>('.icon-draw');
+    if (path) {
+      const len = path.getTotalLength();
+      gsap.fromTo(path, { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', delay: 0.5 });
+    }
+  }
+</script>

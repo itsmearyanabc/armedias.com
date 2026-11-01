@@ -1,0 +1,13 @@
+# AR Medias
+
+> AR Medias is an IT services company founded on 1 January 2024 by Aryan Yadav in New Delhi, India. It builds websites, mobile apps, custom software, CRM and ERP systems, and AI-powered workflow automation for businesses in India, the UAE, USA, Canada, Australia, Japan and China.
+
+- Address: N-48, 1st Floor, Scooter Market, Kirti Nagar, New Delhi, India
+- Email: info@armedias.com
+- Phone: +91 77018 97557
+
+## Pages
+- [Services](https://armedias.com/services/)
+- [Work](https://armedias.com/work/)
+- [About](https://armedias.com/about/)
+- [Contact](https://armedias.com/contact/)

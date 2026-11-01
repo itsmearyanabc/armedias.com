@@ -1,0 +1,134 @@
+---
+import { Image } from 'astro:assets';
+import Admin from '../../layouts/Admin.astro';
+import logo from '../../assets/logo-mark.png';
+import { clientIp, isAuthenticated, lockRemaining } from '../../server/auth';
+
+export const prerender = false;
+
+if (isAuthenticated(Astro.cookies)) return Astro.redirect('/admin/dashboard/');
+const lockedMs = lockRemaining(clientIp(Astro.request, Astro.clientAddress));
+---
+
+<Admin title="Sign in">
+  <main class="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
+    <div aria-hidden="true" class="pointer-events-none absolute -right-32 -top-32 size-[34rem] rounded-full bg-olive-300/40 blur-3xl"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute -bottom-32 -left-32 size-[30rem] rounded-full bg-navy/15 blur-3xl"></div>
+
+    <form id="login" class="relative w-full max-w-md rounded-[2rem] bg-white p-8 shadow-2xl shadow-navy/15 ring-1 ring-navy/5 sm:p-10" novalidate data-locked-ms={lockedMs}>
+      <div class="flex items-center gap-3">
+        <Image src={logo} alt="" width={56} height={42} class="h-9 w-auto" />
+        <span class="font-display text-lg font-bold tracking-[0.18em]"><span class="text-olive">AR</span> <span class="text-navy">MEDIAS</span></span>
+      </div>
+      <h1 class="mt-8 text-3xl font-bold">Admin sign in</h1>
+      <p class="mt-2 text-slate">Leads and visitor analytics.</p>
+
+      <label class="mt-8 grid gap-1.5 text-sm font-semibold text-navy">
+        Email
+        <input name="email" type="email" autocomplete="username" required class="input" />
+      </label>
+
+      <label class="mt-5 grid gap-1.5 text-sm font-semibold text-navy">
+        Password
+        <span class="relative">
+          <input name="password" type="password" autocomplete="current-password" required class="input pr-14" />
+          <button type="button" data-eye aria-label="Show password" aria-pressed="false" class="absolute right-2 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-xl text-slate hover:bg-mist hover:text-navy">
+            <svg data-eye-open width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></svg>
+            <svg data-eye-closed class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.9 17.9A10.1 10.1 0 0 1 12 19C5.5 19 2 12 2 12a18.4 18.4 0 0 1 5.1-5.9M9.9 5.2A9.1 9.1 0 0 1 12 5c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.2 3.2M14.1 14.1a3 3 0 1 1-4.2-4.2M2 2l20 20" /></svg>
+          </button>
+        </span>
+      </label>
+
+      <p data-msg role="alert" class="mt-5 hidden rounded-2xl px-4 py-3 text-sm font-medium"></p>
+
+      <button type="submit" class="btn-primary mt-6 w-full justify-center py-3.5 text-base disabled:cursor-not-allowed disabled:opacity-50">Sign in</button>
+      <p class="mt-6 text-center text-xs text-slate">Protected by escalating lockouts after failed attempts.</p>
+    </form>
+  </main>
+</Admin>
+
+<style>
+  .input { width: 100%; border-radius: 1rem; border: 1.5px solid rgb(19 33 58 / 0.12); background: var(--color-mist);
+    padding: 0.85rem 1rem; font-size: 1rem; font-weight: 400; color: var(--color-ink); }
+  .input:focus { outline: none; border-color: var(--color-olive); background: #fff; box-shadow: 0 0 0 4px rgb(85 107 47 / 0.15); }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#login')!;
+  const msg = form.querySelector<HTMLElement>('[data-msg]')!;
+  const submit = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+  const password = form.querySelector<HTMLInputElement>('input[name=password]')!;
+  const eye = form.querySelector<HTMLButtonElement>('[data-eye]')!;
+
+  eye.addEventListener('click', () => {
+    const show = password.type === 'password';
+    password.type = show ? 'text' : 'password';
+    eye.setAttribute('aria-pressed', String(show));
+    eye.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    eye.querySelector('[data-eye-open]')!.classList.toggle('hidden', show);
+    eye.querySelector('[data-eye-closed]')!.classList.toggle('hidden', !show);
+    password.focus();
+  });
+
+  const say = (text: string, tone: 'error' | 'warn') => {
+    msg.textContent = text;
+    msg.className = `mt-5 rounded-2xl px-4 py-3 text-sm font-medium ${tone === 'error' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-800'}`;
+  };
+
+  const fmt = (ms: number) => {
+    const s = Math.ceil(ms / 1000);
+    if (s < 60) return `${s}s`;
+    const m = Math.floor(s / 60);
+    if (m < 60) return `${m}m ${String(s % 60).padStart(2, '0')}s`;
+    return `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
+  };
+
+  let timer: ReturnType<typeof setInterval> | undefined;
+  const lockFor = (ms: number) => {
+    const until = Date.now() + ms;
+    submit.disabled = true;
+    clearInterval(timer);
+    const tick = () => {
+      const left = until - Date.now();
+      if (left <= 0) {
+        clearInterval(timer);
+        submit.disabled = false;
+        say('You can try again now.', 'warn');
+        return;
+      }
+      say(`Too many failed attempts. Try again in ${fmt(left)}.`, 'error');
+    };
+    tick();
+    timer = setInterval(tick, 1000);
+  };
+
+  const initial = Number(form.dataset.lockedMs);
+  if (initial > 0) lockFor(initial);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+    if (!email || !password.value) return say('Enter your email and password.', 'error');
+
+    submit.disabled = true;
+    submit.textContent = 'Signing in…';
+    try {
+      const res = await fetch('/api/admin/login/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: password.value }),
+      });
+      const data = await res.json();
+      if (data.ok) return location.assign('/admin/dashboard/');
+      password.value = '';
+      if (data.retryMs > 0) return lockFor(data.retryMs);
+      say(`${data.error}${data.triesLeft ? ` ${data.triesLeft} attempt${data.triesLeft === 1 ? '' : 's'} left before a lockout.` : ''}`, 'error');
+      submit.disabled = false;
+    } catch {
+      say('Could not reach the server. Check your connection.', 'error');
+      submit.disabled = false;
+    } finally {
+      submit.textContent = 'Sign in';
+    }
+  });
+</script>

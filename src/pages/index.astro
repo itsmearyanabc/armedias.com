@@ -1,0 +1,369 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, pillars, markets, tech } from '../data/site';
+import { process as steps } from '../data/process';
+
+const title = 'AR Medias | Software, App, CRM/ERP & AI Automation Company';
+const description =
+  'AR Medias builds websites, mobile apps, custom CRM/ERP software and AI automation for businesses in India, UAE, USA, Canada, Australia, Japan and China. Founder-led team in New Delhi since 2024.';
+
+const stats: { label: string; value?: number; suffix?: string; text?: string }[] = [
+  { value: site.projectsDelivered, suffix: '+', label: 'Projects delivered' },
+  { value: markets.length, label: 'Countries served' },
+  { text: '2024', label: 'Founded' },
+];
+
+const words = ['websites', 'mobile apps', 'CRM & ERP systems', 'AI automation', 'custom software'];
+
+const reasons = [
+  { t: 'One team, every layer', d: 'Website, app, CRM, automation and hosting from one partner, so nothing falls between vendors.' },
+  { t: 'Founder-led', d: `${site.founder.name} is involved in every project, from first call to launch.` },
+  { t: 'Fixed scope, clear price', d: 'A written scope and quote before work starts. No surprise invoices.' },
+  { t: 'You own everything', d: 'Source code, designs, domains and accounts are yours from day one.' },
+  { t: 'Works in your time zone', d: 'Overlapping hours with the Gulf, Asia-Pacific and North America.' },
+  { t: 'Built to be fast', d: 'Performance and SEO are part of the build, not an add-on after launch.' },
+];
+
+const faqs = [
+  { q: 'What does AR Medias do?', a: 'We are an IT services company that designs and builds websites, mobile apps, custom software, CRM and ERP systems, and AI-powered automation for businesses.' },
+  { q: 'Which countries do you work with?', a: `We are based in New Delhi, India and work with clients in ${markets.map((m) => m.country).join(', ')}. Projects run remotely with calls scheduled in your time zone.` },
+  { q: 'How much does a project cost?', a: 'It depends on scope. After a free discovery call we send a fixed quote with a clear list of deliverables, so you know the full cost before we start.' },
+  { q: 'How long does it take to build a website or app?', a: 'A business website usually takes 3–6 weeks. Mobile apps, CRMs and ERPs typically take 2–4 months depending on features. You get a timeline with your quote.' },
+  { q: 'Do you provide support after launch?', a: 'Yes. We offer maintenance plans covering hosting, security updates, backups, monitoring and new features.' },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+
+<Base {title} {description} schema={[faqSchema]}>
+  <!-- HERO -->
+  <section class="relative overflow-hidden pb-20 pt-32 lg:pb-28 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[38rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+      <div class="blob absolute bottom-0 left-1/3 size-[30rem] rounded-full bg-navy/10 blur-3xl"></div>
+      <div class="hero-grid absolute inset-0" data-parallax="0.15"></div>
+    </div>
+    <div class="container-x grid items-center gap-14 lg:grid-cols-[1.15fr_1fr]">
+      <div>
+        <p class="eyebrow" data-hero>
+          <span class="size-2 animate-pulse rounded-full bg-olive"></span> IT company · New Delhi · Since 2024
+        </p>
+        <h1 class="mt-5 text-5xl font-bold leading-[1.02] sm:text-6xl xl:text-7xl" data-hero>
+          The technology partner behind your <span class="text-olive">business growth.</span>
+        </h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>
+          We build{' '}
+          <span class="relative inline-block font-semibold text-navy">
+            <span data-typer data-words={JSON.stringify(words)}>{words[0]}</span><span class="typer-caret" aria-hidden="true"></span>
+          </span>{' '}
+          <br class="hidden sm:block" />
+          for growing businesses in India, the UAE, USA, Canada, Australia, Japan and China.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-3" data-hero>
+          <a href="/contact/" class="btn-primary" data-magnetic>
+            Get your free consultation
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+          </a>
+          <a href="/work/" class="btn-ghost">See our work</a>
+        </div>
+        <dl class="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-navy/10 pt-8" data-hero>
+          {stats.map((s) => (
+            <div class="flex flex-col">
+              <dt class="text-sm text-slate">{s.label}</dt>
+              <dd class="order-first font-display text-3xl font-bold text-navy sm:text-4xl">
+                {s.value !== undefined ? <><span data-count={s.value}>{s.value}</span>{s.suffix}</> : s.text}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <!-- Hero visual: CSS-built product cards, no stock imagery -->
+      <div class="hero-cards relative mx-auto aspect-[5/4] w-full max-w-[34rem]" aria-hidden="true">
+        <div data-float="0.6" class="card absolute left-0 top-0 w-[68%] rounded-3xl bg-navy p-5 text-white shadow-2xl shadow-navy/30">
+          <div class="flex items-center justify-between text-xs text-white/60"><span>CRM · Pipeline</span><span>This month</span></div>
+          <p class="mt-3 font-display text-3xl font-bold">₹48.2L</p>
+          <div class="mt-4 flex h-20 items-end gap-1.5">
+            {[40, 62, 48, 75, 58, 88, 70, 96].map((h) => <span class="bar flex-1 rounded-t-md bg-olive-300/80" style={`height:${h}%`}></span>)}
+          </div>
+          <div class="mt-4 grid grid-cols-3 gap-2 text-[11px]">
+            <span class="rounded-lg bg-white/10 px-2 py-1.5">Leads 312</span>
+            <span class="rounded-lg bg-white/10 px-2 py-1.5">Won 41</span>
+            <span class="rounded-lg bg-olive px-2 py-1.5">+18%</span>
+          </div>
+        </div>
+
+        <div data-float="1" class="card absolute bottom-0 right-0 w-[42%] rounded-[2rem] border-[6px] border-ink bg-white p-3 shadow-2xl shadow-navy/30">
+          <div class="mx-auto mb-3 h-1.5 w-12 rounded-full bg-ink/80"></div>
+          <div class="rounded-2xl bg-olive p-3 text-white">
+            <p class="text-[10px] opacity-80">Today</p>
+            <p class="font-display text-lg font-bold">12 orders</p>
+          </div>
+          <div class="mt-2 space-y-1.5">
+            {['Order #1042', 'Order #1041', 'Order #1040'].map((o) => <div class="flex items-center justify-between rounded-xl bg-mist px-2.5 py-2 text-[10px]"><span>{o}</span><span class="size-1.5 rounded-full bg-olive"></span></div>)}
+          </div>
+        </div>
+
+        <div data-float="1.4" class="card absolute left-[8%] top-[62%] w-[46%] rounded-2xl bg-white p-4 shadow-xl shadow-navy/15 ring-1 ring-navy/5">
+          <p class="text-[11px] font-semibold uppercase tracking-wider text-olive">AI automation</p>
+          <div class="mt-3 flex items-center gap-2 text-[11px] font-medium">
+            <span class="rounded-lg bg-mist px-2 py-1">New lead</span>
+            <span class="flow-line h-px flex-1 bg-navy/20"></span>
+            <span class="rounded-lg bg-navy px-2 py-1 text-white">AI reply</span>
+          </div>
+          <p class="mt-2 text-[11px] text-slate">Answered in 4 seconds · Synced to CRM</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH MARQUEE (client-logo marquee goes here once logos are supplied) -->
+  <section aria-labelledby="tech-heading" class="border-y border-navy/8 bg-mist/60 py-10">
+    <h2 id="tech-heading" class="container-x mb-6 text-center text-sm font-semibold uppercase tracking-[0.2em] text-slate">Technologies we build with</h2>
+    {[tech.slice(0, 11), tech.slice(11)].map((row, i) => (
+      <div class="marquee mb-4 last:mb-0" data-reverse={i === 1 ? '' : undefined} style="--speed: 45s">
+        {[0, 1].map((copy) => (
+          <ul class="marquee__track" aria-hidden={copy === 1 ? 'true' : undefined}>
+            {row.map((t) => <li class="whitespace-nowrap rounded-full border border-navy/10 bg-white px-5 py-2.5 font-display text-base font-semibold text-navy/80 transition-colors hover:border-olive hover:text-olive">{t}</li>)}
+          </ul>
+        ))}
+      </div>
+    ))}
+  </section>
+
+  <!-- SERVICES: sticky stacking cards -->
+  <section aria-labelledby="services-heading" class="py-24 lg:py-32">
+    <div class="container-x">
+      <div class="max-w-2xl" data-reveal="up">
+        <p class="eyebrow">What we do</p>
+        <h2 id="services-heading" class="mt-4 text-4xl font-bold sm:text-5xl">Everything your business runs on, built by one team.</h2>
+      </div>
+      <div class="mt-14 space-y-6">
+        {pillars.map((p, i) => (
+          <article class={`stack-card sticky rounded-[2rem] p-8 shadow-xl sm:p-12 ${i % 2 ? 'bg-mist text-ink' : 'bg-navy text-white'}`} style={`top:${6 + i * 1.25}rem`}>
+            <div class="grid gap-8 lg:grid-cols-[auto_1fr_1fr] lg:items-start">
+              <span class={`font-display text-6xl font-bold ${i % 2 ? 'text-olive' : 'text-olive-300'}`}>0{i + 1}</span>
+              <div>
+                <h3 class={`text-3xl font-bold sm:text-4xl ${i % 2 ? '' : 'text-white'}`}>{p.title}</h3>
+                <p class={`mt-3 max-w-md text-lg ${i % 2 ? 'text-slate' : 'text-white/70'}`}>{p.lead}</p>
+              </div>
+              <ul class="grid gap-2">
+                {p.items.map((s) => (
+                  <li>
+                    <a href={s.href} class={`group flex items-center justify-between rounded-2xl px-5 py-4 font-semibold transition-colors ${i % 2 ? 'bg-white hover:bg-olive hover:text-white' : 'bg-white/8 hover:bg-olive'}`}>
+                      {s.name}
+                      <svg class="transition-transform group-hover:translate-x-1" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section aria-labelledby="why-heading" class="bg-mist/60 py-24 lg:py-32">
+    <div class="container-x">
+      <div class="max-w-2xl" data-reveal="up">
+        <p class="eyebrow">Why AR Medias</p>
+        <h2 id="why-heading" class="mt-4 text-4xl font-bold sm:text-5xl">A partner, not a ticket queue.</h2>
+      </div>
+      <ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {reasons.map((r) => (
+          <li data-tilt class="rounded-3xl bg-white p-7 ring-1 ring-navy/5 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-navy/10">
+            <span class="grid size-11 place-items-center rounded-2xl bg-olive/10 text-olive">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9" /></svg>
+            </span>
+            <h3 class="mt-5 text-xl font-bold">{r.t}</h3>
+            <p class="mt-2 leading-relaxed text-slate">{r.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- MARKETS with live clocks -->
+  <section aria-labelledby="markets-heading" class="py-24 lg:py-32">
+    <div class="container-x">
+      <div class="grid gap-6 lg:grid-cols-2 lg:items-end" data-reveal="up">
+        <div>
+          <p class="eyebrow">Where we work</p>
+          <h2 id="markets-heading" class="mt-4 text-4xl font-bold sm:text-5xl">Built in New Delhi. Shipped to 7 countries.</h2>
+        </div>
+        <p class="text-lg text-slate">We schedule calls in your working hours and handle data according to your local privacy rules.</p>
+      </div>
+      <ul class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal="stagger">
+        {markets.map((m) => (
+          <li>
+            <a href={`/locations/${m.slug}/`} data-tilt class="group block rounded-3xl border border-navy/10 p-6 transition-colors hover:border-olive hover:bg-olive hover:text-white">
+              <p class="text-sm font-semibold uppercase tracking-wider text-olive group-hover:text-white/80">{m.code}</p>
+              <p class="mt-2 font-display text-2xl font-bold">{m.country}</p>
+              <p class="mt-1 text-sm text-slate group-hover:text-white/80">{m.city} · <time data-clock={m.tz}>--:--</time></p>
+            </a>
+          </li>
+        ))}
+        <li class="flex items-center rounded-3xl bg-navy p-6 text-white">
+          <a href="/contact/" class="font-display text-xl font-bold leading-snug hover:text-olive-300">Somewhere else? Let's talk →</a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section aria-labelledby="process-heading" class="relative overflow-hidden bg-navy py-24 text-white lg:py-32">
+    <div aria-hidden="true" class="blob pointer-events-none absolute -left-40 top-1/3 size-[30rem] rounded-full bg-olive/25 blur-3xl"></div>
+    <div class="container-x relative">
+      <div class="max-w-2xl" data-reveal="up">
+        <p class="eyebrow text-olive-300!">How we work</p>
+        <h2 id="process-heading" class="mt-4 text-4xl font-bold text-white sm:text-5xl">From first call to launch in five clear steps.</h2>
+      </div>
+      <div class="process relative mt-16">
+      <span aria-hidden="true" class="process-line absolute left-[1.4rem] top-0 h-full w-0.5 origin-top bg-olive-300 lg:left-0 lg:top-[1.4rem] lg:h-0.5 lg:w-full lg:origin-left"></span>
+      <ol class="relative grid gap-10 lg:grid-cols-5 lg:gap-6">
+        {steps.map((s, i) => (
+          <li class="process-step relative pl-16 lg:pl-0 lg:pt-16">
+            <span class="absolute left-0 top-0 grid size-11 place-items-center rounded-full bg-olive font-display text-sm font-bold ring-8 ring-navy">0{i + 1}</span>
+            <h3 class="text-xl font-bold text-white">{s.t}</h3>
+            <p class="mt-2 leading-relaxed text-white/70">{s.d}</p>
+          </li>
+        ))}
+      </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section aria-labelledby="faq-heading" class="py-24 lg:py-32">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+      <div data-reveal="up">
+        <p class="eyebrow">FAQ</p>
+        <h2 id="faq-heading" class="mt-4 text-4xl font-bold sm:text-5xl">Questions we hear often.</h2>
+      </div>
+      <div class="divide-y divide-navy/10 border-y border-navy/10">
+        {faqs.map((f) => (
+          <details class="faq group py-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-xl font-semibold">
+              {f.q}
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-mist transition-transform duration-300 group-open:rotate-45 group-open:bg-olive group-open:text-white">+</span>
+            </summary>
+            <p class="mt-4 max-w-2xl leading-relaxed text-slate">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="container-x pb-24">
+    <div class="cta relative overflow-hidden rounded-[2.5rem] bg-olive px-8 py-16 text-center text-white sm:px-16 lg:py-24" data-reveal="up">
+      <div aria-hidden="true" class="blob pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-olive-300/40 blur-3xl"></div>
+      <h2 class="relative mx-auto max-w-3xl text-4xl font-bold text-white sm:text-5xl">Have a project in mind? Let's scope it together.</h2>
+      <p class="relative mx-auto mt-5 max-w-xl text-lg text-white/85">Free 30-minute call. You leave with a clear plan, timeline and price, whether or not you hire us.</p>
+      <div class="relative mt-9 flex flex-wrap justify-center gap-3">
+        <a href="/contact/" class="btn bg-white text-navy hover:bg-navy hover:text-white" data-magnetic>Book a free call</a>
+        <a href={site.whatsapp} class="btn border-2 border-white/40 text-white hover:border-white" rel="noopener" target="_blank">WhatsApp us</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-grid {
+    background-image: linear-gradient(rgb(19 33 58 / 0.05) 1px, transparent 1px), linear-gradient(90deg, rgb(19 33 58 / 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 70% 60% at 70% 30%, #000, transparent 75%);
+  }
+  .typer-caret { display: inline-block; width: 2px; height: 1.1em; margin-left: 2px; vertical-align: -0.15em; background: var(--color-olive); animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .bar { transform-origin: bottom; }
+  .faq summary::-webkit-details-marker { display: none; }
+  @media (max-width: 1023px) { .stack-card { position: relative; top: auto !important; } }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  // Live clocks (cheap: one formatter per zone, ticks every 30s)
+  const clocks = [...document.querySelectorAll<HTMLTimeElement>('[data-clock]')].map((el) => ({
+    el, fmt: new Intl.DateTimeFormat('en-GB', { timeZone: el.dataset.clock, hour: '2-digit', minute: '2-digit' }),
+  }));
+  const tick = () => clocks.forEach(({ el, fmt }) => (el.textContent = fmt.format(new Date())));
+  tick();
+  setInterval(tick, 30_000);
+
+  const motion = document.documentElement.classList.contains('js-motion');
+
+  // Typer: rotates service words; static first word when motion is off
+  const typer = document.querySelector<HTMLElement>('[data-typer]');
+  if (typer && motion) {
+    const words: string[] = JSON.parse(typer.dataset.words!);
+    let i = 0;
+    const type = async () => {
+      const word = words[i];
+      for (let n = word.length; n >= 0; n--) { typer.textContent = word.slice(0, n); await wait(35); }
+      i = (i + 1) % words.length;
+      const next = words[i];
+      for (let n = 1; n <= next.length; n++) { typer.textContent = next.slice(0, n); await wait(70); }
+      setTimeout(type, 1800);
+    };
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    setTimeout(type, 2200);
+  }
+
+  if (motion) {
+    // Hero entrance
+    gsap.from('[data-hero]', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.12 });
+    gsap.from('.hero-cards .card', { y: 60, opacity: 0, scale: 0.94, duration: 1.2, ease: 'power3.out', stagger: 0.15, delay: 0.3 });
+    gsap.from('.hero-cards .bar', { scaleY: 0, duration: 1, ease: 'power3.out', stagger: 0.05, delay: 0.8 });
+
+    // Idle float + pointer parallax on hero cards
+    document.querySelectorAll<HTMLElement>('[data-float]').forEach((el, i) => {
+      gsap.to(el, { y: '+=12', duration: 2.6 + i * 0.4, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+    });
+    if (matchMedia('(hover: hover)').matches) {
+      const cards = [...document.querySelectorAll<HTMLElement>('[data-float]')].map((el) => ({
+        depth: Number(el.dataset.float), x: gsap.quickTo(el, 'x', { duration: 0.8, ease: 'power3' }),
+      }));
+      addEventListener('pointermove', (e) => {
+        const dx = e.clientX / innerWidth - 0.5;
+        cards.forEach((c) => c.x(dx * 24 * c.depth));
+      }, { passive: true });
+    }
+
+    // Scroll-linked pieces load ScrollTrigger lazily
+    import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Stacked service cards scale back as the next one covers them
+      const stack = gsap.utils.toArray<HTMLElement>('.stack-card');
+      ScrollTrigger.matchMedia({
+        '(min-width: 1024px)': () => {
+          stack.slice(0, -1).forEach((card, i) => {
+            gsap.to(card, {
+              scale: 0.94, opacity: 0.6, ease: 'none',
+              scrollTrigger: { trigger: stack[i + 1], start: 'top bottom', end: 'top 20%', scrub: true },
+            });
+          });
+        },
+      });
+
+      // Process line draws on scroll, steps light up
+      const desktop = matchMedia('(min-width: 1024px)').matches;
+      gsap.fromTo('.process-line', { [desktop ? 'scaleX' : 'scaleY']: 0 }, {
+        [desktop ? 'scaleX' : 'scaleY']: 1, ease: 'none',
+        scrollTrigger: { trigger: '.process', start: 'top 75%', end: 'bottom 60%', scrub: true },
+      });
+      gsap.from('.process-step', {
+        opacity: 0, y: 30, stagger: 0.15, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: '.process', start: 'top 75%', once: true },
+      });
+    });
+  }
+</script>

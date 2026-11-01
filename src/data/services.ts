@@ -1,0 +1,257 @@
+// One entry per /services/<slug>/ page. Copy is written to answer what a buyer searches
+// for, so each page targets its own keyword set without overlapping its siblings.
+export interface Service {
+  slug: string;
+  name: string;
+  pillar: 'build' | 'systems' | 'ai' | 'support';
+  metaTitle: string;
+  metaDescription: string;
+  h1: string;
+  lead: string;
+  icon: string; // SVG path data, 24x24 stroke icon
+  forWho: string[];
+  problems: { t: string; d: string }[];
+  deliverables: string[];
+  tech: string[];
+  timeline: string;
+  faqs: { q: string; a: string }[];
+  related: string[];
+}
+
+export const services: Service[] = [
+  {
+    slug: 'website-development',
+    name: 'Website Development',
+    pillar: 'build',
+    metaTitle: 'Website Development Company | Fast, SEO-Ready Websites | AR Medias',
+    metaDescription: 'Custom business websites that load in under 2 seconds, rank on Google and turn visitors into leads. Designed and built by AR Medias for clients in India, UAE, USA and worldwide.',
+    h1: 'Website development that brings you customers, not just compliments.',
+    lead: 'Fast, search-ready websites designed around one goal: turning visitors into enquiries and sales. Built from scratch, never from a recycled template.',
+    icon: 'M3 5h18v14H3zM3 9h18M7 7h.01M10 7h.01',
+    forWho: ['Businesses whose current site looks dated or loads slowly', 'Startups launching a brand', 'Companies expanding into new countries', 'Teams that need to update content without a developer'],
+    problems: [
+      { t: 'Your site is slow', d: 'We build on modern static and server-rendered frameworks, so pages load in under two seconds on mobile networks.' },
+      { t: 'Nobody finds you on Google', d: 'Technical SEO, structured data, clean URLs and keyword-led page structure are part of every build.' },
+      { t: 'Visitors leave without contacting you', d: 'Clear messaging, strong calls to action, WhatsApp and booking integrations make it easy to reach you.' },
+      { t: 'Updating content is painful', d: 'An easy CMS lets your team edit pages, blogs and offers without touching code.' },
+    ],
+    deliverables: ['UX strategy and sitemap', 'Custom UI design in Figma', 'Responsive development', 'CMS for your team', 'On-page and technical SEO', 'Analytics and conversion tracking', 'Speed and accessibility optimisation', 'Hosting, SSL and launch'],
+    tech: ['Astro', 'Next.js', 'React', 'WordPress', 'Webflow', 'Tailwind CSS', 'GSAP'],
+    timeline: 'A business website typically takes 3–6 weeks from approved design to launch.',
+    faqs: [
+      { q: 'How much does a website cost?', a: 'It depends on the number of pages, features and integrations. After a free call we send a fixed quote, so the price does not change midway.' },
+      { q: 'Will my website be mobile-friendly?', a: 'Yes. Every site is designed mobile-first and tested on phones, tablets and desktops.' },
+      { q: 'Can you redesign my existing website without losing Google rankings?', a: 'Yes. We map every old URL to its new page with permanent redirects and keep your existing content signals, so rankings carry over.' },
+      { q: 'Do I own the website?', a: 'Yes. You own the code, design files, domain and hosting accounts.' },
+    ],
+    related: ['ui-ux-design', 'ecommerce-development', 'maintenance-support'],
+  },
+  {
+    slug: 'mobile-app-development',
+    name: 'Mobile App Development',
+    pillar: 'build',
+    metaTitle: 'Mobile App Development Company | iOS & Android Apps | AR Medias',
+    metaDescription: 'iOS and Android app development from idea to App Store. Cross-platform Flutter and React Native or native Swift and Kotlin apps for startups and businesses.',
+    h1: 'Mobile apps people keep on their home screen.',
+    lead: 'iOS and Android apps designed for real users, built for performance, and launched on the App Store and Google Play with you every step of the way.',
+    icon: 'M7 2h10a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM11 18h2',
+    forWho: ['Startups building an MVP to raise or validate', 'Businesses giving customers an ordering, booking or loyalty app', 'Companies replacing paper or spreadsheet workflows for field teams', 'Brands whose existing app has poor reviews'],
+    problems: [
+      { t: 'Building two apps doubles the cost', d: 'Cross-platform frameworks give you one codebase for iOS and Android without sacrificing a native feel.' },
+      { t: 'App store rejections and delays', d: 'We handle store listings, review guidelines, privacy declarations and submissions.' },
+      { t: 'Users drop off after install', d: 'Onboarding, push notifications and analytics designed to keep users coming back.' },
+      { t: 'The app has to talk to your systems', d: 'We connect apps to your CRM, ERP, payment gateway or custom backend through secure APIs.' },
+    ],
+    deliverables: ['Product discovery and feature roadmap', 'UX flows and UI design', 'iOS and Android development', 'Backend, admin panel and APIs', 'Payments, maps, chat and push notifications', 'Testing on real devices', 'App Store and Play Store launch', 'Post-launch updates'],
+    tech: ['Flutter', 'React Native', 'Swift', 'Kotlin', 'Firebase', 'Node.js', 'Supabase'],
+    timeline: 'An MVP typically takes 8–12 weeks. Larger apps are delivered in phased releases.',
+    faqs: [
+      { q: 'Should I build native or cross-platform?', a: 'For most business apps cross-platform (Flutter or React Native) is faster and more cost-effective. We recommend native when an app relies heavily on device hardware or platform-specific features.' },
+      { q: 'Do you publish the app to the stores?', a: 'Yes. We prepare listings, screenshots and compliance details and submit the app under your developer accounts.' },
+      { q: 'Can you take over an existing app?', a: 'Yes. We start with a code and performance audit, then fix, modernise or rebuild depending on what makes sense.' },
+    ],
+    related: ['ui-ux-design', 'custom-software-development', 'maintenance-support'],
+  },
+  {
+    slug: 'ecommerce-development',
+    name: 'E-commerce Development',
+    pillar: 'build',
+    metaTitle: 'E-commerce Website Development | Shopify & Custom Stores | AR Medias',
+    metaDescription: 'Online stores that sell: Shopify, WooCommerce and custom e-commerce development with payments, inventory, shipping and marketing integrations.',
+    h1: 'Online stores built to sell more, with less manual work.',
+    lead: 'Shopify, WooCommerce or fully custom e-commerce, with checkout, inventory, shipping and marketing tools connected from day one.',
+    icon: 'M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L20 8H6.2M9 20h.01M17 20h.01',
+    forWho: ['D2C brands launching or replatforming', 'Retailers moving sales online', 'Wholesalers needing B2B ordering portals', 'Stores outgrowing their current platform'],
+    problems: [
+      { t: 'Shoppers abandon the checkout', d: 'Fast pages, simple checkout, local payment methods and trust signals reduce drop-off.' },
+      { t: 'Inventory is out of sync', d: 'We connect your store to your ERP, POS or warehouse so stock levels stay accurate everywhere.' },
+      { t: 'Too much manual order work', d: 'Automated order routing, invoices, shipping labels and customer updates.' },
+      { t: 'Selling across countries', d: 'Multi-currency, multi-language and region-specific tax and shipping rules.' },
+    ],
+    deliverables: ['Store design and UX', 'Product catalogue setup and migration', 'Payment gateways (Stripe, Razorpay, PayPal, Tabby and more)', 'Shipping and tax configuration', 'ERP, POS and inventory integration', 'Email, WhatsApp and abandoned-cart automation', 'Product SEO and schema', 'Analytics and conversion tracking'],
+    tech: ['Shopify', 'WooCommerce', 'Next.js Commerce', 'Medusa', 'Stripe', 'Razorpay'],
+    timeline: 'Shopify stores typically launch in 3–6 weeks; custom platforms in 2–4 months.',
+    faqs: [
+      { q: 'Shopify or custom build?', a: 'Shopify suits most stores and launches fastest. Custom builds make sense for complex pricing, B2B workflows or very high order volumes.' },
+      { q: 'Can you migrate my products and customers?', a: 'Yes. We migrate products, customers and order history and set up redirects so you keep your search rankings.' },
+      { q: 'Which payment gateways do you support?', a: 'Any gateway with an API, including Stripe, Razorpay, PayPal, PayU, Checkout.com and regional buy-now-pay-later providers.' },
+    ],
+    related: ['website-development', 'erp-development', 'ai-automation'],
+  },
+  {
+    slug: 'ui-ux-design',
+    name: 'UI/UX Design',
+    pillar: 'build',
+    metaTitle: 'UI/UX Design Services | Web & App Design | AR Medias',
+    metaDescription: 'User research, wireframes, UI design and design systems for websites, mobile apps and SaaS products. Interfaces that are easy to use and look premium.',
+    h1: 'Interfaces that feel obvious to use.',
+    lead: 'Research-led UX and polished UI design for websites, apps and software, delivered as clickable prototypes and developer-ready design systems.',
+    icon: 'M12 3l9 4.5v9L12 21l-9-4.5v-9zM12 12l9-4.5M12 12v9M12 12L3 7.5',
+    forWho: ['Startups that need a product designed before development', 'Software teams whose users struggle with the interface', 'Brands refreshing their digital identity', 'Agencies that need a design partner'],
+    problems: [
+      { t: 'Users get lost', d: 'User flows and information architecture built around how your customers actually think.' },
+      { t: 'The product looks inconsistent', d: 'A design system of reusable components keeps every screen on brand.' },
+      { t: 'Development keeps getting redone', d: 'Clickable prototypes are tested and approved before any code is written.' },
+    ],
+    deliverables: ['User research and competitor review', 'User flows and wireframes', 'High-fidelity UI design', 'Clickable prototypes', 'Design system and component library', 'Developer handoff in Figma'],
+    tech: ['Figma', 'FigJam', 'Framer', 'Lottie', 'Rive'],
+    timeline: 'Most design projects take 2–6 weeks depending on the number of screens.',
+    faqs: [
+      { q: 'Can you design only, without development?', a: 'Yes. We deliver Figma files and a design system your own developers can build from.' },
+      { q: 'Do you test designs with users?', a: 'Yes. We run quick usability tests on prototypes and refine before handoff.' },
+    ],
+    related: ['website-development', 'mobile-app-development', 'custom-software-development'],
+  },
+  {
+    slug: 'crm-development',
+    name: 'CRM Development',
+    pillar: 'systems',
+    metaTitle: 'Custom CRM Development Company | Sales & Lead Management | AR Medias',
+    metaDescription: 'Custom CRM software built around your sales process: lead capture, pipelines, WhatsApp and email automation, reports and mobile access. Plus Zoho, HubSpot and Salesforce customisation.',
+    h1: 'A CRM built around how your team actually sells.',
+    lead: 'Custom CRM software, or tailored Zoho, HubSpot and Salesforce setups, that captures every lead, automates follow-ups and shows you exactly where revenue comes from.',
+    icon: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
+    forWho: ['Sales teams tracking leads in spreadsheets or WhatsApp', 'Real estate, education, healthcare and service businesses with long follow-up cycles', 'Companies paying for CRM seats they barely use', 'Businesses whose off-the-shelf CRM does not fit their process'],
+    problems: [
+      { t: 'Leads slip through the cracks', d: 'Every enquiry from your website, ads, WhatsApp, calls and portals lands in one pipeline automatically.' },
+      { t: 'Follow-ups depend on memory', d: 'Automatic reminders, task assignment and WhatsApp/email sequences keep every lead moving.' },
+      { t: 'No visibility into the pipeline', d: 'Live dashboards show conversions, team performance and revenue forecasts.' },
+      { t: 'Per-user licence costs keep rising', d: 'A custom CRM has no per-seat fees, and you own it outright.' },
+    ],
+    deliverables: ['Sales process mapping', 'Lead capture from web, ads, WhatsApp and portals', 'Custom pipelines, stages and fields', 'Role-based access for teams', 'WhatsApp, email and SMS automation', 'Quotations, invoices and payments', 'Dashboards and reports', 'Mobile app or responsive access', 'Data migration from your current tools'],
+    tech: ['Laravel', 'Node.js', 'React', 'PostgreSQL', 'WhatsApp Business API', 'Zoho', 'HubSpot', 'Salesforce'],
+    timeline: 'A custom CRM core typically goes live in 6–10 weeks, with further modules added in phases.',
+    faqs: [
+      { q: 'Custom CRM or Zoho/HubSpot/Salesforce?', a: 'If an off-the-shelf CRM fits your process with light configuration, we will set it up for you. A custom CRM makes sense when your workflow is unique, you have many users, or licence costs are growing.' },
+      { q: 'Can the CRM connect to WhatsApp?', a: 'Yes. We integrate the official WhatsApp Business API for lead capture, automated replies, broadcasts and conversation history inside the CRM.' },
+      { q: 'Can you migrate data from our existing system?', a: 'Yes. We import contacts, deals and history from spreadsheets or other CRMs, cleaned and de-duplicated.' },
+      { q: 'Is our data secure?', a: 'Role-based permissions, encrypted connections, audit logs and regular backups are standard, and data can be hosted in the region you choose.' },
+    ],
+    related: ['erp-development', 'ai-automation', 'custom-software-development'],
+  },
+  {
+    slug: 'erp-development',
+    name: 'ERP Development',
+    pillar: 'systems',
+    metaTitle: 'Custom ERP Software Development | Inventory, Accounts & Operations | AR Medias',
+    metaDescription: 'Custom ERP development and Odoo/ERPNext implementation for manufacturing, trading, distribution and service businesses. Inventory, purchasing, production, HR and accounting in one system.',
+    h1: 'One system to run your entire operation.',
+    lead: 'Custom ERP software or tailored Odoo and ERPNext implementations that bring inventory, purchasing, production, sales, HR and accounts together in one place.',
+    icon: 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z',
+    forWho: ['Manufacturers and traders running on Tally plus spreadsheets', 'Distributors managing multiple warehouses or branches', 'Growing businesses where departments use disconnected tools', 'Companies outgrowing an ERP that does not fit their process'],
+    problems: [
+      { t: 'Data lives in ten different places', d: 'One database for stock, orders, purchases, production and finance, so everyone works from the same numbers.' },
+      { t: 'Stock counts never match', d: 'Real-time inventory across warehouses with barcode or QR scanning.' },
+      { t: 'Month-end takes weeks', d: 'Automated invoicing, GST/VAT reports and accounting sync with Tally, Zoho Books, QuickBooks or Xero.' },
+      { t: 'Owners lack a live view', d: 'Dashboards for sales, margins, cash flow and production status on desktop and mobile.' },
+    ],
+    deliverables: ['Process study and module plan', 'Inventory and warehouse management', 'Purchase and vendor management', 'Sales, quotations and invoicing', 'Production and BOM planning', 'HR, attendance and payroll', 'Accounting integration and tax reports', 'Role-based dashboards', 'Training and go-live support'],
+    tech: ['Odoo', 'ERPNext', 'Laravel', 'Node.js', 'PostgreSQL', 'React', 'Tally integration'],
+    timeline: 'ERP projects are delivered in phases; the first modules usually go live within 8–14 weeks.',
+    faqs: [
+      { q: 'Custom ERP or Odoo/ERPNext?', a: 'Open-source ERPs like Odoo and ERPNext are fast to deploy and fit many businesses. We build custom when your processes are specialised or you need a lighter, faster system.' },
+      { q: 'Can the ERP integrate with Tally?', a: 'Yes. We sync vouchers, ledgers and invoices with Tally, or connect to Zoho Books, QuickBooks or Xero.' },
+      { q: 'How do you handle go-live?', a: 'We migrate data, run the old and new systems in parallel for a short period, and train each department before switching over.' },
+    ],
+    related: ['crm-development', 'custom-software-development', 'ai-automation'],
+  },
+  {
+    slug: 'custom-software-development',
+    name: 'Custom Software Development',
+    pillar: 'systems',
+    metaTitle: 'Custom Software Development Company | SaaS & Web Apps | AR Medias',
+    metaDescription: 'Custom web applications, SaaS products, portals, dashboards and internal tools built to your exact requirements. Scalable architecture, clean code, full ownership.',
+    h1: 'Software built for exactly what your business needs.',
+    lead: 'Web applications, SaaS products, customer portals and internal tools, engineered to scale, secured by default and fully owned by you.',
+    icon: 'M8 9l-4 3 4 3M16 9l4 3-4 3M13 6l-2 12',
+    forWho: ['Founders building a SaaS product', 'Businesses replacing manual processes with software', 'Companies that need customer, vendor or partner portals', 'Teams modernising legacy systems'],
+    problems: [
+      { t: 'No tool fits your process', d: 'Software designed around your workflows instead of forcing your team to adapt.' },
+      { t: 'Legacy systems hold you back', d: 'Gradual modernisation of old software without disrupting daily operations.' },
+      { t: 'Worried about scaling', d: 'Cloud-native architecture that grows from ten users to ten thousand.' },
+    ],
+    deliverables: ['Requirements and solution architecture', 'UI/UX design', 'Frontend and backend development', 'APIs and third-party integrations', 'Admin panels and dashboards', 'Automated testing and CI/CD', 'Cloud deployment and monitoring', 'Documentation and handover'],
+    tech: ['React', 'Next.js', 'Node.js', 'Python', 'Laravel', 'PostgreSQL', 'AWS', 'Docker'],
+    timeline: 'MVPs typically take 8–12 weeks; larger platforms are delivered in two-week sprints.',
+    faqs: [
+      { q: 'Do you sign NDAs?', a: 'Yes. We sign an NDA before discussing your idea in detail.' },
+      { q: 'Who owns the source code?', a: 'You do. Full IP and source code are transferred to you.' },
+      { q: 'How do you manage the project?', a: 'Two-week sprints, a shared task board and a demo of working software at the end of every sprint.' },
+    ],
+    related: ['crm-development', 'erp-development', 'ai-automation'],
+  },
+  {
+    slug: 'ai-automation',
+    name: 'AI & Workflow Automation',
+    pillar: 'ai',
+    metaTitle: 'AI Automation Agency | AI Agents, Chatbots & Workflow Automation | AR Medias',
+    metaDescription: 'AI agents, WhatsApp and website chatbots, document processing and n8n/Make workflow automation that save your team hours every week. Built on OpenAI, Claude and your existing tools.',
+    h1: 'Put repetitive work on autopilot with AI.',
+    lead: 'AI agents, chatbots and automated workflows that answer customers instantly, process documents and move data between your tools while your team focuses on real work.',
+    icon: 'M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
+    forWho: ['Teams copying data between apps by hand', 'Businesses answering the same customer questions all day', 'Operations processing invoices, forms or documents manually', 'Companies exploring how AI fits their business'],
+    problems: [
+      { t: 'Customers wait for replies', d: 'AI assistants on WhatsApp, Instagram and your website answer instantly, qualify leads and book appointments 24/7.' },
+      { t: 'Staff spend hours on data entry', d: 'Workflows that move data between forms, CRM, sheets, email and accounting automatically.' },
+      { t: 'Documents pile up', d: 'AI that reads invoices, purchase orders, IDs and contracts, and extracts the data into your systems.' },
+      { t: 'Unsure where AI helps', d: 'An automation audit identifies the tasks with the highest time savings first.' },
+    ],
+    deliverables: ['Automation and AI opportunity audit', 'AI chatbots for WhatsApp, web and social', 'Custom AI agents connected to your data', 'Document and email processing', 'n8n, Make and Zapier workflows', 'CRM, ERP and spreadsheet integrations', 'Human review steps where accuracy matters', 'Monitoring and usage reporting'],
+    tech: ['OpenAI', 'Claude', 'n8n', 'Make', 'Zapier', 'LangChain', 'Python', 'WhatsApp Business API'],
+    timeline: 'Single workflows go live in 1–3 weeks; AI agents and larger automation programmes in 4–8 weeks.',
+    faqs: [
+      { q: 'Will AI replace my team?', a: 'No. Automation removes repetitive tasks so your team can spend time on customers and decisions. We add human approval steps wherever accuracy matters.' },
+      { q: 'Is our data safe with AI?', a: 'We use business-grade AI APIs that do not train on your data, restrict what each workflow can access, and can self-host components when required.' },
+      { q: 'What can be automated?', a: 'Lead capture and follow-up, customer support, invoice and document processing, reporting, onboarding, appointment booking and most tasks that follow clear rules.' },
+      { q: 'What are the running costs?', a: 'Usually a small monthly cost for AI usage and automation platforms. We estimate this upfront so you can compare it with the hours saved.' },
+    ],
+    related: ['crm-development', 'custom-software-development', 'erp-development'],
+  },
+  {
+    slug: 'maintenance-support',
+    name: 'Maintenance & Support',
+    pillar: 'support',
+    metaTitle: 'Website & App Maintenance Services | Hosting, Security & SEO | AR Medias',
+    metaDescription: 'Monthly maintenance plans for websites, apps and software: hosting, security updates, backups, uptime monitoring, speed optimisation, SEO and new features.',
+    h1: 'Your software, kept fast, secure and growing.',
+    lead: 'Monthly care plans covering hosting, updates, security, backups, monitoring, SEO and new features, so your website and apps keep performing after launch.',
+    icon: 'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z',
+    forWho: ['Businesses without an in-house developer', 'Teams whose previous developer is unavailable', 'Sites that were hacked, slow or keep breaking', 'Companies wanting steady SEO and feature growth'],
+    problems: [
+      { t: 'Security risks', d: 'Regular updates, malware scanning, firewall rules and daily backups.' },
+      { t: 'Downtime goes unnoticed', d: 'Uptime monitoring with alerts, and fixes before customers notice.' },
+      { t: 'Small changes take forever', d: 'Dedicated monthly hours for content updates, fixes and improvements.' },
+      { t: 'Traffic has plateaued', d: 'Ongoing SEO, speed optimisation and conversion improvements.' },
+    ],
+    deliverables: ['Managed hosting and SSL', 'Security updates and patches', 'Daily backups', 'Uptime and error monitoring', 'Speed optimisation', 'Monthly SEO work and reports', 'Content and feature updates', 'Priority support'],
+    tech: ['AWS', 'Cloudflare', 'Hostinger', 'Google Search Console', 'GA4', 'Sentry'],
+    timeline: 'Plans start any time and run month to month.',
+    faqs: [
+      { q: 'Can you maintain a site or app you did not build?', a: 'Yes. We start with an audit, fix urgent issues, then move it onto a regular maintenance plan.' },
+      { q: 'Is SEO included?', a: 'Growth plans include monthly technical SEO, content optimisation and ranking reports.' },
+    ],
+    related: ['website-development', 'mobile-app-development', 'ecommerce-development'],
+  },
+];
+
+export const serviceBySlug = Object.fromEntries(services.map((s) => [s.slug, s]));

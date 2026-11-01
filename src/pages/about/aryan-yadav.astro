@@ -1,0 +1,119 @@
+---
+import Base from '../../layouts/Base.astro';
+import { site, markets, pillars } from '../../data/site';
+
+const { founder } = site;
+const title = `${founder.name}, Founder of AR Medias | New Delhi`;
+const description = `${founder.name} is the founder of AR Medias, a New Delhi IT company building websites, apps, CRM/ERP software and AI automation for clients in ${markets.length} countries since January 2024.`;
+
+const focus = pillars.map((p) => ({ title: p.title, lead: p.lead }));
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    url: `${site.url}/about/aryan-yadav/`,
+    mainEntity: {
+      '@type': 'Person',
+      '@id': `${site.url}/about/aryan-yadav/#person`,
+      name: founder.name,
+      jobTitle: founder.role,
+      worksFor: { '@id': `${site.url}/#organization` },
+      address: { '@type': 'PostalAddress', addressLocality: site.address.locality, addressCountry: site.address.country },
+      sameAs: [founder.linkedin],
+      knowsAbout: ['Web development', 'Mobile app development', 'CRM development', 'ERP development', 'AI automation', 'Software development'],
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'About', item: `${site.url}/about/` },
+      { '@type': 'ListItem', position: 3, name: founder.name, item: `${site.url}/about/aryan-yadav/` },
+    ],
+  },
+];
+---
+
+<Base {title} {description} {schema}>
+  <section class="relative overflow-hidden pb-20 pt-32 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+    </div>
+    <div class="container-x grid items-center gap-14 lg:grid-cols-[1.3fr_1fr]">
+      <div>
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero>
+          <a href="/" class="hover:text-olive">Home</a> / <a href="/about/" class="hover:text-olive">About</a> / <span>{founder.name}</span>
+        </nav>
+        <p class="eyebrow mt-6" data-hero>Founder, AR Medias</p>
+        <h1 class="mt-4 text-5xl font-bold leading-[1.03] sm:text-6xl xl:text-7xl" data-hero>{founder.name}</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>
+          {founder.name} founded AR Medias in New Delhi on 1 January 2024. Aryan leads strategy and delivery on every project, working directly with clients across {markets.map((m) => m.country).join(', ')}.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-3" data-hero>
+          <a href="/contact/" class="btn-primary" data-magnetic>Talk to Aryan</a>
+          <a href={founder.linkedin} class="btn-ghost" rel="noopener" target="_blank">Connect on LinkedIn</a>
+        </div>
+      </div>
+      <div class="founder-visual relative mx-auto grid size-72 place-items-center sm:size-80" aria-hidden="true">
+        <span class="ring-a absolute inset-0 rounded-full border-2 border-dashed border-olive/40"></span>
+        <span class="ring-b absolute inset-6 rounded-full border border-navy/15"></span>
+        <div class="grid size-56 place-items-center rounded-full bg-navy font-display text-7xl font-bold text-olive-300 shadow-2xl shadow-navy/30 sm:size-60">AY</div>
+        {['Web', 'Apps', 'CRM', 'AI'].map((t, i) => (
+          <span class="chip absolute rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-navy shadow-lg ring-1 ring-navy/5" style={`--i:${i}`}>{t}</span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-navy py-24 text-white lg:py-28">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+      <h2 class="text-4xl font-bold text-white sm:text-5xl">What Aryan focuses on</h2>
+      <ul class="grid gap-4 sm:grid-cols-2" data-reveal="stagger">
+        {focus.map((f) => (
+          <li class="rounded-3xl bg-white/6 p-7 ring-1 ring-white/10">
+            <h3 class="text-xl font-bold text-white">{f.title}</h3>
+            <p class="mt-2 text-white/70">{f.lead}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="container-x py-24">
+    <div class="relative overflow-hidden rounded-[2.5rem] bg-olive px-8 py-16 text-center text-white sm:px-16" data-reveal="up">
+      <div aria-hidden="true" class="blob pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-olive-300/40 blur-3xl"></div>
+      <h2 class="relative mx-auto max-w-3xl text-4xl font-bold text-white sm:text-5xl">Have an idea? Talk to the founder directly.</h2>
+      <div class="relative mt-9 flex flex-wrap justify-center gap-3">
+        <a href="/contact/" class="btn bg-white text-navy hover:bg-navy hover:text-white" data-magnetic>Book a free call</a>
+        <a href={site.whatsapp} class="btn border-2 border-white/40 text-white hover:border-white" rel="noopener" target="_blank">WhatsApp</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ring-a { animation: spin 30s linear infinite; }
+  .ring-b { animation: spin 18s linear infinite reverse; }
+  .chip { left: 50%; top: 50%; animation: orbit 16s linear infinite; animation-delay: calc(var(--i) * -4s); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes orbit {
+    from { transform: translate(-50%, -50%) rotate(0) translateX(10rem) rotate(0); }
+    to { transform: translate(-50%, -50%) rotate(360deg) translateX(10rem) rotate(-360deg); }
+  }
+  @media (max-width: 639px) {
+    @keyframes orbit {
+      from { transform: translate(-50%, -50%) rotate(0) translateX(8.5rem) rotate(0); }
+      to { transform: translate(-50%, -50%) rotate(360deg) translateX(8.5rem) rotate(-360deg); }
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  if (document.documentElement.classList.contains('js-motion')) {
+    gsap.from('[data-hero]', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.1 });
+    gsap.from('.founder-visual', { scale: 0.8, opacity: 0, duration: 1.2, ease: 'back.out(1.4)', delay: 0.2 });
+  }
+</script>

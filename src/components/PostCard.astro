@@ -1,0 +1,26 @@
+---
+import { categories } from '../content.config';
+import { type Post, readingMinutes, formatDate } from '../lib/blog';
+import PostCover from './PostCover.astro';
+
+interface Props { post: Post; featured?: boolean }
+const { post, featured = false } = Astro.props;
+---
+
+<a href={`/blog/${post.id}/`} data-tilt class:list={['group flex h-full overflow-hidden rounded-[2rem] bg-white ring-1 ring-navy/8 transition-shadow hover:shadow-2xl hover:shadow-navy/10', featured ? 'flex-col lg:flex-row' : 'flex-col']}>
+  <PostCover category={post.data.category} class={featured ? 'aspect-[16/9] lg:aspect-auto lg:w-1/2' : 'aspect-[16/9]'} />
+  <div class:list={['flex flex-1 flex-col p-7', featured && 'lg:p-12']}>
+    <p class="flex flex-wrap items-center gap-2 text-sm text-slate">
+      <span class="rounded-full bg-olive/10 px-3 py-1 font-semibold text-olive">{categories[post.data.category]}</span>
+      <time datetime={post.data.published.toISOString()}>{formatDate(post.data.published)}</time>
+      <span aria-hidden="true">·</span>
+      <span>{readingMinutes(post)} min read</span>
+    </p>
+    <h3 class:list={['mt-4 font-bold transition-colors group-hover:text-olive', featured ? 'text-3xl sm:text-4xl' : 'text-2xl']}>{post.data.title}</h3>
+    <p class="mt-3 flex-1 leading-relaxed text-slate">{post.data.description}</p>
+    <span class="mt-6 inline-flex items-center gap-2 font-semibold text-olive">
+      Read article
+      <svg class="transition-transform group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+    </span>
+  </div>
+</a>

@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+import BlogList from '../../components/BlogList.astro';
+import { site } from '../../data/site';
+import { getPosts } from '../../lib/blog';
+
+const posts = await getPosts();
+const title = 'Blog | Guides on Web, Apps, CRM, ERP & AI Automation | AR Medias';
+const description = 'Practical guides for business owners on websites, mobile apps, custom CRM and ERP software, WhatsApp and AI automation, written by the AR Medias team.';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: `${site.name} Blog`,
+    url: `${site.url}/blog/`,
+    publisher: { '@id': `${site.url}/#organization` },
+    blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.data.title, url: `${site.url}/blog/${p.id}/`, datePublished: p.data.published.toISOString() })),
+  },
+];
+---
+
+<Base {title} {description} {schema}>
+  <link slot="head" rel="alternate" type="application/rss+xml" title="AR Medias Blog" href="/rss.xml" />
+  <BlogList
+    {posts}
+    heading="Guides for growing businesses."
+    lead="Plain-English advice on websites, apps, CRM and ERP systems, and AI automation. No jargon, no fluff."
+    crumbs={[{ name: 'Home', href: '/' }, { name: 'Blog' }]}
+  />
+</Base>

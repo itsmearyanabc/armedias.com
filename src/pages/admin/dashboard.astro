@@ -1,0 +1,354 @@
+---
+import { Image } from 'astro:assets';
+import Admin from '../../layouts/Admin.astro';
+import logo from '../../assets/logo-mark.png';
+import { isAuthenticated } from '../../server/auth';
+import { getStats } from '../../server/analytics';
+import { db } from '../../server/db';
+
+export const prerender = false;
+
+if (!isAuthenticated(Astro.cookies)) return Astro.redirect('/admin/');
+Astro.response.headers.set('Cache-Control', 'no-store');
+
+const ranges = [7, 30, 90] as const;
+const days = ranges.find((r) => String(r) === Astro.url.searchParams.get('range')) ?? 30;
+const stats = getStats(days);
+
+interface Lead {
+  id: number; created_at: string; name: string; email: string; phone: string | null; company: string | null;
+  service: string | null; country: string | null; budget: string | null; message: string; page: string | null;
+  visitor_country: string | null; email_sent: number;
+}
+const leads = db.prepare('SELECT * FROM submissions ORDER BY created_at DESC LIMIT 2000').all() as unknown as Lead[];
+const since = new Date(Date.now() - (days - 1) * 86_400_000).toISOString().slice(0, 10);
+const leadsInRange = leads.filter((l) => l.created_at.slice(0, 10) >= since).length;
+
+const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+const countryName = (code: string) => (code.length === 2 ? regionNames.of(code) ?? code : code);
+const flag = (code: string) => (code.length === 2 ? String.fromCodePoint(...[...code].map((c) => 127397 + c.charCodeAt(0))) : '🌐');
+
+const maxDaily = Math.max(1, ...stats.daily.map((d) => d.visitors));
+const maxCountry = Math.max(1, ...stats.countries.map((c) => c.visitors));
+const maxPage = Math.max(1, ...stats.pages.map((p) => p.views));
+const totalDevices = stats.devices.reduce((s, d) => s + d.visitors, 0) || 1;
+const top = stats.countries.find((c) => c.country !== 'Unknown');
+
+const cards = [
+  { label: `Visitors · ${days} days`, value: stats.visitors },
+  { label: `Page views · ${days} days`, value: stats.views },
+  { label: 'Visitors today', value: stats.today.visitors },
+  { label: `New leads · ${days} days`, value: leadsInRange },
+];
+---
+
+<Admin title="Dashboard">
+  <header class="sticky top-0 z-20 border-b border-navy/10 bg-white/90 backdrop-blur">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
+      <a href="/admin/dashboard/" class="flex items-center gap-2.5">
+        <Image src={logo} alt="" width={56} height={42} class="h-8 w-auto" />
+        <span class="font-display font-bold tracking-[0.18em]"><span class="text-olive">AR</span> <span class="text-navy">MEDIAS</span></span>
+        <span class="rounded-full bg-navy px-2.5 py-0.5 text-xs font-semibold text-white">Admin</span>
+      </a>
+      <nav class="flex items-center gap-1 text-sm font-semibold">
+        <a href="#overview" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Overview</a>
+        <a href="#leads" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Leads <span class="ml-1 rounded-full bg-olive px-2 py-0.5 text-xs text-white">{leads.length}</span></a>
+        <a href="/" target="_blank" rel="noopener" class="rounded-full px-3 py-2 text-navy hover:bg-mist">View site ↗</a>
+        <button data-logout class="rounded-full px-3 py-2 text-red-700 hover:bg-red-50">Sign out</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6">
+    <!-- OVERVIEW -->
+    <section id="overview" class="scroll-mt-20">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 class="text-3xl font-bold">Overview</h1>
+          <p class="mt-1 text-slate">
+            {top ? <>Most visitors in the last {days} days came from <strong class="text-navy">{flag(top.country)} {countryName(top.country)}</strong>.</> : stats.visitors ? 'Country data appears once the site is behind Cloudflare.' : 'No visits recorded yet.'}
+          </p>
+        </div>
+        <div class="flex rounded-full bg-white p-1 ring-1 ring-navy/10" role="group" aria-label="Date range">
+          {ranges.map((r) => (
+            <a href={`?range=${r}`} aria-current={r === days ? 'true' : undefined} class="rounded-full px-4 py-1.5 text-sm font-semibold text-navy aria-[current=true]:bg-navy aria-[current=true]:text-white">{r} days</a>
+          ))}
+        </div>
+      </div>
+
+      <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((c) => (
+          <li class="rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+            <p class="text-sm text-slate">{c.label}</p>
+            <p class="mt-2 font-display text-4xl font-bold text-navy">{c.value.toLocaleString('en-IN')}</p>
+          </li>
+        ))}
+      </ul>
+
+      <!-- Daily visitors -->
+      <div class="mt-6 rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-bold">Daily visitors</h2>
+          <span class="text-sm text-slate">Peak {maxDaily === 1 && stats.visitors === 0 ? 0 : maxDaily}/day</span>
+        </div>
+        <div class="mt-6 flex h-48 items-end gap-[2px]" role="img" aria-label={`Daily unique visitors for the last ${days} days`}>
+          {stats.daily.map((d) => (
+            <div class="group relative flex h-full flex-1 items-end">
+              <div class="w-full rounded-t-sm bg-olive/80 transition-colors group-hover:bg-navy" style={`height:${Math.max(d.visitors ? 3 : 1, (d.visitors / maxDaily) * 100)}%`}></div>
+              <span class="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-navy px-2.5 py-1.5 text-xs text-white group-hover:block">
+                {d.day}: {d.visitors} visitors · {d.views} views
+              </span>
+            </div>
+          ))}
+        </div>
+        <div class="mt-2 flex justify-between text-xs text-slate"><span>{stats.daily[0].day}</span><span>{stats.daily.at(-1)!.day}</span></div>
+      </div>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-2">
+        <!-- Countries -->
+        <div class="rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+          <h2 class="text-lg font-bold">Visitors by country</h2>
+          {stats.countries.length === 0 ? <p class="mt-4 text-slate">No data yet.</p> : (
+            <ol class="mt-4 space-y-2.5">
+              {stats.countries.map((c) => (
+                <li class="grid grid-cols-[1fr_auto] items-center gap-3 text-sm">
+                  <span class="relative overflow-hidden rounded-lg bg-mist px-3 py-2">
+                    <span class="absolute inset-y-0 left-0 bg-olive/20" style={`width:${(c.visitors / maxCountry) * 100}%`}></span>
+                    <span class="relative font-medium text-navy">{flag(c.country)} {countryName(c.country)}</span>
+                  </span>
+                  <span class="w-12 text-right font-semibold tabular-nums text-navy">{c.visitors}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+
+        <!-- Pages -->
+        <div class="rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+          <h2 class="text-lg font-bold">Top pages</h2>
+          {stats.pages.length === 0 ? <p class="mt-4 text-slate">No data yet.</p> : (
+            <ol class="mt-4 space-y-2.5">
+              {stats.pages.map((p) => (
+                <li class="grid grid-cols-[1fr_auto] items-center gap-3 text-sm">
+                  <span class="relative overflow-hidden rounded-lg bg-mist px-3 py-2">
+                    <span class="absolute inset-y-0 left-0 bg-navy/10" style={`width:${(p.views / maxPage) * 100}%`}></span>
+                    <a href={p.path} target="_blank" rel="noopener" class="relative block truncate font-medium text-navy hover:text-olive">{p.path}</a>
+                  </span>
+                  <span class="w-12 text-right font-semibold tabular-nums text-navy">{p.views}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+
+        <!-- Referrers -->
+        <div class="rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+          <h2 class="text-lg font-bold">Where visitors came from</h2>
+          {stats.referrers.length === 0 ? <p class="mt-4 text-slate">Only direct visits so far.</p> : (
+            <ol class="mt-4 divide-y divide-navy/5 text-sm">
+              {stats.referrers.map((r) => <li class="flex justify-between py-2"><span class="text-navy">{r.referrer}</span><span class="font-semibold tabular-nums">{r.visitors}</span></li>)}
+            </ol>
+          )}
+        </div>
+
+        <!-- Devices -->
+        <div class="rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+          <h2 class="text-lg font-bold">Devices</h2>
+          {stats.devices.length === 0 ? <p class="mt-4 text-slate">No data yet.</p> : (
+            <>
+              <div class="mt-5 flex h-4 overflow-hidden rounded-full bg-mist">
+                {stats.devices.map((d, i) => <span class={['bg-navy', 'bg-olive', 'bg-olive-300'][i % 3]} style={`width:${(d.visitors / totalDevices) * 100}%`}></span>)}
+              </div>
+              <ul class="mt-4 space-y-2 text-sm">
+                {stats.devices.map((d, i) => (
+                  <li class="flex items-center justify-between">
+                    <span class="flex items-center gap-2"><span class={`size-3 rounded-full ${['bg-navy', 'bg-olive', 'bg-olive-300'][i % 3]}`}></span>{d.device}</span>
+                    <span class="font-semibold tabular-nums">{Math.round((d.visitors / totalDevices) * 100)}% · {d.visitors}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <!-- LEADS -->
+    <section id="leads" class="scroll-mt-20 rounded-3xl bg-white ring-1 ring-navy/5">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-navy/10 p-6">
+        <div>
+          <h2 class="text-2xl font-bold">Leads</h2>
+          <p class="text-sm text-slate">Everything submitted through the contact forms, newest first.</p>
+        </div>
+        <input data-search type="search" placeholder="Search name, email, message…" class="w-full rounded-full border border-navy/15 bg-mist px-4 py-2 text-sm sm:w-72" />
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 border-b border-navy/10 bg-mist/50 px-6 py-3 text-sm">
+        <span data-count class="mr-auto font-semibold text-navy">0 selected</span>
+        <button data-copy class="tool">Copy selected</button>
+        <button data-copy-all class="tool">Copy all</button>
+        <button data-csv class="tool">Download CSV</button>
+        <button data-delete class="tool tool--danger" disabled>Delete selected</button>
+      </div>
+      <p data-toast role="status" class="hidden px-6 py-2 text-sm font-medium text-olive"></p>
+
+      {leads.length === 0 ? <p class="p-10 text-center text-slate">No leads yet. They'll appear here as soon as someone fills in a form.</p> : (
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[60rem] text-left text-sm">
+            <thead class="text-xs uppercase tracking-wider text-slate">
+              <tr class="border-b border-navy/10">
+                <th class="w-10 p-4"><input type="checkbox" data-all aria-label="Select all leads" class="size-4 accent-olive" /></th>
+                <th class="p-4">Date &amp; time</th>
+                <th class="p-4">Contact</th>
+                <th class="p-4">Service</th>
+                <th class="p-4">Country</th>
+                <th class="p-4">Budget</th>
+                <th class="p-4">Message</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leads.map((l) => (
+                <tr data-lead={JSON.stringify(l)} class="border-b border-navy/5 align-top hover:bg-mist/60">
+                  <td class="p-4"><input type="checkbox" data-pick value={l.id} aria-label={`Select lead from ${l.name}`} class="size-4 accent-olive" /></td>
+                  <td class="whitespace-nowrap p-4 text-slate"><time data-local datetime={l.created_at}>{l.created_at.replace('T', ' ').slice(0, 16)} UTC</time></td>
+                  <td class="p-4">
+                    <p class="font-semibold text-navy">{l.name}</p>
+                    <a href={`mailto:${l.email}`} class="block text-olive hover:underline">{l.email}</a>
+                    {l.phone && <a href={`tel:${l.phone}`} class="block text-slate">{l.phone}</a>}
+                    {l.company && <p class="text-slate">{l.company}</p>}
+                  </td>
+                  <td class="p-4 text-navy">{l.service}</td>
+                  <td class="p-4 text-navy">
+                    {l.country}
+                    {l.visitor_country && l.visitor_country !== 'Unknown' && <span class="block text-xs text-slate" title="Detected by Cloudflare">from {flag(l.visitor_country)} {l.visitor_country}</span>}
+                  </td>
+                  <td class="p-4 text-navy">{l.budget ?? '–'}</td>
+                  <td class="max-w-md p-4">
+                    <p class="whitespace-pre-wrap text-slate">{l.message}</p>
+                    <p class="mt-1 text-xs text-slate/70">{l.page ? `Sent from ${l.page}` : ''}{l.email_sent ? '' : ' · email not delivered'}</p>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+
+    <p class="pb-6 text-center text-xs text-slate">Visitor stats are cookieless: no IP addresses are stored. For bot traffic, threats and caching, see your Cloudflare dashboard.</p>
+  </main>
+</Admin>
+
+<style>
+  .tool { border-radius: 999px; border: 1px solid rgb(19 33 58 / 0.15); background: #fff; padding: 0.45rem 0.95rem; font-weight: 600; color: var(--color-navy); }
+  .tool:hover:not(:disabled) { border-color: var(--color-olive); color: var(--color-olive); }
+  .tool:disabled { opacity: 0.45; cursor: not-allowed; }
+  .tool--danger { color: #b91c1c; }
+  .tool--danger:hover:not(:disabled) { border-color: #b91c1c; color: #fff; background: #b91c1c; }
+</style>
+
+<script>
+  interface Lead {
+    id: number; created_at: string; name: string; email: string; phone: string | null; company: string | null;
+    service: string | null; country: string | null; budget: string | null; message: string; page: string | null;
+  }
+
+  const dateFmt = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+  document.querySelectorAll<HTMLTimeElement>('time[data-local]').forEach((t) => { t.textContent = dateFmt.format(new Date(t.dateTime)); });
+
+  document.querySelector('[data-logout]')!.addEventListener('click', async () => {
+    await fetch('/api/admin/logout/', { method: 'POST' });
+    location.assign('/admin/');
+  });
+
+  const rows = [...document.querySelectorAll<HTMLTableRowElement>('tr[data-lead]')];
+  const all = document.querySelector<HTMLInputElement>('[data-all]');
+  const count = document.querySelector<HTMLElement>('[data-count]')!;
+  const del = document.querySelector<HTMLButtonElement>('[data-delete]')!;
+  const toast = document.querySelector<HTMLElement>('[data-toast]')!;
+  const search = document.querySelector<HTMLInputElement>('[data-search]')!;
+
+  const lead = (r: HTMLTableRowElement) => JSON.parse(r.dataset.lead!) as Lead;
+  const visible = () => rows.filter((r) => !r.hidden);
+  const picked = () => rows.filter((r) => r.querySelector<HTMLInputElement>('[data-pick]')!.checked);
+
+  const say = (text: string) => {
+    toast.textContent = text;
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 3000);
+  };
+
+  const sync = () => {
+    const n = picked().length;
+    count.textContent = `${n} selected`;
+    del.disabled = n === 0;
+    if (all) {
+      const vis = visible();
+      all.checked = vis.length > 0 && vis.every((r) => r.querySelector<HTMLInputElement>('[data-pick]')!.checked);
+      all.indeterminate = n > 0 && !all.checked;
+    }
+  };
+
+  rows.forEach((r) => r.querySelector('[data-pick]')!.addEventListener('change', sync));
+  all?.addEventListener('change', () => {
+    visible().forEach((r) => (r.querySelector<HTMLInputElement>('[data-pick]')!.checked = all.checked));
+    sync();
+  });
+
+  search.addEventListener('input', () => {
+    const q = search.value.trim().toLowerCase();
+    rows.forEach((r) => (r.hidden = !!q && !r.dataset.lead!.toLowerCase().includes(q)));
+    sync();
+  });
+
+  const asText = (l: Lead) => [
+    `Date: ${dateFmt.format(new Date(l.created_at))}`,
+    `Name: ${l.name}`,
+    `Email: ${l.email}`,
+    l.phone && `Phone: ${l.phone}`,
+    l.company && `Company: ${l.company}`,
+    `Service: ${l.service ?? ''}`,
+    `Country: ${l.country ?? ''}`,
+    l.budget && `Budget: ${l.budget}`,
+    `Message: ${l.message}`,
+  ].filter(Boolean).join('\n');
+
+  const copy = async (list: HTMLTableRowElement[]) => {
+    if (!list.length) return say('Select at least one lead first.');
+    await navigator.clipboard.writeText(list.map((r) => asText(lead(r))).join('\n\n---\n\n'));
+    say(`Copied ${list.length} lead${list.length === 1 ? '' : 's'} to the clipboard.`);
+  };
+  document.querySelector('[data-copy]')!.addEventListener('click', () => copy(picked()));
+  document.querySelector('[data-copy-all]')!.addEventListener('click', () => copy(visible()));
+
+  document.querySelector('[data-csv]')!.addEventListener('click', () => {
+    const list = picked().length ? picked() : visible();
+    const cols: (keyof Lead)[] = ['created_at', 'name', 'email', 'phone', 'company', 'service', 'country', 'budget', 'message', 'page'];
+    const cell = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const csv = [cols.join(','), ...list.map((r) => { const l = lead(r); return cols.map((c) => cell(l[c])).join(','); })].join('\r\n');
+    const a = Object.assign(document.createElement('a'), {
+      href: URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })),
+      download: `armedias-leads-${new Date().toISOString().slice(0, 10)}.csv`,
+    });
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  del.addEventListener('click', async () => {
+    const list = picked();
+    if (!list.length || !confirm(`Permanently delete ${list.length} lead${list.length === 1 ? '' : 's'}? This cannot be undone.`)) return;
+    del.disabled = true;
+    const res = await fetch('/api/admin/submissions/', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: list.map((r) => lead(r).id) }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 401) return location.assign('/admin/');
+    if (!data.ok) { say(data.error || 'Delete failed.'); return sync(); }
+    list.forEach((r) => r.remove());
+    rows.splice(0, rows.length, ...rows.filter((r) => !list.includes(r)));
+    say(`Deleted ${data.deleted} lead${data.deleted === 1 ? '' : 's'}.`);
+    sync();
+  });
+</script>

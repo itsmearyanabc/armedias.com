@@ -1,0 +1,163 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import PostCover from '../../components/PostCover.astro';
+import { site } from '../../data/site';
+import { serviceBySlug } from '../../data/services';
+import { categories } from '../../content.config';
+import { getPosts, readingMinutes, formatDate, type Post } from '../../lib/blog';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, posts } }));
+}
+
+const { post, posts } = Astro.props as { post: Post; posts: Post[] };
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2);
+const service = serviceBySlug[post.data.service];
+const url = `${site.url}/blog/${post.id}/`;
+
+// Same category first, then newest
+const related = posts
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => Number(b.data.category === post.data.category) - Number(a.data.category === post.data.category))
+  .slice(0, 3);
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.data.title,
+    description: post.data.description,
+    url,
+    mainEntityOfPage: url,
+    image: `${site.url}/og-default.png`,
+    datePublished: post.data.published.toISOString(),
+    dateModified: (post.data.updated ?? post.data.published).toISOString(),
+    author: { '@type': 'Person', '@id': `${site.url}/about/aryan-yadav/#person`, name: site.founder.name, url: `${site.url}/about/aryan-yadav/` },
+    publisher: { '@id': `${site.url}/#organization` },
+    articleSection: categories[post.data.category],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${site.url}/blog/` },
+      { '@type': 'ListItem', position: 3, name: post.data.title, item: url },
+    ],
+  },
+];
+---
+
+<Base title={`${post.data.title} | AR Medias`} description={post.data.description} {schema}>
+  <meta slot="head" property="article:published_time" content={post.data.published.toISOString()} />
+  <article>
+    <header class="relative overflow-hidden pb-12 pt-32 lg:pt-40">
+      <div aria-hidden="true" class="blob pointer-events-none absolute -right-24 -top-24 -z-10 size-[34rem] rounded-full bg-olive-300/30 blur-3xl"></div>
+      <div class="container-x max-w-4xl">
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero>
+          <a href="/" class="hover:text-olive">Home</a> / <a href="/blog/" class="hover:text-olive">Blog</a> /
+          <a href={`/blog/category/${post.data.category}/`} class="hover:text-olive">{categories[post.data.category]}</a>
+        </nav>
+        <h1 class="mt-6 text-4xl font-bold leading-[1.08] sm:text-5xl lg:text-6xl" data-hero>{post.data.title}</h1>
+        <p class="mt-5 text-xl leading-relaxed text-slate" data-hero>{post.data.description}</p>
+        <div class="mt-8 flex flex-wrap items-center gap-4 text-sm text-slate" data-hero>
+          <a href="/about/aryan-yadav/" class="flex items-center gap-3 font-semibold text-navy hover:text-olive">
+            <span class="grid size-10 place-items-center rounded-full bg-navy font-display text-sm font-bold text-olive-300">AY</span>
+            {site.founder.name}
+          </a>
+          <span aria-hidden="true">·</span>
+          <time datetime={post.data.published.toISOString()}>{formatDate(post.data.published)}</time>
+          {post.data.updated && <><span aria-hidden="true">·</span><span>Updated {formatDate(post.data.updated)}</span></>}
+          <span aria-hidden="true">·</span>
+          <span>{readingMinutes(post)} min read</span>
+        </div>
+      </div>
+      <div class="container-x mt-12 max-w-5xl" data-hero>
+        <PostCover category={post.data.category} class="aspect-[21/9] rounded-[2rem]" />
+      </div>
+    </header>
+
+    <div class="container-x grid max-w-6xl gap-12 pb-20 lg:grid-cols-[1fr_16rem]">
+      <div class="prose prose-lg max-w-none prose-headings:font-display prose-headings:tracking-tight prose-headings:text-ink prose-h2:mt-14 prose-h2:scroll-mt-28 prose-h3:scroll-mt-28 prose-a:text-olive prose-a:font-semibold prose-strong:text-ink prose-li:marker:text-olive prose-table:text-base prose-th:text-navy prose-p:text-slate prose-li:text-slate prose-td:text-slate">
+        <Content />
+      </div>
+
+      {toc.length > 0 && (
+        <aside class="hidden lg:block">
+          <nav aria-label="On this page" class="sticky top-28 rounded-3xl bg-mist p-6">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate">On this page</p>
+            <ol class="mt-4 space-y-1 border-l-2 border-navy/10">
+              {toc.map((h) => (
+                <li><a href={`#${h.slug}`} data-toc={h.slug} class="toc-link -ml-0.5 block border-l-2 border-transparent py-1.5 pl-4 text-sm text-slate transition-colors hover:text-navy">{h.text}</a></li>
+              ))}
+            </ol>
+            <a href="/contact/" class="btn-primary mt-6 w-full justify-center text-xs">Get a free quote</a>
+          </nav>
+        </aside>
+      )}
+    </div>
+
+    <!-- Author + service CTA -->
+    <section class="container-x max-w-6xl pb-20">
+      <div class="grid gap-6 lg:grid-cols-2">
+        <a href="/about/aryan-yadav/" data-tilt class="flex items-start gap-5 rounded-[2rem] bg-mist p-8">
+          <span class="grid size-16 shrink-0 place-items-center rounded-full bg-navy font-display text-xl font-bold text-olive-300">AY</span>
+          <span>
+            <span class="block text-sm text-slate">Written by</span>
+            <span class="mt-1 block font-display text-xl font-bold text-navy">{site.founder.name}</span>
+            <span class="mt-2 block text-slate">Founder of AR Medias. Helping businesses in seven countries build software, apps and automation since 2024.</span>
+          </span>
+        </a>
+        {service && (
+          <a href={`/services/${service.slug}/`} data-tilt class="group flex flex-col justify-between rounded-[2rem] bg-navy p-8 text-white">
+            <span>
+              <span class="block text-sm text-olive-300">Need help with this?</span>
+              <span class="mt-1 block font-display text-xl font-bold">{service.name} by AR Medias</span>
+              <span class="mt-2 block text-white/70">{service.lead}</span>
+            </span>
+            <span class="mt-6 font-semibold text-olive-300 group-hover:text-white">Explore the service →</span>
+          </a>
+        )}
+      </div>
+    </section>
+  </article>
+
+  {related.length > 0 && (
+    <section class="bg-mist/60 py-20">
+      <div class="container-x">
+        <h2 class="text-3xl font-bold sm:text-4xl">Keep reading</h2>
+        <ul class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+          {related.map((p) => <li><PostCard post={p} /></li>)}
+        </ul>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .toc-link.is-active { border-color: var(--color-olive); color: var(--color-navy); font-weight: 600; }
+  :global(.prose table) { display: block; overflow-x: auto; }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  if (document.documentElement.classList.contains('js-motion')) {
+    gsap.from('[data-hero]', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.08 });
+  }
+
+  // Highlight the section currently being read in the table of contents
+  const links = new Map([...document.querySelectorAll<HTMLAnchorElement>('[data-toc]')].map((a) => [a.dataset.toc!, a]));
+  if (links.size) {
+    const io = new IntersectionObserver((entries) => {
+      entries.filter((e) => e.isIntersecting).forEach((e) => {
+        links.forEach((a) => a.classList.remove('is-active'));
+        links.get(e.target.id)?.classList.add('is-active');
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    links.forEach((_, id) => { const h = document.getElementById(id); if (h) io.observe(h); });
+  }
+</script>

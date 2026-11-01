@@ -1,0 +1,29 @@
+---
+import Base from '../../../layouts/Base.astro';
+import BlogList from '../../../components/BlogList.astro';
+import { categories } from '../../../content.config';
+import { getPosts } from '../../../lib/blog';
+
+// Pages exist only for categories with published articles, so no empty pages get indexed
+export async function getStaticPaths() {
+  const used = new Set((await getPosts()).map((p) => p.data.category));
+  return [...used].map((category) => ({ params: { category } }));
+}
+
+const category = Astro.params.category as keyof typeof categories;
+const name = categories[category];
+const posts = (await getPosts()).filter((p) => p.data.category === category);
+---
+
+<Base
+  title={`${name} Articles & Guides | AR Medias Blog`}
+  description={`Practical ${name} guides for business owners from the AR Medias team.`}
+>
+  <BlogList
+    {posts}
+    active={category}
+    heading={`${name} guides`}
+    lead={`Everything we've written about ${name}, with practical advice you can use today.`}
+    crumbs={[{ name: 'Home', href: '/' }, { name: 'Blog', href: '/blog/' }, { name }]}
+  />
+</Base>

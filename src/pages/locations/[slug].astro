@@ -1,0 +1,124 @@
+---
+import Base from '../../layouts/Base.astro';
+import { site, pillars, markets } from '../../data/site';
+
+export function getStaticPaths() {
+  return markets.map((m) => ({ params: { slug: m.slug }, props: { m } }));
+}
+
+const { m } = Astro.props;
+const services = pillars.flatMap((p) => p.items);
+const others = markets.filter((x) => x.slug !== m.slug);
+
+const title = `Software & App Development Company in ${m.country} | AR Medias`;
+const description = `AR Medias builds websites, mobile apps, custom CRM/ERP software and AI automation for businesses in ${m.area}. Fixed quotes, ${m.currency} billing and calls in your time zone.`;
+
+const faqs = [
+  { q: `Do you work with businesses in ${m.country}?`, a: `Yes. We work with clients across ${m.area}. Projects run remotely, with calls scheduled during ${m.city} business hours and billing in ${m.currency}.` },
+  { q: `How do you handle data privacy for ${m.country} projects?`, a: `We design data storage, consent and access controls with ${m.privacyLaw} in mind, and can host data in the region you require.` },
+  { q: 'How do we get started?', a: 'Book a free 30-minute call. We review your goals and send a written scope with a fixed quote and timeline.' },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: `Software, app and AI automation development in ${m.country}`,
+    provider: { '@id': `${site.url}/#organization` },
+    areaServed: { '@type': 'Country', name: m.schemaName },
+    serviceType: services.map((s) => s.name),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: m.country, item: `${site.url}/locations/${m.slug}/` },
+    ],
+  },
+];
+---
+
+<Base {title} {description} {schema}>
+  <section class="relative overflow-hidden pb-20 pt-32 lg:pt-40">
+    <div aria-hidden="true" class="blob pointer-events-none absolute -right-32 -top-20 -z-10 size-[36rem] rounded-full bg-olive-300/30 blur-3xl"></div>
+    <div class="container-x">
+      <nav aria-label="Breadcrumb" class="text-sm text-slate"><a href="/" class="hover:text-olive">Home</a> / <span>{m.country}</span></nav>
+      <p class="eyebrow mt-6">{m.city} · <time data-clock={m.tz}>--:--</time> local time</p>
+      <h1 class="mt-4 max-w-4xl text-5xl font-bold leading-[1.05] sm:text-6xl">Software, app &amp; AI automation company for {m.country}</h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate">{m.intro}</p>
+      <div class="mt-9 flex flex-wrap gap-3">
+        <a href="/contact/" class="btn-primary" data-magnetic>Book a free call</a>
+        <a href="/work/" class="btn-ghost">See our work</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-mist/60 py-20">
+    <div class="container-x">
+      <h2 class="text-3xl font-bold sm:text-4xl" data-reveal="up">What we build for {m.country} businesses</h2>
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {services.map((s) => (
+          <li><a href={s.href} class="flex items-center justify-between rounded-2xl bg-white px-6 py-5 font-semibold ring-1 ring-navy/5 transition-colors hover:bg-olive hover:text-white">{s.name}<span aria-hidden="true">→</span></a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="container-x grid gap-10 lg:grid-cols-3" data-reveal="stagger">
+      <div data-tilt class="rounded-3xl bg-navy p-8 text-white">
+        <p class="text-sm uppercase tracking-wider text-olive-300">Time zone</p>
+        <p class="mt-3 font-display text-2xl font-bold">Calls in {m.city} hours</p>
+        <p class="mt-2 text-white/70">Delhi now: <time data-clock="Asia/Kolkata">--:--</time> · {m.city}: <time data-clock={m.tz}>--:--</time></p>
+      </div>
+      <div data-tilt class="rounded-3xl bg-mist p-8">
+        <p class="text-sm uppercase tracking-wider text-olive">Billing</p>
+        <p class="mt-3 font-display text-2xl font-bold">Fixed quotes in {m.currency}</p>
+        <p class="mt-2 text-slate">Milestone-based payments, written scope before work begins.</p>
+      </div>
+      <div data-tilt class="rounded-3xl bg-mist p-8">
+        <p class="text-sm uppercase tracking-wider text-olive">Privacy</p>
+        <p class="mt-3 font-display text-2xl font-bold">{m.privacyLaw}</p>
+        <p class="mt-2 text-slate">Consent, storage and access designed with local rules in mind.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-20">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+      <h2 class="text-3xl font-bold sm:text-4xl">Questions from {m.country} clients</h2>
+      <div class="divide-y divide-navy/10 border-y border-navy/10">
+        {faqs.map((f) => (
+          <details class="group py-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-xl font-semibold">{f.q}<span class="grid size-9 shrink-0 place-items-center rounded-full bg-mist transition-transform group-open:rotate-45">+</span></summary>
+            <p class="mt-4 leading-relaxed text-slate">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-navy/10 py-12">
+    <div class="container-x">
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate">We also work in</p>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {others.map((o) => <li><a href={`/locations/${o.slug}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-olive hover:text-olive">{o.country}</a></li>)}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLTimeElement>('[data-clock]').forEach((el) => {
+    const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: el.dataset.clock, hour: '2-digit', minute: '2-digit' });
+    const tick = () => (el.textContent = fmt.format(new Date()));
+    tick();
+    setInterval(tick, 30_000);
+  });
+</script>

@@ -1,0 +1,61 @@
+---
+import { categories } from '../content.config';
+import { getPosts, type Post } from '../lib/blog';
+import PostCard from './PostCard.astro';
+
+interface Props { posts: Post[]; active?: keyof typeof categories; heading: string; lead: string; crumbs: { name: string; href?: string }[] }
+const { posts, active, heading, lead, crumbs } = Astro.props;
+const [featured, ...rest] = posts;
+// Only link categories that have articles, matching the pages getStaticPaths generates
+const used = new Set((await getPosts()).map((p) => p.data.category));
+const chips = Object.entries(categories).filter(([slug]) => used.has(slug as keyof typeof categories));
+---
+
+<section class="relative overflow-hidden pb-12 pt-32 lg:pt-40">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+    <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+  </div>
+  <div class="container-x">
+    <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero>
+      {crumbs.map((c, i) => <>{i > 0 && ' / '}{c.href ? <a href={c.href} class="hover:text-olive">{c.name}</a> : <span>{c.name}</span>}</>)}
+    </nav>
+    <p class="eyebrow mt-6" data-hero>Blog</p>
+    <h1 class="mt-4 max-w-4xl text-5xl font-bold leading-[1.03] sm:text-6xl" data-hero>{heading}</h1>
+    <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate" data-hero>{lead}</p>
+    <nav aria-label="Blog categories" class="mt-10 flex flex-wrap gap-2" data-hero>
+      <a href="/blog/" aria-current={!active ? 'page' : undefined} class="chip">All</a>
+      {chips.map(([slug, name]) => (
+        <a href={`/blog/category/${slug}/`} aria-current={active === slug ? 'page' : undefined} class="chip">{name}</a>
+      ))}
+    </nav>
+  </div>
+</section>
+
+<section class="container-x pb-24">
+  {posts.length === 0 ? (
+    <p class="rounded-3xl bg-mist p-10 text-center text-lg text-slate">New articles in this category are coming soon.</p>
+  ) : (
+    <>
+      <div data-reveal="up"><PostCard post={featured} featured /></div>
+      {rest.length > 0 && (
+        <ul class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+          {rest.map((p) => <li><PostCard post={p} /></li>)}
+        </ul>
+      )}
+    </>
+  )}
+</section>
+
+<style>
+  .chip { border-radius: 999px; border: 1px solid rgb(19 33 58 / 0.1); background: #fff; padding: 0.6rem 1.25rem;
+    font-size: 0.875rem; font-weight: 600; color: var(--color-navy); transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
+  .chip:hover { border-color: var(--color-olive); color: var(--color-olive); }
+  .chip[aria-current='page'] { background: var(--color-navy); border-color: var(--color-navy); color: #fff; }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  if (document.documentElement.classList.contains('js-motion')) {
+    gsap.from('[data-hero]', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.1 });
+  }
+</script>

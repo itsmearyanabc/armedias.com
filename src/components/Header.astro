@@ -1,0 +1,70 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo-mark.png';
+import { nav } from '../data/site';
+
+const path = Astro.url.pathname;
+---
+
+<header data-header class="fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,transform] duration-300">
+  <div class="container-x flex h-18 items-center justify-between gap-6">
+    <a href="/" class="flex items-center gap-2.5" aria-label="AR Medias home">
+      <Image src={logo} alt="" width={56} height={42} loading="eager" class="h-9 w-auto" />
+      <span class="font-display text-lg font-bold tracking-[0.18em]"><span class="text-olive">AR</span> <span class="text-navy">MEDIAS</span></span>
+    </a>
+
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="flex items-center gap-1">
+        {nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={path.startsWith(item.href) ? 'page' : undefined}
+              class="rounded-full px-4 py-2 text-sm font-medium text-navy/80 transition-colors hover:bg-mist hover:text-navy aria-[current=page]:text-olive"
+            >{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="/contact/" class="btn-primary hidden sm:inline-flex" data-magnetic>Book a free call</a>
+      <button data-menu-toggle aria-expanded="false" aria-controls="mobile-menu" class="grid size-11 place-items-center rounded-full bg-mist lg:hidden" aria-label="Open menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h14M3 14h14" /></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" hidden class="border-t border-navy/10 bg-white lg:hidden">
+    <nav aria-label="Mobile" class="container-x py-4">
+      <ul class="grid gap-1">
+        {nav.map((item) => (
+          <li><a href={item.href} class="block rounded-xl px-4 py-3 font-display text-lg font-medium text-navy hover:bg-mist">{item.label}</a></li>
+        ))}
+        <li class="pt-2"><a href="/contact/" class="btn-primary w-full justify-center">Book a free call</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+  const menu = document.getElementById('mobile-menu')!;
+
+  const onScroll = () => header.classList.toggle('is-scrolled', scrollY > 8);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  toggle.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    menu.hidden = !open;
+  });
+</script>
+
+<style>
+  [data-header] { background: rgb(255 255 255 / 0.7); backdrop-filter: blur(14px); }
+  [data-header]:global(.is-scrolled) { background: rgb(255 255 255 / 0.92); box-shadow: 0 1px 0 rgb(19 33 58 / 0.08), 0 10px 30px -18px rgb(19 33 58 / 0.25); }
+</style>

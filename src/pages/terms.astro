@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+
+const updated = '1 November 2026';
+---
+
+<Base title="Terms of Use | AR Medias" description="Terms governing the use of the armedias.com website and the general basis on which AR Medias provides services.">
+  <article class="container-x max-w-3xl pb-24 pt-32 lg:pt-40">
+    <p class="eyebrow">Legal</p>
+    <h1 class="mt-4 text-5xl font-bold">Terms of Use</h1>
+    <p class="mt-4 text-slate">Last updated: {updated}</p>
+
+    <div class="legal mt-10">
+      <p>These terms apply to your use of {site.url} (the "website"), operated by {site.legalName}, {site.address.street}, {site.address.locality}, {site.address.countryName} ("we", "us"). By using the website you agree to them.</p>
+
+      <h2>Website content</h2>
+      <p>Content on this website is provided for general information about our services. We work to keep it accurate and current, but it does not form an offer or a contract. Service details, timelines and prices are confirmed only in a written proposal or agreement.</p>
+
+      <h2>Client projects</h2>
+      <p>Every client engagement is governed by its own written proposal, statement of work or agreement, which sets out scope, deliverables, timelines, fees, payment terms, intellectual property and confidentiality. Where that document conflicts with these terms, the signed document prevails.</p>
+
+      <h2>Intellectual property</h2>
+      <p>The AR Medias name, logo, website design, text and graphics belong to us or our licensors. You may not copy or reuse them without our written permission. Ownership of work created for clients is defined in each client agreement.</p>
+
+      <h2>Acceptable use</h2>
+      <p>You agree not to misuse the website, including attempting unauthorised access, interfering with its operation, submitting false information through our forms, or sending spam.</p>
+
+      <h2>Third-party links</h2>
+      <p>The website may link to third-party sites and services such as Google Maps, WhatsApp and LinkedIn. We are not responsible for their content or privacy practices.</p>
+
+      <h2>Limitation of liability</h2>
+      <p>To the extent permitted by law, we are not liable for any indirect or consequential loss arising from use of this website. Nothing in these terms limits liability that cannot be limited by law.</p>
+
+      <h2>Privacy</h2>
+      <p>Our handling of personal information is described in our <a href="/privacy-policy/">Privacy Policy</a>.</p>
+
+      <h2>Governing law</h2>
+      <p>These terms are governed by the laws of India, and the courts of New Delhi have jurisdiction, unless a client agreement specifies otherwise.</p>
+
+      <h2>Contact</h2>
+      <p>Questions about these terms? Email <a href={`mailto:${site.email}`}>{site.email}</a> or call {site.phone}.</p>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .legal h2 { margin-top: 2.5rem; font-size: 1.5rem; font-weight: 700; }
+  .legal p { margin-top: 1rem; line-height: 1.75; color: var(--color-slate); }
+  .legal a { color: var(--color-olive); font-weight: 600; }
+</style>

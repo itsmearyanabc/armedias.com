@@ -1,0 +1,103 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource-variable/inter';
+
+@theme {
+  --color-ink: #1b1c19;
+  --color-navy: #13213a;
+  --color-navy-700: #1d3155;
+  --color-olive: #556b2f;
+  --color-olive-500: #6b8a35;
+  --color-olive-300: #a9c46c;
+  --color-mist: #f4f6ef;
+  --color-slate: #555d6b;
+
+  --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html { -webkit-font-smoothing: antialiased; scroll-behavior: auto; }
+  body { @apply bg-white font-sans text-ink; }
+  h1, h2, h3, h4 { @apply font-display tracking-tight text-ink; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-olive; }
+}
+
+@utility container-x { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+@utility btn {
+  @apply inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-[transform,background-color,color,box-shadow] duration-300;
+}
+@utility btn-primary { @apply btn bg-navy text-white shadow-lg shadow-navy/20 hover:bg-olive; }
+@utility btn-ghost { @apply btn border-2 border-navy/15 text-navy hover:border-olive hover:text-olive; }
+@utility eyebrow { @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-olive; }
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Infinite marquee (pure CSS, pauses on hover) */
+.marquee { --gap: 1rem; display: flex; gap: var(--gap); overflow: hidden; user-select: none;
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); }
+.marquee__track { display: flex; flex-shrink: 0; gap: var(--gap); min-width: 100%;
+  justify-content: space-around; animation: marquee var(--speed, 40s) linear infinite; }
+.marquee[data-reverse] .marquee__track { animation-direction: reverse; }
+.marquee:hover .marquee__track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(calc(-100% - var(--gap))); } }
+
+/* Elements hidden until GSAP reveals them; only when JS + motion are allowed */
+.js-motion [data-reveal] { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+/* Cross-page transitions (native, no JS) */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: vt-out 0.3s ease both; }
+::view-transition-new(root) { animation: vt-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes vt-out { to { opacity: 0; transform: translateY(-12px); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(16px); } }
+
+/* Scroll progress */
+.scroll-progress { position: fixed; inset: 0 0 auto; height: 3px; z-index: 60; transform: scaleX(0); transform-origin: left;
+  background: linear-gradient(90deg, var(--color-olive), var(--color-olive-300)); pointer-events: none; }
+
+/* Split-word heading masks */
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.w > span { display: inline-block; will-change: transform; }
+
+/* Cursor follower */
+.cursor-ring { position: fixed; left: 0; top: 0; z-index: 70; width: 28px; height: 28px; margin: -14px 0 0 -14px;
+  border: 1.5px solid var(--color-olive); border-radius: 999px; pointer-events: none;
+  transition: width 0.25s, height 0.25s, margin 0.25s, background-color 0.25s, opacity 0.25s; }
+.cursor-ring.is-active { width: 56px; height: 56px; margin: -28px 0 0 -28px; background: rgb(169 196 108 / 0.18); border-color: transparent; }
+.cursor-ring.is-hidden { opacity: 0; }
+
+/* Tilt glare */
+[data-tilt] { position: relative; transform-style: preserve-3d; }
+[data-tilt]::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+  background: radial-gradient(18rem circle at var(--gx, 50%) var(--gy, 50%), rgb(255 255 255 / 0.35), transparent 60%);
+  transition: opacity 0.3s; }
+[data-tilt]:hover::after { opacity: 1; }
+
+/* Drifting glow blobs */
+.blob { animation: drift 16s ease-in-out infinite alternate; }
+.blob:nth-of-type(2n) { animation-duration: 21s; animation-direction: alternate-reverse; }
+@keyframes drift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(4rem, -3rem) scale(1.12); }
+  100% { transform: translate(-3rem, 2rem) scale(0.95); }
+}
+
+/* Data packet travelling along automation flow lines */
+.flow-line { position: relative; }
+.flow-line::after { content: ''; position: absolute; top: -3px; left: 0; width: 7px; height: 7px; border-radius: 99px;
+  background: var(--color-olive); box-shadow: 0 0 10px var(--color-olive-300); animation: packet 1.8s ease-in-out infinite; }
+@keyframes packet { from { left: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { left: calc(100% - 7px); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}

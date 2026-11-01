@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page Not Found | AR Medias" description="The page you are looking for does not exist." noindex hideContact>
+  <section class="relative grid min-h-[85vh] place-items-center overflow-hidden px-4 pb-20 pt-32 text-center">
+    <div aria-hidden="true" class="blob pointer-events-none absolute -right-24 top-10 -z-10 size-[30rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+    <div>
+      <p class="lost font-display text-[9rem] font-bold leading-none text-navy sm:text-[13rem]" aria-hidden="true">4<span class="text-olive">0</span>4</p>
+      <h1 class="mt-2 text-4xl font-bold sm:text-5xl">This page flew away.</h1>
+      <p class="mx-auto mt-4 max-w-md text-lg text-slate">The page you're looking for doesn't exist or has moved.</p>
+      <div class="mt-9 flex flex-wrap justify-center gap-3">
+        <a href="/" class="btn-primary" data-magnetic>Back to home</a>
+        <a href="/services/" class="btn-ghost">Our services</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lost span { display: inline-block; animation: wobble 3s ease-in-out infinite; }
+  @keyframes wobble { 50% { transform: translateY(-14px) rotate(8deg); } }
+</style>

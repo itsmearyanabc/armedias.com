@@ -1,0 +1,22 @@
+# /etc/systemd/system/armedias.service
+[Unit]
+Description=AR Medias website API (contact form)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/armedias/current
+EnvironmentFile=/var/www/armedias/.env
+ExecStart=/usr/bin/node dist/server/entry.mjs
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+# Database for leads, analytics and login lockouts (outside releases, survives deploys)
+ReadWritePaths=/var/www/armedias/data
+
+[Install]
+WantedBy=multi-user.target

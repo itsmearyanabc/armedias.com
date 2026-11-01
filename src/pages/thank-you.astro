@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+---
+
+<Base title="Thank You | AR Medias" description="Your message has been sent to AR Medias." noindex hideContact>
+  <section class="grid min-h-[80vh] place-items-center px-4 pb-20 pt-32 text-center">
+    <div>
+      <p class="eyebrow">Message sent</p>
+      <h1 class="mt-4 text-5xl font-bold sm:text-6xl">Thank you!</h1>
+      <p class="mx-auto mt-5 max-w-md text-lg text-slate">We'll reply within one business day. For anything urgent, message us on WhatsApp.</p>
+      <div class="mt-9 flex flex-wrap justify-center gap-3">
+        <a href={site.whatsapp} class="btn-primary" rel="noopener" target="_blank">WhatsApp us</a>
+        <a href="/" class="btn-ghost">Back to home</a>
+      </div>
+    </div>
+  </section>
+</Base>

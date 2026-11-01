@@ -1,0 +1,27 @@
+---
+// Lead form at the end of every page (Base renders it before the footer).
+import ContactForm from './ContactForm.astro';
+import { site } from '../data/site';
+---
+
+<section id="contact" aria-labelledby="contact-section-heading" class="relative overflow-hidden bg-mist py-24 lg:py-32">
+  <div aria-hidden="true" class="blob pointer-events-none absolute -left-32 top-10 size-[30rem] rounded-full bg-olive-300/30 blur-3xl"></div>
+  <div class="container-x relative grid items-start gap-14 lg:grid-cols-[1fr_1.15fr]">
+    <div class="lg:sticky lg:top-28">
+      <p class="eyebrow">Start your project</p>
+      <h2 id="contact-section-heading" class="mt-4 text-4xl font-bold sm:text-5xl">Tell us what you want to build.</h2>
+      <p class="mt-5 max-w-md text-lg leading-relaxed text-slate">Share a few details and we'll reply within one business day with next steps and a free consultation.</p>
+      <ul class="mt-8 space-y-3 text-navy [&_a]:inline-flex [&_a]:items-center [&_a]:gap-2.5">
+        <li><a href={`tel:${site.phoneE164}`} class="font-semibold hover:text-olive"><span aria-hidden="true">📞</span>{site.phone}</a></li>
+        <li><a href={site.whatsapp} class="font-semibold hover:text-olive" rel="noopener" target="_blank"><span aria-hidden="true">💬</span>WhatsApp us</a></li>
+        <li><a href={`mailto:${site.email}`} class="font-semibold hover:text-olive"><span aria-hidden="true">✉️</span>{site.email}</a></li>
+      </ul>
+      <ul class="mt-10 grid max-w-md grid-cols-3 gap-4 border-t border-navy/10 pt-8 text-sm text-slate">
+        <li><span class="block font-display text-2xl font-bold text-navy">{site.projectsDelivered}+</span>Projects</li>
+        <li><span class="block font-display text-2xl font-bold text-navy">24h</span>Reply time</li>
+        <li><span class="block font-display text-2xl font-bold text-navy">Free</span>Consultation</li>
+      </ul>
+    </div>
+    <div data-reveal="up"><ContactForm title="Get a free quote" /></div>
+  </div>
+</section>
