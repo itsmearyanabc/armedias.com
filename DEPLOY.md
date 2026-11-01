@@ -29,6 +29,7 @@ stats and login lockouts are stored in a SQLite file in `/var/www/armedias/data`
    ```bash
    sudo cp deploy/armedias.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable armedias
    sudo cp deploy/cloudflare-realip.conf /etc/nginx/snippets/
+   sudo cp deploy/security-headers.conf /etc/nginx/snippets/armedias-security-headers.conf
    sudo cp deploy/nginx.conf /etc/nginx/sites-available/armedias.com
    sudo ln -s /etc/nginx/sites-available/armedias.com /etc/nginx/sites-enabled/
    ```
