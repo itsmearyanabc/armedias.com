@@ -1,5 +1,6 @@
 ---
 import { site, pillars, markets } from '../data/site';
+import SocialIcons from './SocialIcons.astro';
 
 const services = pillars.flatMap((p) => p.items);
 const year = new Date().getFullYear();
@@ -56,8 +57,9 @@ const year = new Date().getFullYear();
     {[...'AR MEDIAS'].map((ch) => <span class="inline-block">{ch === ' ' ? '\u00a0' : ch}</span>)}
   </p>
   <div class="border-t border-white/10">
-    <div class="container-x flex flex-col gap-2 py-6 pr-24 text-sm sm:flex-row sm:justify-between">
+    <div class="container-x flex flex-col gap-4 py-6 pr-24 text-sm sm:flex-row sm:items-center sm:justify-between">
       <p>© {year} {site.legalName}. All rights reserved.</p>
+      <SocialIcons />
       <p><a class="hover:text-ember-300" href="/privacy-policy/">Privacy</a> · <a class="hover:text-ember-300" href="/terms/">Terms</a></p>
     </div>
   </div>

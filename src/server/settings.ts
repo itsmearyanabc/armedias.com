@@ -57,3 +57,38 @@ export function countEvent(name: string) {
 export function eventTotal(name: string, sinceDay: string): number {
   return (db.prepare('SELECT COALESCE(SUM(count), 0) AS n FROM event_counts WHERE name = ? AND day >= ?').get(name, sinceDay) as { n: number }).n;
 }
+
+// Social profile links shown as footer icons. Each network accepts only its own domains.
+export const socialNetworks = {
+  linkedin: { label: 'LinkedIn', hosts: ['linkedin.com'] },
+  instagram: { label: 'Instagram', hosts: ['instagram.com'] },
+  facebook: { label: 'Facebook', hosts: ['facebook.com', 'fb.com'] },
+  x: { label: 'X', hosts: ['x.com', 'twitter.com'] },
+} as const;
+export type SocialKey = keyof typeof socialNetworks;
+export type Socials = Partial<Record<SocialKey, string>>;
+
+export function getSocials(): Socials {
+  try {
+    return JSON.parse(getSetting('socials') ?? '{}') as Socials;
+  } catch {
+    return {};
+  }
+}
+
+/** Validate what the admin typed. Empty fields remove that icon. */
+export function parseSocials(input: Record<string, unknown>): Socials | { error: string } {
+  const out: Socials = {};
+  for (const [key, { label, hosts }] of Object.entries(socialNetworks) as [SocialKey, (typeof socialNetworks)[SocialKey]][]) {
+    let raw = String(input[key] ?? '').trim();
+    if (!raw) continue;
+    if (!/^https?:\/\//i.test(raw)) raw = `https://${raw}`;
+    let url: URL;
+    try { url = new URL(raw); } catch { return { error: `${label}: that link is not valid.` }; }
+    const host = url.hostname.replace(/^(www|m)\./, '');
+    if (!hosts.some((h) => host === h || host.endsWith(`.${h}`))) return { error: `${label}: use a link on ${hosts[0]}.` };
+    url.protocol = 'https:';
+    out[key] = url.href;
+  }
+  return out;
+}

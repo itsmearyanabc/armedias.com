@@ -5,7 +5,7 @@ import logo from '../../assets/logo-mark.png';
 import { isAuthenticated } from '../../server/auth';
 import { getStats } from '../../server/analytics';
 import { db } from '../../server/db';
-import { eventTotal, getWhatsApp, whatsAppUrl } from '../../server/settings';
+import { eventTotal, getSocials, getWhatsApp, socialNetworks, whatsAppUrl } from '../../server/settings';
 
 export const prerender = false;
 
@@ -25,6 +25,7 @@ const leads = db.prepare('SELECT * FROM submissions ORDER BY created_at DESC LIM
 const since = new Date(Date.now() - (days - 1) * 86_400_000).toISOString().slice(0, 10);
 const leadsInRange = leads.filter((l) => l.created_at.slice(0, 10) >= since).length;
 const whatsapp = getWhatsApp();
+const socials = getSocials();
 const waClicks = eventTotal('whatsapp_click', since);
 
 const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
@@ -262,6 +263,23 @@ const cards = [
       </form>
     </section>
 
+    <section class="rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+      <h2 class="text-2xl font-bold">Social media links</h2>
+      <p class="mt-1 text-sm text-slate">Icons appear in the site footer for every link you fill in. Leave a field empty to hide that icon.</p>
+      <form id="social-form" class="mt-6 grid gap-5 sm:grid-cols-2" novalidate>
+        {Object.entries(socialNetworks).map(([key, n]) => (
+          <label class="grid gap-1.5 text-sm font-semibold text-navy">
+            {n.label}
+            <input name={key} value={socials[key as keyof typeof socials] ?? ''} type="url" inputmode="url" class="rounded-2xl border border-navy/15 bg-mist px-4 py-3 font-normal" placeholder={`https://${n.hosts[0]}/armedias`} />
+          </label>
+        ))}
+        <div class="flex flex-wrap items-center gap-3 sm:col-span-2">
+          <button type="submit" class="btn-primary">Save links</button>
+          <p data-social-msg role="status" class="text-sm font-medium"></p>
+        </div>
+      </form>
+    </section>
+
     <p class="pb-6 text-center text-xs text-slate">Visitor stats are cookieless: no IP addresses are stored. For bot traffic, threats and caching, see your Cloudflare dashboard.</p>
   </main>
 </Admin>
@@ -298,6 +316,22 @@ const cards = [
     waMsg.className = `text-sm font-medium ${body.ok ? 'text-olive' : 'text-red-700'}`;
     waMsg.textContent = body.ok ? 'Saved. The site now links to this chat.' : body.error || 'Could not save.';
     if (body.ok) waForm.querySelector<HTMLAnchorElement>('[data-wa-test]')!.href = body.url;
+  });
+
+  const socialForm = document.querySelector<HTMLFormElement>('#social-form')!;
+  const socialMsg = socialForm.querySelector<HTMLElement>('[data-social-msg]')!;
+  socialForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const res = await fetch('/api/admin/settings/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ socials: Object.fromEntries(new FormData(socialForm)) }),
+    });
+    if (res.status === 401) return location.assign('/admin/');
+    const body = await res.json().catch(() => ({}));
+    socialMsg.className = `text-sm font-medium ${body.ok ? 'text-olive' : 'text-red-700'}`;
+    socialMsg.textContent = body.ok ? 'Saved. Footer icons update within 5 minutes.' : body.error || 'Could not save.';
+    if (body.ok) Object.entries(body.socials as Record<string, string>).forEach(([k, v]) => { (socialForm.elements.namedItem(k) as HTMLInputElement).value = v; });
   });
 
   document.querySelector('[data-logout]')!.addEventListener('click', async () => {
