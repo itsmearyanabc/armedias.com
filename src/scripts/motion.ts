@@ -36,6 +36,12 @@ export async function initMotion() {
     });
   });
 
+  // Orange underlines draw themselves once their heading is on screen
+  const scribbles = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add('is-drawn'); scribbles.unobserve(e.target); }
+  }), { rootMargin: '0px 0px -15% 0px' });
+  document.querySelectorAll('.scribble').forEach((el) => scribbles.observe(el));
+
   // Scroll reveals: data-reveal="up" | "fade" | "stagger" (children)
   gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
     const kind = el.dataset.reveal;

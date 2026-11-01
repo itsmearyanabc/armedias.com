@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { site } from '../data/site';
 import { process as steps } from '../data/process';
+import Scribble from '../components/Scribble.astro';
 
 const title = 'Our Process | How AR Medias Delivers Software Projects';
 const description =
@@ -45,7 +46,7 @@ const schema = [
       <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero><a href="/" class="hover:text-olive">Home</a> / <span>Process</span></nav>
       <p class="eyebrow mt-6" data-hero>Our process</p>
       <h1 class="mt-4 max-w-5xl text-5xl font-bold leading-[1.03] sm:text-6xl xl:text-7xl" data-hero>
-        No surprises. Just a clear path from <span class="text-olive">idea to launch.</span>
+        No surprises. Just a clear path from <Scribble><span class="text-olive">idea to launch.</span></Scribble>
       </h1>
       <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate" data-hero>
         The same five steps behind {site.projectsDelivered}+ projects. You always know what is happening, what it costs, and what comes next.
@@ -63,26 +64,26 @@ const schema = [
 
   <!-- STEPS: pinned horizontal scroll on desktop, stacked on mobile -->
   <section class="hscroll relative overflow-hidden bg-navy text-white" aria-label="Process steps">
-    <div class="hscroll-progress absolute left-0 top-0 h-1 w-full origin-left scale-x-0 bg-olive-300" aria-hidden="true"></div>
+    <div class="hscroll-progress absolute left-0 top-0 h-1 w-full origin-left scale-x-0 bg-gradient-to-r from-ember to-sun" aria-hidden="true"></div>
     <div class="hscroll-track flex flex-col gap-6 px-4 py-20 sm:px-6 lg:h-screen lg:flex-row lg:items-center lg:gap-8 lg:px-[8vw] lg:py-0">
       {steps.map((s, i) => (
         <article id={`step-${i + 1}`} class="step-panel relative flex shrink-0 flex-col overflow-hidden rounded-[2rem] bg-white/6 p-8 ring-1 ring-white/10 sm:p-10 lg:h-[72vh] lg:w-[min(46rem,78vw)]">
           <span aria-hidden="true" class="step-num pointer-events-none absolute -right-4 -top-10 font-display text-[11rem] font-bold leading-none text-white/[0.05] sm:text-[15rem]">0{i + 1}</span>
           <div class="flex items-center gap-3">
-            <span class="grid size-12 place-items-center rounded-full bg-olive font-display font-bold">0{i + 1}</span>
+            <span class="grid size-12 place-items-center rounded-full bg-ember font-display font-bold text-navy">0{i + 1}</span>
             <span class="rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">{s.duration}</span>
           </div>
           <h2 class="mt-6 text-4xl font-bold text-white sm:text-5xl" data-no-split>{s.t}</h2>
           <p class="mt-4 max-w-xl text-lg leading-relaxed text-white/75">{s.d}</p>
           <div class="mt-auto grid gap-8 pt-10 sm:grid-cols-2">
             <div>
-              <h3 class="text-sm font-semibold uppercase tracking-[0.2em] text-olive-300">What happens</h3>
+              <h3 class="text-sm font-semibold uppercase tracking-[0.2em] text-ember-300">What happens</h3>
               <ul class="mt-4 space-y-2.5">
-                {s.activities.map((a) => <li class="flex gap-2.5 text-white/85"><span class="mt-2 size-1.5 shrink-0 rounded-full bg-olive-300"></span>{a}</li>)}
+                {s.activities.map((a) => <li class="flex gap-2.5 text-white/85"><span class="mt-2 size-1.5 shrink-0 rounded-full bg-ember"></span>{a}</li>)}
               </ul>
             </div>
             <div>
-              <h3 class="text-sm font-semibold uppercase tracking-[0.2em] text-olive-300">You receive</h3>
+              <h3 class="text-sm font-semibold uppercase tracking-[0.2em] text-ember-300">You receive</h3>
               <ul class="mt-4 space-y-2.5">
                 {s.outputs.map((o) => (
                   <li class="flex gap-2.5 text-white/85">
@@ -129,7 +130,7 @@ const schema = [
       <ul class="mt-14 grid gap-5 lg:grid-cols-3" data-reveal="stagger">
         {models.map((m, i) => (
           <li data-tilt class={`flex flex-col rounded-[2rem] p-9 ${i === 0 ? 'bg-navy text-white shadow-2xl shadow-navy/25' : 'bg-white ring-1 ring-navy/8'}`}>
-            <span class={`self-start rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider ${i === 0 ? 'bg-olive text-white' : 'bg-olive/10 text-olive'}`}>{m.tag}</span>
+            <span class={`self-start rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider ${i === 0 ? 'bg-ember text-navy' : 'bg-olive/10 text-olive'}`}>{m.tag}</span>
             <h3 class={`mt-6 text-2xl font-bold ${i === 0 ? 'text-white' : ''}`}>{m.t}</h3>
             <p class={`mt-3 flex-1 leading-relaxed ${i === 0 ? 'text-white/75' : 'text-slate'}`}>{m.d}</p>
             <a href="/contact/" class={`mt-8 font-semibold ${i === 0 ? 'text-olive-300 hover:text-white' : 'text-olive hover:text-navy'}`}>Discuss this option →</a>
@@ -146,7 +147,7 @@ const schema = [
       <h2 class="relative mx-auto max-w-3xl text-4xl font-bold text-white sm:text-5xl">Step one is a free call.</h2>
       <p class="relative mx-auto mt-5 max-w-xl text-lg text-white/85">30 minutes, no obligation. You leave with a clear plan, timeline and price.</p>
       <div class="relative mt-9 flex flex-wrap justify-center gap-3">
-        <a href="/contact/" class="btn bg-white text-navy hover:bg-navy hover:text-white" data-magnetic>Book a free call</a>
+        <a href="/contact/" class="btn-ember" data-magnetic>Book a free call</a>
         <a href={site.whatsapp} class="btn border-2 border-white/40 text-white hover:border-white" rel="noopener" target="_blank">WhatsApp us</a>
       </div>
     </div>

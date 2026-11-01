@@ -83,7 +83,7 @@ const schema = [
             <span class="orbit-item" style={`--a:${(360 / outer.length) * i + 30}deg`}><span class="orbit-fix"><span class="orbit-label">{t}</span></span></span>
           ))}
         </div>
-        <div class="orbit-core absolute left-1/2 top-1/2 grid size-20 -translate-x-1/2 sm:size-28 -translate-y-1/2 place-items-center rounded-[2rem] bg-navy text-olive-300 shadow-2xl shadow-navy/40">
+        <div class="orbit-core absolute left-1/2 top-1/2 grid size-20 -translate-x-1/2 sm:size-28 -translate-y-1/2 place-items-center rounded-[2rem] bg-navy text-ember shadow-2xl shadow-navy/40">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path class="icon-draw" d={s.icon} /></svg>
         </div>
       </div>
@@ -110,7 +110,7 @@ const schema = [
       <ul class="mt-14 grid gap-5 md:grid-cols-2" data-reveal="stagger">
         {s.problems.map((p, i) => (
           <li data-tilt class="rounded-3xl bg-white p-8 ring-1 ring-navy/8">
-            <span class="font-display text-sm font-bold text-olive">0{i + 1}</span>
+            <span class="font-display text-sm font-bold text-ember-600">0{i + 1}</span>
             <h3 class="mt-3 text-2xl font-bold">{p.t}</h3>
             <p class="mt-3 leading-relaxed text-slate">{p.d}</p>
           </li>
@@ -124,14 +124,14 @@ const schema = [
     <div aria-hidden="true" class="blob pointer-events-none absolute -right-40 top-10 size-[30rem] rounded-full bg-olive/30 blur-3xl"></div>
     <div class="container-x relative grid gap-14 lg:grid-cols-[1fr_1.3fr]">
       <div>
-        <p class="eyebrow text-olive-300!" data-reveal="fade">What you get</p>
+        <p class="eyebrow text-ember-300!" data-reveal="fade">What you get</p>
         <h2 class="mt-4 text-4xl font-bold text-white sm:text-5xl">Everything included in your {s.name.toLowerCase()} project.</h2>
         <p class="mt-6 text-lg text-white/70" data-reveal="up">{s.timeline}</p>
       </div>
       <ul class="grid gap-3 sm:grid-cols-2" data-reveal="stagger">
         {s.deliverables.map((d) => (
           <li class="flex items-start gap-3 rounded-2xl bg-white/6 px-5 py-4 ring-1 ring-white/10">
-            <svg class="mt-0.5 shrink-0 text-olive-300" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9" /></svg>
+            <svg class="mt-0.5 shrink-0 text-ember" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9" /></svg>
             <span>{d}</span>
           </li>
         ))}
@@ -148,7 +148,7 @@ const schema = [
       </div>
       <ol class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5" data-reveal="stagger">
         {steps.map((st, i) => (
-          <li class="group relative overflow-hidden rounded-3xl bg-mist p-6 transition-colors duration-300 hover:bg-olive hover:text-white">
+          <li class="group relative overflow-hidden rounded-3xl bg-mist p-6 transition-colors duration-300 hover:bg-ember hover:text-navy">
             <span class="font-display text-5xl font-bold text-navy/10 transition-colors group-hover:text-white/25">0{i + 1}</span>
             <h3 class="mt-4 text-xl font-bold group-hover:text-white">{st.t}</h3>
             <p class="mt-1 text-sm text-slate group-hover:text-white/80">{st.short}</p>
@@ -163,7 +163,7 @@ const schema = [
     <div class="marquee" style="--speed: 30s">
       {[0, 1].map((copy) => (
         <ul class="marquee__track" aria-hidden={copy === 1 ? 'true' : undefined}>
-          {[...s.tech, ...s.tech].map((t) => <li class="whitespace-nowrap font-display text-3xl font-bold text-navy/15 sm:text-5xl">{t} <span class="text-olive/40">✦</span></li>)}
+          {[...s.tech, ...s.tech].map((t) => <li class="whitespace-nowrap font-display text-3xl font-bold text-navy/15 sm:text-5xl">{t} <span class="text-ember/60">✦</span></li>)}
         </ul>
       ))}
     </div>
@@ -218,7 +218,7 @@ const schema = [
       <h2 class="relative mx-auto max-w-3xl text-4xl font-bold text-white sm:text-5xl">Let's plan your {s.name.toLowerCase()} project.</h2>
       <p class="relative mx-auto mt-5 max-w-xl text-lg text-white/85">Free 30-minute call. Leave with a scope, timeline and fixed quote.</p>
       <div class="relative mt-9 flex flex-wrap justify-center gap-3">
-        <a href="/contact/" class="btn bg-white text-navy hover:bg-navy hover:text-white" data-magnetic>Book a free call</a>
+        <a href="/contact/" class="btn-ember" data-magnetic>Book a free call</a>
         <a href={site.whatsapp} class="btn border-2 border-white/40 text-white hover:border-white" rel="noopener" target="_blank">WhatsApp us</a>
       </div>
     </div>
@@ -241,7 +241,7 @@ const schema = [
   @keyframes counter { from { transform: translate(-50%, -50%) rotate(0); } to { transform: translate(-50%, -50%) rotate(-360deg); } }
   .orbit-core { animation: pulse 3.2s ease-in-out infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes pulse { 50% { box-shadow: 0 0 0 18px rgb(169 196 108 / 0.15), 0 25px 50px -12px rgb(19 33 58 / 0.4); } }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 18px rgb(255 122 26 / 0.18), 0 25px 50px -12px rgb(19 33 58 / 0.4); } }
 </style>
 
 <script>

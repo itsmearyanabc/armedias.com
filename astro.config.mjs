@@ -11,6 +11,6 @@ export default defineConfig({
   output: 'static',
   adapter: node({ mode: 'standalone' }),
   build: { format: 'directory', inlineStylesheets: 'auto' },
-  integrations: [sitemap({ filter: (page) => !page.includes('/thank-you/') })],
+  integrations: [sitemap({ filter: (page) => !/\/(thank-you|lab)\//.test(page) })],
   vite: { plugins: [tailwindcss()] },
 });
