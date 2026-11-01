@@ -1,0 +1,19 @@
+---
+// One technology in the marquee: its official logo in brand colour (drawn from TechSprite),
+// or a wordmark when no logo exists.
+import { techLogos, techSymbolId } from '../data/tech-logos';
+
+interface Props { name: string; decorative?: boolean }
+const { name, decorative = false } = Astro.props;
+const logo = techLogos[name];
+---
+
+<li class="tech-pill group grid h-16 min-w-16 place-items-center rounded-full border border-navy/10 bg-white px-5 transition-[border-color,transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-ember/40 hover:shadow-lg hover:shadow-navy/10" title={name}>
+  {logo ? (
+    <svg viewBox="0 0 24 24" width="32" height="32" role={decorative ? undefined : 'img'} aria-hidden={decorative ? 'true' : undefined} aria-label={decorative ? undefined : name} class="transition-transform duration-300 group-hover:scale-110">
+      <use href={`#${techSymbolId(name)}`} />
+    </svg>
+  ) : (
+    <span class="whitespace-nowrap font-display text-lg font-bold tracking-tight text-navy" aria-hidden={decorative ? 'true' : undefined}>{name}</span>
+  )}
+</li>

@@ -28,6 +28,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "@types/nodemailer": "^8.0.2",
     "sharp": "^0.35.5",
+    "simple-icons": "^16.36.0",
     "tailwindcss": "^4.3.3"
   },
   "private": true

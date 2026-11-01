@@ -1,0 +1,12 @@
+---
+// Each logo's path is emitted once; TechLogo pills reference it with <use>, so the
+// duplicated marquee rows don't repeat the SVG data.
+import { techLogos, techSymbolId } from '../data/tech-logos';
+
+interface Props { names: string[] }
+const unique = [...new Set(Astro.props.names)].filter((n) => techLogos[n]);
+---
+
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  {unique.map((n) => <symbol id={techSymbolId(n)} viewBox="0 0 24 24"><path d={techLogos[n].path} fill={`#${techLogos[n].hex}`} /></symbol>)}
+</svg>

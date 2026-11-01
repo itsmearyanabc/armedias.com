@@ -3,6 +3,8 @@ import Base from '../layouts/Base.astro';
 import ClientLogos from '../components/ClientLogos.astro';
 import Scribble from '../components/Scribble.astro';
 import Illustration from '../components/illustrations/Illustration.astro';
+import TechLogo from '../components/TechLogo.astro';
+import TechSprite from '../components/TechSprite.astro';
 import PostCard from '../components/PostCard.astro';
 import { getPosts } from '../lib/blog';
 import { site, pillars, markets, tech } from '../data/site';
@@ -13,6 +15,8 @@ const description =
   'AR Medias builds websites, mobile apps, custom CRM/ERP software and AI automation for businesses in India, UAE, USA, Canada, Australia, Japan and China. Founder-led team in New Delhi since 2024.';
 
 const latest = (await getPosts()).slice(0, 3);
+// React Native shares React's logo, so it is shown once in the logo strip
+const marqueeTech = tech.filter((t) => t !== 'React Native');
 
 const stats: { label: string; value?: number; suffix?: string; text?: string }[] = [
   { value: site.projectsDelivered, suffix: '+', label: 'Projects delivered' },
@@ -141,12 +145,13 @@ const faqSchema = {
 
   <!-- TECH MARQUEE -->
   <section aria-labelledby="tech-heading" class="border-y border-navy/8 bg-mist/60 py-10">
+    <TechSprite names={marqueeTech} />
     <h2 id="tech-heading" class="container-x mb-6 text-center text-sm font-semibold uppercase tracking-[0.2em] text-slate">Technologies we build with</h2>
-    {[tech.slice(0, 11), tech.slice(11)].map((row, i) => (
+    {[marqueeTech.slice(0, 11), marqueeTech.slice(11)].map((row, i) => (
       <div class="marquee mb-4 last:mb-0" data-reverse={i === 1 ? '' : undefined} style="--speed: 45s">
         {[0, 1].map((copy) => (
           <ul class="marquee__track" aria-hidden={copy === 1 ? 'true' : undefined}>
-            {row.map((t) => <li class="whitespace-nowrap rounded-full border border-navy/10 bg-white px-5 py-2.5 font-display text-base font-semibold text-navy/80 transition-colors hover:border-olive hover:text-olive">{t}</li>)}
+            {row.map((t) => <TechLogo name={t} decorative={copy === 1} />)}
           </ul>
         ))}
       </div>
