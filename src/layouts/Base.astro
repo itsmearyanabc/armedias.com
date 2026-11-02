@@ -103,7 +103,13 @@ const jsonLd = [organization, website, ...schema];
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <script is:inline>
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-motion');
+      // Automated browsers (crawlers, renderers) get the same content without the hidden
+      // start state. If the motion script never starts, content is shown after 4 s.
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches && !navigator.webdriver) {
+        const root = document.documentElement;
+        root.classList.add('js-motion');
+        setTimeout(() => { if (!root.dataset.motion) root.classList.remove('js-motion'); }, 4000);
+      }
     </script>
     <slot name="head" />
   </head>

@@ -1,3 +1,44 @@
+# armedias.com crawler policy
+# A crawler that matches a named group below ignores the "*" group, so every group
+# repeats the private paths. To block a crawler, change its "Allow: /" to "Disallow: /".
+
+# Search engines
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: DuckDuckBot
+User-agent: Applebot
+User-agent: YandexBot
+User-agent: Baiduspider
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /lab/
+
+# AI search and user-requested fetches (answers that cite and link the site)
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /lab/
+
+# AI model training (allowed by choice; set to "Disallow: /" to opt out)
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: CCBot
+User-agent: Meta-ExternalAgent
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /lab/
+
+# Everyone else
 User-agent: *
 Allow: /
 Disallow: /admin/

@@ -1,5 +1,6 @@
 // Site-wide motion. Content is fully visible without JS; `.js-motion` (set inline in
-// <head> only when reduced motion is off) hides [data-reveal] until GSAP animates it in.
+// <head> only when reduced motion is off and the browser isn't automated) hides
+// [data-reveal] until GSAP animates it in.
 export async function initMotion() {
   const root = document.documentElement;
   if (!root.classList.contains('js-motion')) return;
@@ -10,6 +11,8 @@ export async function initMotion() {
     import('lenis'),
   ]);
   gsap.registerPlugin(ScrollTrigger);
+  // Tells the 4 s fallback in Base.astro that reveals are running
+  root.dataset.motion = 'on';
 
   const lenis = new Lenis({ lerp: 0.1 });
   lenis.on('scroll', ScrollTrigger.update);
