@@ -41,11 +41,62 @@ stats and login lockouts are stored in a SQLite file in `/var/www/armedias/data`
 
 ## Cloudflare (free plan)
 
-1. Add `armedias.com` to Cloudflare and switch your domain's nameservers to the ones it gives you.
-2. Make the `A` records for `armedias.com` and `www` **Proxied** (orange cloud).
-3. SSL/TLS → set mode to **Full (strict)**.
-4. Cloudflare then sends each visitor's country to the server, which the admin dashboard
-   uses for "Visitors by country". Cloudflare's own dashboard adds bot, threat and cache stats.
+Cloudflare adds a CDN and sends each visitor's country to the server, which the admin
+dashboard uses for "Visitors by country". Email stays on Hostinger Mail, so its records
+must be copied exactly and stay **DNS only** (grey cloud).
+
+### 1. Add the site and check the imported records
+
+Add `armedias.com` at dash.cloudflare.com (Free plan). Before changing nameservers, make
+sure the DNS page has exactly these records; add any that are missing:
+
+| Type | Name | Content | Proxy |
+|---|---|---|---|
+| A | `@` | `200.141.4.211` | Proxied |
+| AAAA | `@` | `2a02:4780:63:9dfa::1` | Proxied |
+| CNAME | `www` | `armedias.com` | Proxied |
+| MX | `@` | `mx1.hostinger.com` (priority 5) | DNS only |
+| MX | `@` | `mx2.hostinger.com` (priority 10) | DNS only |
+| TXT | `@` | `v=spf1 include:_spf.mail.hostinger.com ~all` | DNS only |
+| CNAME | `hostingermail-a._domainkey` | `hostingermail-a.dkim.mail.hostinger.com` | DNS only |
+| CNAME | `hostingermail-b._domainkey` | `hostingermail-b.dkim.mail.hostinger.com` | DNS only |
+| CNAME | `hostingermail-c._domainkey` | `hostingermail-c.dkim.mail.hostinger.com` | DNS only |
+| TXT | `_dmarc` | `v=DMARC1; p=none` | DNS only |
+| CNAME | `autodiscover` | `autodiscover.mail.hostinger.com` | DNS only |
+| CNAME | `autoconfig` | `autoconfig.mail.hostinger.com` | DNS only |
+
+Delete imported records for subdomains that are switched off (old app subdomains) only if
+you are sure nothing uses them.
+
+### 2. Settings (before switching nameservers)
+
+| Where | Setting | Value | Why |
+|---|---|---|---|
+| SSL/TLS → Overview | Encryption mode | **Full (strict)** | The server has a valid Let's Encrypt certificate |
+| SSL/TLS → Edge Certificates | Always Use HTTPS | **Off** | nginx already redirects; leaving it off keeps Let's Encrypt renewal on the plain HTTP path it uses today |
+| SSL/TLS → Edge Certificates | HSTS | **Off** | nginx already sends HSTS |
+| Security → Bots | Bot Fight Mode | **Off** | Can challenge crawlers |
+| Security → Bots / AI Crawl Control | Block AI bots | **Do not block** | robots.txt allows AI search and training crawlers |
+| Security → Bots / AI Crawl Control | AI Labyrinth, Managed robots.txt | **Off** | The site's own robots.txt must be served unchanged |
+| Speed → Optimization | Rocket Loader | **Off** | Rewrites script loading and can break the animations |
+| Scrape Shield | Email Address Obfuscation | **Off** | Keeps the email address identical for visitors and crawlers |
+| Network | IP Geolocation | **On** (default) | Sends the visitor's country header |
+| Caching | Caching level | Standard (default) | No "Cache Everything": forms, admin and API must reach the server |
+
+### 3. Switch nameservers
+
+In Hostinger (Domains → armedias.com → DNS / Nameservers) replace the nameservers with the
+two Cloudflare gives you. The switch takes minutes to a few hours.
+
+### 4. Check
+
+```bash
+curl -sI https://armedias.com/ | grep -iE 'cf-ray|server|strict-transport'
+certbot renew --dry-run
+```
+
+`cf-ray` in the output means Cloudflare is in front. Send a test email to and from
+info@armedias.com, then open `/admin/` after a few visits: "Visitors by country" fills in.
 
 ## Admin panel
 
@@ -67,5 +118,13 @@ restarts the API and reloads nginx. Failed builds leave the live site untouched.
 ## After the first deploy
 
 - Submit the contact form once and confirm the email arrives at info@armedias.com.
-- Add the site to Google Search Console and submit `https://armedias.com/sitemap-index.xml`.
+- Search engines (after the Cloudflare switch, so the TXT records go into Cloudflare):
+  1. search.google.com/search-console → Add property → **Domain** → `armedias.com`.
+     Copy the `google-site-verification=…` TXT value into Cloudflare DNS (`@`, DNS only),
+     then click Verify.
+  2. Sitemaps → submit `https://armedias.com/sitemap-index.xml`.
+  3. URL Inspection → request indexing for the home page and each `/services/…/` page
+     (the daily limit is about 10; spread the rest over the next days).
+  4. bing.com/webmasters → **Import from Google Search Console** (covers Bing, DuckDuckGo,
+     Yahoo and ChatGPT search).
 - Check https://pagespeed.web.dev for the home page on mobile.
