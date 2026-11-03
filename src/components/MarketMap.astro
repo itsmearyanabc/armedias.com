@@ -1,0 +1,64 @@
+---
+// Dotted land map cropped to the route from New Delhi to one market's city.
+// The route draws itself and the destination pin pulses once the map scrolls
+// into view; without motion it shows the finished route.
+import { worldDots, project } from '../data/world-dots';
+import { markets } from '../data/site';
+
+interface Props { coords: readonly [number, number]; class?: string }
+const { coords, class: className } = Astro.props;
+
+const hq = project(markets[0].coords);
+const city = project(coords);
+const isHq = hq[0] === city[0] && hq[1] === city[1];
+
+// Bend the route north by a third of its length; the curve's peak sits halfway
+// to the control point, so include that peak in the crop.
+const dist = Math.hypot(city[0] - hq[0], city[1] - hq[1]);
+const ctrl = [(hq[0] + city[0]) / 2, (hq[1] + city[1]) / 2 - dist / 3];
+const peak = [(hq[0] + city[0]) / 2, (hq[1] + city[1]) / 4 + ctrl[1] / 2];
+
+const xs = [hq[0], city[0]], ys = [hq[1], city[1], peak[1]];
+const pad = 12;
+const w = Math.max(56, Math.max(...xs) - Math.min(...xs) + pad * 2, (Math.max(...ys) - Math.min(...ys) + pad * 2) * 2);
+const h = w / 2;
+const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+const viewBox = [cx - w / 2, cy - h / 2, w, h].map((n) => +n.toFixed(2)).join(' ');
+const r = +(w * 0.022).toFixed(2);
+// Route width in map units, about 1.6px at card size. A non-scaling stroke would
+// break the pathLength-based dash that draws the route in Chromium.
+const routeWidth = +(w * 0.011).toFixed(3);
+const f = (n: number) => +n.toFixed(2);
+---
+
+<svg data-market-map viewBox={viewBox} class:list={['market-map block aspect-[2/1] w-full', className]} aria-hidden="true" focusable="false">
+  <path d={worldDots} fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-dasharray="0 2" class="text-navy/25 transition-colors duration-300 group-hover:text-white/35" />
+  {!isHq && (
+    <path class="route text-ember transition-colors group-hover:text-sun" d={`M${f(hq[0])} ${f(hq[1])}Q${f(ctrl[0])} ${f(ctrl[1])} ${f(city[0])} ${f(city[1])}`} pathLength="1" fill="none" stroke="currentColor" stroke-width={routeWidth} stroke-linecap="round" />
+  )}
+  {!isHq && <circle cx={f(hq[0])} cy={f(hq[1])} r={f(r * 0.7)} class="fill-olive transition-colors group-hover:fill-white" />}
+  <circle class="pulse fill-ember" cx={f(city[0])} cy={f(city[1])} r={r} />
+  <circle class="pin fill-ember stroke-white" cx={f(city[0])} cy={f(city[1])} r={r} stroke-width="1.5" vector-effect="non-scaling-stroke" />
+</svg>
+
+<style>
+  .market-map .pulse, .market-map .pin { transform-box: fill-box; transform-origin: center; }
+  .market-map .pulse { opacity: 0; }
+  .market-map[data-drawn] .pulse { animation: map-pulse 2.4s ease-out 1.5s infinite; }
+  @keyframes map-pulse { 0% { opacity: 0.55; transform: scale(1); } 100% { opacity: 0; transform: scale(3.2); } }
+
+  /* Hidden states only apply while scripted motion is active (see Base.astro). */
+  :global(.js-motion) .market-map .route { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.3s cubic-bezier(0.6, 0, 0.2, 1) 0.2s, color 0.3s; }
+  :global(.js-motion) .market-map .pin { transform: scale(0); transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 1.3s; }
+  :global(.js-motion) .market-map[data-drawn] .route { stroke-dashoffset: 0; }
+  :global(.js-motion) .market-map[data-drawn] .pin { transform: scale(1); }
+  @media (prefers-reduced-motion: reduce) { .market-map[data-drawn] .pulse { animation: none; } }
+</style>
+
+<script>
+  const maps = document.querySelectorAll<SVGElement>('[data-market-map]');
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) { e.target.setAttribute('data-drawn', ''); io.unobserve(e.target); }
+  }, { threshold: 0.6 });
+  maps.forEach((m) => io.observe(m));
+</script>

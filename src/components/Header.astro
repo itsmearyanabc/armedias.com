@@ -30,7 +30,7 @@ const path = Astro.url.pathname;
     <div class="flex items-center gap-2">
       <a href="/contact/" class="btn-primary hidden sm:inline-flex" data-magnetic>Book a free call</a>
       <button data-menu-toggle aria-expanded="false" aria-controls="mobile-menu" class="grid size-11 place-items-center rounded-full bg-mist lg:hidden" aria-label="Open menu">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h14M3 14h14" /></svg>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path class="menu-line menu-line--top" d="M3 6h14" /><path class="menu-line menu-line--bottom" d="M3 14h14" /></svg>
       </button>
     </div>
   </div>
@@ -56,15 +56,21 @@ const path = Astro.url.pathname;
   addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  toggle.addEventListener('click', () => {
-    const open = toggle.getAttribute('aria-expanded') !== 'true';
+  const setOpen = (open: boolean) => {
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     menu.hidden = !open;
+  };
+  toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !menu.hidden) { setOpen(false); toggle.focus(); }
   });
 </script>
 
 <style>
   [data-header] { background: rgb(255 255 255 / 0.7); backdrop-filter: blur(14px); }
+  .menu-line { transform-box: fill-box; transform-origin: center; transition: transform 0.3s ease; }
+  [aria-expanded='true'] .menu-line--top { transform: translateY(4px) rotate(45deg); }
+  [aria-expanded='true'] .menu-line--bottom { transform: translateY(-4px) rotate(-45deg); }
   [data-header]:global(.is-scrolled) { background: rgb(255 255 255 / 0.92); box-shadow: 0 1px 0 rgb(19 33 58 / 0.08), 0 10px 30px -18px rgb(19 33 58 / 0.25); }
 </style>
