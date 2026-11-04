@@ -1,0 +1,46 @@
+---
+// Faint dotted world centred on New Delhi, with a light travelling along the
+// route to each market city. Decorative background for dark panels.
+import { worldDots, project, route } from '../data/world-dots';
+import { markets } from '../data/site';
+
+const hq = project(markets[0].coords);
+const cities = markets.slice(1).map((m) => ({ at: project(m.coords), d: route(hq, project(m.coords)).d }));
+// 330 x 125 map units around Delhi. The map keeps a readable scale (at least 64rem
+// wide, so dots stay small on phones) and is centred on the panel.
+const viewBox = `${hq[0] - 165} 20 330 125`;
+const r = (n: number) => +n.toFixed(2);
+---
+
+<svg aria-hidden="true" focusable="false" viewBox={viewBox} class="route-backdrop pointer-events-none absolute left-1/2 top-1/2 aspect-[330/125] w-[max(100%,64rem)] -translate-x-1/2 -translate-y-1/2">
+  <path d={worldDots} fill="none" stroke="#fff" stroke-opacity="0.16" stroke-width="1.15" stroke-linecap="round" stroke-dasharray="0 2" />
+  {cities.map((c, i) => (
+    <g style={`--i:${i}`}>
+      <path d={c.d} fill="none" stroke="#fff" stroke-opacity="0.18" stroke-width="0.35" />
+      <path class="comet" d={c.d} pathLength="1" fill="none" stroke="#ffb36b" stroke-width="0.7" stroke-linecap="round" />
+      <circle class="city" cx={r(c.at[0])} cy={r(c.at[1])} r="0.9" fill="#ffb36b" />
+    </g>
+  ))}
+  <circle class="hub-ring" cx={r(hq[0])} cy={r(hq[1])} r="1.4" fill="none" stroke="#ffc93c" stroke-width="0.4" />
+  <circle cx={r(hq[0])} cy={r(hq[1])} r="1.4" fill="#ffc93c" />
+</svg>
+
+<style>
+  /* Keep the middle calm so the heading stays the focus */
+  .route-backdrop {
+    -webkit-mask-image: radial-gradient(ellipse 40% 45% at 50% 50%, rgb(0 0 0 / 0.25), #000 90%);
+    mask-image: radial-gradient(ellipse 40% 45% at 50% 50%, rgb(0 0 0 / 0.25), #000 90%);
+  }
+  /* One short dash, hidden before the start at 0.14 and past the end at -1 */
+  .comet { stroke-dasharray: 0.14 2; stroke-dashoffset: 0.14; animation: comet 4.2s cubic-bezier(0.45, 0, 0.35, 1) calc(var(--i) * 0.7s) infinite; }
+  @keyframes comet { 70%, 100% { stroke-dashoffset: -1; } }
+  .city, .hub-ring { transform-box: fill-box; transform-origin: center; }
+  .city { animation: city-blink 4.2s ease-out calc(var(--i) * 0.7s + 2.9s) infinite; }
+  @keyframes city-blink { 0% { transform: scale(1); } 12% { transform: scale(2.2); } 30%, 100% { transform: scale(1); } }
+  .hub-ring { animation: hub 2.8s ease-out infinite; }
+  @keyframes hub { from { transform: scale(1); opacity: 0.9; } to { transform: scale(4); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .comet { display: none; }
+    .city, .hub-ring { animation: none; }
+  }
+</style>

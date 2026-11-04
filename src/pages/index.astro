@@ -8,6 +8,9 @@ import FeatureCard from '../components/FeatureCard.astro';
 import { industries } from '../data/industries';
 import IndustryIcon from '../components/IndustryIcon.astro';
 import MarketMap from '../components/MarketMap.astro';
+import Flag from '../components/Flag.astro';
+import Spotlight from '../components/Spotlight.astro';
+import RouteBackdrop from '../components/RouteBackdrop.astro';
 import BirdMascot from '../components/BirdMascot.astro';
 import TechSprite from '../components/TechSprite.astro';
 import PostCard from '../components/PostCard.astro';
@@ -253,7 +256,7 @@ const faqSchema = {
               <MarketMap coords={m.coords} class="mb-3 sm:mb-4" />
               <p class="text-xs font-semibold uppercase tracking-wider text-olive group-hover:text-white/80 sm:text-sm">{m.code}</p>
               <p class="mt-1 font-display text-xl font-bold sm:mt-2 sm:text-2xl">{m.country}</p>
-              <p class="mt-1 text-xs text-slate group-hover:text-white/80 sm:text-sm">{m.city} · <time data-clock={m.tz}>--:--</time></p>
+              <p class="mt-1 flex items-center gap-1.5 text-xs text-slate group-hover:text-white/80 sm:text-sm">{m.city} · <time data-clock={m.tz}>--:--</time><Flag code={m.code} class="ml-0.5" /></p>
             </a>
           </li>
         ))}
@@ -265,8 +268,10 @@ const faqSchema = {
   </section>
 
   <!-- PROCESS -->
-  <section aria-labelledby="process-heading" class="relative overflow-hidden bg-navy py-24 text-white lg:py-32">
+  <section aria-labelledby="process-heading" data-process class="relative overflow-hidden bg-navy py-24 text-white lg:py-32">
     <div aria-hidden="true" class="blob pointer-events-none absolute -left-40 top-1/3 size-[30rem] rounded-full bg-olive/25 blur-3xl"></div>
+    <div aria-hidden="true" class="blob pointer-events-none absolute -right-32 -top-24 size-[26rem] rounded-full bg-ember/10 blur-3xl"></div>
+    <Spotlight grid x="80%" y="20%" />
     <div class="container-x relative">
       <div class="max-w-2xl" data-reveal="up">
         <p class="eyebrow text-ember-300!">How we work</p>
@@ -276,8 +281,8 @@ const faqSchema = {
       <span aria-hidden="true" class="process-line absolute left-[1.4rem] top-0 h-full w-0.5 origin-top bg-gradient-to-b from-ember to-sun lg:bg-gradient-to-r lg:left-0 lg:top-[1.4rem] lg:h-0.5 lg:w-full lg:origin-left"></span>
       <ol class="relative grid gap-10 lg:grid-cols-5 lg:gap-6">
         {steps.map((s, i) => (
-          <li class="process-step relative pl-16 lg:pl-0 lg:pt-16">
-            <span class="absolute left-0 top-0 grid size-11 place-items-center rounded-full bg-ember font-display text-sm font-bold text-navy ring-8 ring-navy">0{i + 1}</span>
+          <li class="process-step relative pl-16 lg:pl-0 lg:pt-16" style={`--i:${i}`}>
+            <span class="step-dot absolute left-0 top-0 grid size-11 place-items-center rounded-full bg-ember font-display text-sm font-bold text-navy ring-8 ring-navy">0{i + 1}</span>
             <h3 class="text-xl font-bold text-white">{s.t}</h3>
             <p class="mt-2 leading-relaxed text-white/70">{s.d}</p>
           </li>
@@ -329,7 +334,10 @@ const faqSchema = {
   <!-- CTA -->
   <section class="container-x pb-24">
     <div class="cta relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-navy via-[#1f3d2a] to-olive px-8 pb-16 pt-32 text-center text-white sm:px-16 lg:pb-24 lg:pt-36" data-reveal="up">
+      <RouteBackdrop />
       <div aria-hidden="true" class="blob pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-ember/35 blur-3xl"></div>
+      <div aria-hidden="true" class="blob pointer-events-none absolute -bottom-24 -left-16 size-72 rounded-full bg-olive-300/20 blur-3xl"></div>
+      <Spotlight tone="sun" x="50%" y="40%" />
       <!-- Ari flies in, lands on "mind?", waves now and then and reacts to taps (script below) -->
       <BirdMascot interactive id="cta-bird" class="cta-bird absolute left-0 top-0 z-10 w-16 opacity-0 sm:w-20" />
       <h2 class="relative mx-auto max-w-3xl text-4xl font-bold text-white sm:text-5xl">Have a project in <span class="relative inline-block" data-perch>mind?</span> Let's scope it together.</h2>
@@ -354,6 +362,13 @@ const faqSchema = {
   .hero .typer-caret { background: var(--color-ember); }
   @keyframes blink { 50% { opacity: 0; } }
   .bar { transform-origin: bottom; }
+  /* Process steps glow once reached; the ring is the step-dot's navy gap plus an ember halo */
+  .step-dot { transition: box-shadow 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .process-step.is-active .step-dot, .process-step:hover .step-dot { box-shadow: 0 0 0 8px var(--color-navy), 0 0 30px 6px rgb(255 122 26 / 0.55); transform: scale(1.08); }
+  /* Steps reached together (one row on desktop) light up left to right */
+  .process-step.is-active:not(:hover) .step-dot { transition-delay: calc(var(--i) * 0.12s); }
+  .process-step h3 { transition: color 0.4s ease; }
+  .process-step:hover h3 { color: var(--color-ember-300); }
   .faq summary::-webkit-details-marker { display: none; }
   @media (max-width: 1023px) { .stack-card { position: relative; top: auto !important; } }
 </style>
@@ -374,6 +389,27 @@ const faqSchema = {
   setInterval(tick, 30_000);
 
   const motion = document.documentElement.classList.contains('js-motion');
+
+  // Process steps light up as they reach the upper part of the screen, and the
+  // section's spotlight moves to the newest one (unless the mouse is steering it).
+  {
+    const section = document.querySelector<HTMLElement>('[data-process]');
+    if (section) {
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          e.target.classList.add('is-active');
+          io.unobserve(e.target);
+          const dot = e.target.querySelector('.step-dot')!.getBoundingClientRect();
+          const box = section.getBoundingClientRect();
+          section.dispatchEvent(new CustomEvent('spotlight:to', {
+            detail: { x: dot.left - box.left + dot.width / 2, y: dot.top - box.top + dot.height / 2 },
+          }));
+        }
+      }, { rootMargin: '0px 0px -40% 0px' });
+      section.querySelectorAll('.process-step').forEach((step) => io.observe(step));
+    }
+  }
 
 
   // CTA bird: flies in when the box is on screen, perches on the word "mind?", waves now

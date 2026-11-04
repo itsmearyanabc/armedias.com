@@ -1,0 +1,12 @@
+---
+// Country flag from flag-icons 7.2.3 (MIT, see src/assets/flags/LICENSE). The build
+// inlines these small files into the page. Decorative: the country name is always next to it.
+const files = import.meta.glob<string>('../assets/flags/*.svg', { eager: true, query: '?url', import: 'default' });
+
+interface Props { code: string; class?: string }
+const { code, class: className } = Astro.props;
+const src = files[`../assets/flags/${code.toLowerCase()}.svg`];
+if (!src) throw new Error(`No flag file for ${code}`);
+---
+
+<img src={src} alt="" width="20" height="15" loading="lazy" decoding="async" class:list={['inline-block h-3 w-4 rounded-[2px] object-cover ring-1 ring-navy/10', className]} />

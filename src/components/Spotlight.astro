@@ -1,0 +1,75 @@
+---
+// Soft glow (and optionally a fine grid) that follows the pointer inside the
+// parent element. The parent must be positioned. Other scripts can move the
+// light by dispatching `spotlight:to` on the parent with { x, y } in pixels
+// relative to it; the pointer wins while it is over the parent.
+interface Props { grid?: boolean; tone?: 'ember' | 'sun'; x?: string; y?: string }
+const { grid = false, tone = 'ember', x = '70%', y = '30%' } = Astro.props;
+---
+
+<div aria-hidden="true" data-spotlight class:list={['spotlight pointer-events-none absolute inset-0', `spotlight--${tone}`]} style={`--sx:${x};--sy:${y}`}>
+  {grid && <div class="spotlight__grid absolute inset-0"></div>}
+  <div class="spotlight__glow absolute inset-0"></div>
+</div>
+
+<style>
+  .spotlight__grid {
+    background-image: linear-gradient(rgb(255 255 255 / 0.09) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.09) 1px, transparent 1px);
+    background-size: 44px 44px;
+    background-position: center;
+    /* Faint everywhere, clear around the light */
+    --mask: radial-gradient(380px circle at var(--sx) var(--sy), #000, rgb(0 0 0 / 0.35) 45%, transparent 75%), linear-gradient(rgb(0 0 0 / 0.18), rgb(0 0 0 / 0.18));
+    -webkit-mask-image: var(--mask);
+    mask-image: var(--mask);
+  }
+  .spotlight__glow { background: radial-gradient(520px circle at var(--sx) var(--sy), var(--glow), transparent 60%); }
+  .spotlight--ember { --glow: rgb(255 122 26 / 0.14); }
+  .spotlight--sun { --glow: rgb(255 201 60 / 0.16); }
+</style>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-spotlight]').forEach((layer) => {
+    const host = layer.parentElement!;
+    let cur: { x: number; y: number } | null = null;
+    let target = { x: 0, y: 0 };
+    let pointerInside = false;
+    let frame = 0;
+
+    const apply = () => {
+      layer.style.setProperty('--sx', `${cur!.x}px`);
+      layer.style.setProperty('--sy', `${cur!.y}px`);
+    };
+    const step = () => {
+      cur!.x += (target.x - cur!.x) * 0.12;
+      cur!.y += (target.y - cur!.y) * 0.12;
+      apply();
+      frame = Math.abs(target.x - cur!.x) + Math.abs(target.y - cur!.y) > 0.5 ? requestAnimationFrame(step) : 0;
+    };
+    const moveTo = (x: number, y: number) => {
+      target = { x, y };
+      if (!cur) {
+        // Start from where the CSS default put the light
+        const s = getComputedStyle(layer), w = layer.offsetWidth, h = layer.offsetHeight;
+        const px = (v: string, size: number) => (v.endsWith('%') ? (parseFloat(v) / 100) * size : parseFloat(v));
+        cur = { x: px(s.getPropertyValue('--sx'), w), y: px(s.getPropertyValue('--sy'), h) };
+      }
+      if (reduce) { cur = { ...target }; apply(); return; }
+      if (!frame) frame = requestAnimationFrame(step);
+    };
+
+    host.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      pointerInside = true;
+      const r = host.getBoundingClientRect();
+      moveTo(e.clientX - r.left, e.clientY - r.top);
+    });
+    host.addEventListener('pointerleave', () => { pointerInside = false; });
+    host.addEventListener('spotlight:to', (e) => {
+      if (pointerInside) return;
+      const { x, y } = (e as CustomEvent<{ x: number; y: number }>).detail;
+      moveTo(x, y);
+    });
+  });
+</script>
