@@ -3,7 +3,9 @@
 import { site, markets } from '../data/site';
 import { services } from '../data/services';
 import { industries } from '../data/industries';
-import { delhiServices, delhiWorkingStyle, delhiAreas } from '../data/delhi';
+import { delhiServices, delhiAreas } from '../data/delhi';
+import { delhiWorkingStyle } from '../data/working-style';
+import { indiaCities } from '../data/cities';
 
 const url = (path: string) => new URL(path, site.url).href;
 const list = (items: string[]) => items.map((i) => `- ${i}`).join('\n');
@@ -59,6 +61,14 @@ export function GET() {
       d.lead,
       `What we build:\n${list(d.builds.map((b) => `${b.t}: ${b.d}`))}`,
       faqs(d.faqs),
+    ].join('\n\n')),
+    '## Cities in India',
+    ...indiaCities.map((c) => [
+      `### ${c.h1}`,
+      `URL: ${url(`/locations/india/${c.slug}/`)}`,
+      `Serving ${c.area}. ${c.lead}`,
+      `What businesses there ask for:\n${list(c.needs.map((n) => `${n.t}: ${n.d}`))}`,
+      faqs(c.faqs),
     ].join('\n\n')),
   ].join('\n\n');
 

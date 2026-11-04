@@ -15,16 +15,6 @@ export interface DelhiService {
   faqs: { q: string; a: string }[];
 }
 
-// Ways we work with Delhi NCR clients, shared by every Delhi page.
-export const delhiWorkingStyle = [
-  { t: 'Offline meetings', d: 'Meet us at our Kirti Nagar office, or we come to yours anywhere in Delhi NCR for discovery workshops, demos and handover.', icon: 'M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6' },
-  { t: 'Google Meet calls', d: 'When meeting in person is not practical, we talk on Google Meet and share screens to review designs and builds together.', icon: 'M15 10l5-3v10l-5-3M3 7h12v10H3z' },
-  { t: 'Project update meetings', d: 'Regular update meetings with a live demo of what is done, what is next and anything we need from you.', icon: 'M8 7V3M16 7V3M3 11h18M5 5h14v16H5z' },
-  { t: 'Timely follow-ups', d: 'We reply within one business day and follow up after every meeting with clear next steps, so nothing waits on a reminder.', icon: 'M12 7v5l3 3M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z' },
-  { t: 'Fixed quote in INR', d: 'A written scope and a fixed price before work starts, with milestone payments. No surprise invoices.', icon: 'M7 4h10M7 8h10M7 4c5 0 5 8 0 8l7 8' },
-  { t: 'GST invoices', d: 'GST-compliant invoices from a registered New Delhi business, ready for your accounts team.', icon: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
-];
-
 export const delhiAreas = ['Delhi', 'Gurugram', 'Noida', 'Faridabad', 'Ghaziabad'];
 
 export const delhiServices: DelhiService[] = [

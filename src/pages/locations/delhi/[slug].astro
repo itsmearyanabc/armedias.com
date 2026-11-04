@@ -2,12 +2,13 @@
 import Base from '../../../layouts/Base.astro';
 import Skyline from '../../../components/skylines/Skyline.astro';
 import WorkingStyle from '../../../components/WorkingStyle.astro';
-import DelhiCta from '../../../components/DelhiCta.astro';
+import ProjectCta from '../../../components/ProjectCta.astro';
 import { site } from '../../../data/site';
 import { serviceBySlug } from '../../../data/services';
 import { process as steps } from '../../../data/process';
 import { industries } from '../../../data/industries';
 import { delhiServices, delhiAreas, type DelhiService } from '../../../data/delhi';
+import { cityPageFor } from '../../../data/cities';
 
 export function getStaticPaths() {
   return delhiServices.map((d) => ({ params: { slug: d.slug }, props: { d } }));
@@ -180,7 +181,12 @@ const schema = [
   <section class="border-y border-navy/8 py-10">
     <div class="container-x flex flex-wrap items-center gap-3">
       <h2 class="mr-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate" data-no-split>Serving Delhi NCR</h2>
-      {delhiAreas.map((a) => <span class="rounded-full border border-navy/10 px-4 py-2 text-sm font-medium text-navy">{a}</span>)}
+      {delhiAreas.map((a) => {
+        const page = cityPageFor(a);
+        return page
+          ? <a href={`/locations/india/${page.slug}/`} class="rounded-full border border-navy/10 px-4 py-2 text-sm font-medium text-navy hover:border-olive hover:text-olive">{a} →</a>
+          : <span class="rounded-full border border-navy/10 px-4 py-2 text-sm font-medium text-navy">{a}</span>;
+      })}
     </div>
   </section>
 
@@ -217,7 +223,7 @@ const schema = [
     </div>
   </section>
 
-  <DelhiCta heading={`Let's plan your ${inSentence} project in Delhi.`} />
+  <ProjectCta heading={`Let's plan your ${inSentence} project in Delhi.`} />
 </Base>
 
 <script>

@@ -2,10 +2,11 @@
 import Base from '../../../layouts/Base.astro';
 import Skyline from '../../../components/skylines/Skyline.astro';
 import WorkingStyle from '../../../components/WorkingStyle.astro';
-import DelhiCta from '../../../components/DelhiCta.astro';
+import ProjectCta from '../../../components/ProjectCta.astro';
 import { site } from '../../../data/site';
 import { serviceBySlug } from '../../../data/services';
 import { delhiServices, delhiAreas } from '../../../data/delhi';
+import { cityPageFor } from '../../../data/cities';
 
 const url = `${site.url}/locations/delhi/`;
 const title = 'IT & Software Company in Delhi | AR Medias';
@@ -115,7 +116,12 @@ const schema = [
       <div>
         <h3 class="text-sm font-semibold uppercase tracking-[0.2em] text-slate">Serving Delhi NCR</h3>
         <ul class="mt-4 flex flex-wrap gap-2">
-          {delhiAreas.map((a) => <li class="rounded-full border border-navy/10 px-4 py-2 font-medium text-navy">{a}</li>)}
+          {delhiAreas.map((a) => {
+            const page = cityPageFor(a);
+            return page
+              ? <li><a href={`/locations/india/${page.slug}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 font-medium text-navy hover:border-olive hover:text-olive">{a} →</a></li>
+              : <li class="rounded-full border border-navy/10 px-4 py-2 font-medium text-navy">{a}</li>;
+          })}
         </ul>
         <div class="mt-10 divide-y divide-navy/10 border-y border-navy/10">
           {faqs.map((f) => (
@@ -132,7 +138,7 @@ const schema = [
     </div>
   </section>
 
-  <DelhiCta heading="Have a project in Delhi NCR? Let's meet." />
+  <ProjectCta heading="Have a project in Delhi NCR? Let's meet." />
 </Base>
 
 <script>

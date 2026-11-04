@@ -2,11 +2,14 @@
 // Dotted land map cropped to the route from New Delhi to one market's city.
 // The route draws itself and the destination pin pulses once the map scrolls
 // into view; without motion it shows the finished route.
-import { worldDots, project, route } from '../data/world-dots';
+import { worldDots, indiaDots, project, route } from '../data/world-dots';
 import { markets } from '../data/site';
 
-interface Props { coords: readonly [number, number]; class?: string }
-const { coords, class: className } = Astro.props;
+// minWidth and pad are in degrees. Market cards use a wide crop of the 2° world grid;
+// city pages zoom in on India with the 1° India grid (`india`).
+interface Props { coords: readonly [number, number]; class?: string; minWidth?: number; pad?: number; india?: boolean }
+const { coords, class: className, minWidth = 56, pad = 12, india = false } = Astro.props;
+const dots = india ? { d: indiaDots, step: 1 } : { d: worldDots, step: 2 };
 
 const hq = project(markets[0].coords);
 const city = project(coords);
@@ -15,8 +18,7 @@ const isHq = hq[0] === city[0] && hq[1] === city[1];
 // The crop includes the route's peak so the arc is never cut off.
 const path = route(hq, city);
 const xs = [hq[0], city[0]], ys = [hq[1], city[1], path.peakY];
-const pad = 12;
-const w = Math.max(56, Math.max(...xs) - Math.min(...xs) + pad * 2, (Math.max(...ys) - Math.min(...ys) + pad * 2) * 2);
+const w = Math.max(minWidth, Math.max(...xs) - Math.min(...xs) + pad * 2, (Math.max(...ys) - Math.min(...ys) + pad * 2) * 2);
 const h = w / 2;
 const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
 const viewBox = [cx - w / 2, cy - h / 2, w, h].map((n) => +n.toFixed(2)).join(' ');
@@ -28,7 +30,7 @@ const f = (n: number) => +n.toFixed(2);
 ---
 
 <svg data-market-map viewBox={viewBox} class:list={['market-map block aspect-[2/1] w-full', className]} aria-hidden="true" focusable="false">
-  <path d={worldDots} fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-dasharray="0 2" class="text-navy/25 transition-colors duration-300 group-hover:text-white/35" />
+  <path d={dots.d} fill="none" stroke="currentColor" stroke-width={dots.step * 0.575} stroke-linecap="round" stroke-dasharray={`0 ${dots.step}`} class="text-navy/25 transition-colors duration-300 group-hover:text-white/35" />
   {!isHq && (
     <path class="route text-ember transition-colors group-hover:text-sun" d={path.d} pathLength="1" fill="none" stroke="currentColor" stroke-width={routeWidth} stroke-linecap="round" />
   )}

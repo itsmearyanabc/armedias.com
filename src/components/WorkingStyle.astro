@@ -1,10 +1,10 @@
 ---
 // How we work with clients: meetings, follow-ups and billing. Delhi pages use the
-// default list; country pages pass their own.
+// default list; country and city pages pass their own.
 import Spotlight from './Spotlight.astro';
-import { delhiWorkingStyle } from '../data/delhi';
+import { delhiWorkingStyle, type WorkingStyleItem } from '../data/working-style';
 
-interface Props { items?: { t: string; d: string; icon: string }[]; heading?: string }
+interface Props { items?: WorkingStyleItem[]; heading?: string }
 const { items = delhiWorkingStyle, heading = 'Meet in person, stay updated, never chase us.' } = Astro.props;
 ---
 
