@@ -17,6 +17,7 @@
   --color-ember: #ff7a1a;
   --color-ember-300: #ffb36b;
   --color-ember-600: #c2410c;
+  --color-ember-700: #b93d0b; /* text on ember/15 tints (4.9:1) */
   --color-sun: #ffc93c;
 
   --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;

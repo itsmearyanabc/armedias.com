@@ -6,6 +6,7 @@ import { process as steps } from '../../data/process';
 import { industries } from '../../data/industries';
 import Illustration from '../../components/illustrations/Illustration.astro';
 import { delhiServices } from '../../data/delhi';
+import RelatedGuides from '../../components/RelatedGuides.astro';
 
 export function getStaticPaths() {
   return services.map((s) => ({ params: { slug: s.slug }, props: { s } }));
@@ -67,8 +68,8 @@ const schema = [
         <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero>
           <a href="/" class="hover:text-olive">Home</a> / <a href="/services/" class="hover:text-olive">Services</a> / <span>{s.name}</span>
         </nav>
-        <p class="eyebrow mt-6" data-hero>{s.name}</p>
-        <h1 class="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl xl:text-6xl" data-hero>{s.h1}</h1>
+        <h1 class="eyebrow mt-6 font-sans" data-hero>{s.name}</h1>
+        <p class="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight text-balance text-ink sm:text-5xl xl:text-6xl" data-hero>{s.headline}</p>
         <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>{s.lead}</p>
         <div class="mt-9 flex flex-wrap gap-3" data-hero>
           <a href="/contact/" class="btn-primary" data-magnetic>Get a free quote</a>
@@ -167,7 +168,7 @@ const schema = [
       <ol class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5" data-reveal="stagger">
         {steps.map((st, i) => (
           <li class="group relative overflow-hidden rounded-3xl bg-mist p-6 transition-colors duration-300 hover:bg-ember hover:text-navy">
-            <span class="font-display text-5xl font-bold text-navy/10 transition-colors group-hover:text-white/25">0{i + 1}</span>
+            <span aria-hidden="true" class="font-display text-5xl font-bold text-navy/10 transition-colors group-hover:text-white/25">0{i + 1}</span>
             <h3 class="mt-4 text-xl font-bold group-hover:text-white">{st.t}</h3>
             <p class="mt-1 text-sm text-slate group-hover:text-white/80">{st.short}</p>
           </li>
@@ -207,6 +208,8 @@ const schema = [
       </div>
     </div>
   </section>
+
+  <RelatedGuides service={s.slug} />
 
   {delhi && (
     <section class="border-t border-navy/8 py-10">

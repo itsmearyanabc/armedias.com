@@ -6,6 +6,7 @@ import { industries } from '../data/industries';
 import { delhiServices, delhiAreas } from '../data/delhi';
 import { delhiWorkingStyle } from '../data/working-style';
 import { indiaCities } from '../data/cities';
+import { dedicated } from '../data/dedicated';
 
 const url = (path: string) => new URL(path, site.url).href;
 const list = (items: string[]) => items.map((i) => `- ${i}`).join('\n');
@@ -62,6 +63,12 @@ export function GET() {
       `What we build:\n${list(d.builds.map((b) => `${b.t}: ${b.d}`))}`,
       faqs(d.faqs),
     ].join('\n\n')),
+    '## Hire dedicated developers',
+    `URL: ${url(dedicated.path)}`,
+    dedicated.lead,
+    `Roles:\n${list(dedicated.roles.map((r) => `${r.t}: ${r.d} (${r.tech.join(', ')})`))}`,
+    `How it works:\n${list(dedicated.steps.map((s) => `${s.t}: ${s.d}`))}`,
+    faqs(dedicated.faqs),
     '## Cities in India',
     ...indiaCities.map((c) => [
       `### ${c.h1}`,

@@ -18,8 +18,8 @@ export const staticOgPages: Record<string, OgCard> = {
   '/careers/': { title: 'Build software that businesses run on', label: 'Careers' },
   '/contact/': { title: "Let's talk about your project", label: 'Contact' },
   '/blog/': { title: 'Guides for growing businesses', label: 'Blog' },
-  ...Object.fromEntries(services.map((s) => [`/services/${s.slug}/`, { title: s.h1, label: s.name }])),
-  ...Object.fromEntries(industries.map((i) => [`/industries/${i.slug}/`, { title: i.h1, label: i.name }])),
+  ...Object.fromEntries(services.map((s) => [`/services/${s.slug}/`, { title: s.headline, label: s.name }])),
+  ...Object.fromEntries(industries.map((i) => [`/industries/${i.slug}/`, { title: i.headline, label: i.name }])),
   ...Object.fromEntries(markets.map((m) => [`/locations/${m.slug}/`, { title: `Software, app & AI automation company for ${m.country}`, label: m.city }])),
 };
 

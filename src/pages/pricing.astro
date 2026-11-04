@@ -80,6 +80,7 @@ const schema = [
             <h3 class={`mt-6 text-2xl font-bold ${i === 0 ? 'text-white' : ''}`}>{m.t}</h3>
             <p class={`mt-3 flex-1 leading-relaxed ${i === 0 ? 'text-white/75' : 'text-slate'}`}>{m.d}</p>
             <p class={`mt-6 font-display text-xl font-bold ${i === 0 ? 'text-ember-300' : 'text-navy'}`}>Fixed quote after a free call</p>
+            {m.href && <a href={m.href} class="mt-3 font-semibold text-olive hover:text-navy">How it works →</a>}
           </li>
         ))}
       </ul>

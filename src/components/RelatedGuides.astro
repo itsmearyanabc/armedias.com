@@ -1,0 +1,26 @@
+---
+// Blog guides written for one service (the post's `service` field), linked from that
+// service's pages. Renders nothing when the service has no guide yet.
+import { getPosts } from '../lib/blog';
+
+interface Props { service: string }
+const { service } = Astro.props;
+const guides = (await getPosts()).filter((p) => p.data.service === service);
+---
+
+{guides.length > 0 && (
+  <section class="border-t border-navy/8 py-12">
+    <div class="container-x">
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate">{guides.length > 1 ? 'Related guides' : 'Related guide'}</p>
+      <ul class="mt-4 grid gap-3 md:grid-cols-2">
+        {guides.map((g) => (
+          <li>
+            <a href={`/blog/${g.id}/`} class="group flex items-center justify-between gap-4 rounded-2xl bg-mist px-6 py-5 font-display text-lg font-semibold text-navy transition-colors hover:bg-olive hover:text-white">
+              {g.data.title}<span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

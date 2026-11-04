@@ -47,3 +47,4 @@ A longer plain-text version with every service, industry and market: https://arm
 - India, UAE, USA, Canada, Australia, Japan, China: https://armedias.com/locations/india/ (and /uae/, /usa/, /canada/, /australia/, /japan/, /china/)
 - Delhi NCR (office in Kirti Nagar, in-person meetings): https://armedias.com/locations/delhi/
 - Indian cities: https://armedias.com/locations/india/mumbai/ (and /bangalore/, /hyderabad/, /chennai/, /pune/, /kolkata/, /ahmedabad/, /noida/, /gurgaon/)
+- Hire dedicated developers (monthly, work only on your product): https://armedias.com/hire-dedicated-developers/

@@ -122,6 +122,7 @@ const schema = [
             <h3 class={`mt-6 text-2xl font-bold ${i === 0 ? 'text-white' : ''}`}>{m.t}</h3>
             <p class={`mt-3 flex-1 leading-relaxed ${i === 0 ? 'text-white/75' : 'text-slate'}`}>{m.d}</p>
             <a href="/contact/" class={`mt-8 font-semibold ${i === 0 ? 'text-olive-300 hover:text-white' : 'text-olive hover:text-navy'}`}>Discuss this option →</a>
+            {m.href && <a href={m.href} class="mt-2 font-semibold text-olive hover:text-navy">How it works →</a>}
           </li>
         ))}
       </ul>

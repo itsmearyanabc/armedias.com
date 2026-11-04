@@ -7,7 +7,7 @@ export interface Industry {
     | 'blockchain-development' | 'cybersecurity' | 'ai-machine-learning';
   metaTitle: string;
   metaDescription: string;
-  h1: string;
+  headline: string; // big hero line; the page's H1 is the industry name
   lead: string;
   challenges: { t: string; d: string }[];
   builds: { t: string; d: string }[];
@@ -23,7 +23,7 @@ export const industries: Industry[] = [
     scene: 'crm-development',
     metaTitle: 'Real Estate CRM, Websites & Lead Automation | AR Medias',
     metaDescription: 'Real estate CRM, property websites, WhatsApp lead automation and portal integrations for brokerages and builders in India, UAE and worldwide.',
-    h1: 'Software that turns property enquiries into site visits.',
+    headline: 'Software that turns property enquiries into site visits.',
     lead: 'CRMs, property websites and WhatsApp automation for brokerages, builders and property managers, so no lead from a portal, ad or call is ever missed.',
     challenges: [
       { t: 'Leads from everywhere', d: 'Enquiries arrive from property portals, Facebook ads, WhatsApp, calls and walk-ins, and get lost between agents.' },
@@ -51,7 +51,7 @@ export const industries: Industry[] = [
     scene: 'ai-automation',
     metaTitle: 'Healthcare Software & Clinic Management | AR Medias',
     metaDescription: 'Clinic and hospital management software, appointment booking, patient apps and WhatsApp reminders built with privacy and security in mind.',
-    h1: 'Less admin for your clinic, smoother care for patients.',
+    headline: 'Less admin for your clinic, smoother care for patients.',
     lead: 'Appointment booking, clinic management systems, patient apps and automated reminders for clinics, hospitals, labs and healthcare startups.',
     challenges: [
       { t: 'Phone-only bookings', d: 'Reception spends the day answering calls, and patients can\'t book outside opening hours.' },
@@ -79,7 +79,7 @@ export const industries: Industry[] = [
     scene: 'crm-development',
     metaTitle: 'Education CRM, Admissions & LMS Development | AR Medias',
     metaDescription: 'Admissions CRMs, school and coaching management systems, learning platforms and student apps for schools, coaching institutes, universities and edtech.',
-    h1: 'From enquiry to enrolment, all in one system.',
+    headline: 'From enquiry to enrolment, all in one system.',
     lead: 'Admission CRMs, fee and attendance systems, learning platforms and apps for schools, coaching institutes, universities and edtech startups.',
     challenges: [
       { t: 'Admission leads slip away', d: 'Enquiries from ads, fairs and websites are followed up by hand during the busiest season.' },
@@ -107,7 +107,7 @@ export const industries: Industry[] = [
     scene: 'ecommerce-development',
     metaTitle: 'Retail & E-commerce Software, Shopify & POS | AR Medias',
     metaDescription: 'Online stores, Shopify development, inventory and POS integration, order automation and loyalty apps for retailers, D2C brands and distributors.',
-    h1: 'Sell more online and in store, with less manual work.',
+    headline: 'Sell more online and in store, with less manual work.',
     lead: 'Online stores, inventory and order systems, POS integrations and customer apps for retailers, D2C brands, wholesalers and distributors.',
     challenges: [
       { t: 'Stock out of sync', d: 'Online store, shop counter and warehouse show different stock levels.' },
@@ -135,7 +135,7 @@ export const industries: Industry[] = [
     scene: 'custom-software-development',
     metaTitle: 'Software Development Partner for SaaS Firms | AR Medias',
     metaDescription: 'An extra engineering team for software companies: SaaS products, features, integrations, internal tools and AI automation in your time zone.',
-    h1: 'An extra engineering team for software companies.',
+    headline: 'An extra engineering team for software companies.',
     lead: 'We help software and SaaS companies ship faster: building products and features, integrations, internal tools and automations alongside your own team.',
     challenges: [
       { t: 'Roadmap bigger than the team', d: 'Product ideas wait months because engineers are busy maintaining what already exists.' },
@@ -163,7 +163,7 @@ export const industries: Industry[] = [
     scene: 'ai-machine-learning',
     metaTitle: 'Engineering for AI & ML Companies | AR Medias',
     metaDescription: 'Product engineering for AI and ML companies: AI SaaS apps, model APIs, data pipelines, labelling tools, dashboards and MLOps, built with your team.',
-    h1: 'The product team behind your AI.',
+    headline: 'The product team behind your AI.',
     lead: 'Your models are only as useful as the product around them. We build the apps, APIs, data pipelines and dashboards that put AI and ML into customers\' hands.',
     challenges: [
       { t: 'Great model, rough product', d: 'Research prototypes need a polished interface, accounts, billing and onboarding to sell.' },
@@ -191,7 +191,7 @@ export const industries: Industry[] = [
     scene: 'blockchain-development',
     metaTitle: 'Blockchain & Web3 Development Partner | AR Medias',
     metaDescription: 'Engineering for blockchain and Web3 teams: smart contracts, dApps, wallets, indexers, dashboards and secure backends, fully tested and documented.',
-    h1: 'Build Web3 products people can actually use.',
+    headline: 'Build Web3 products people can actually use.',
     lead: 'From smart contracts to the apps and dashboards around them, we help Web3 teams ship secure, well-tested products with a user experience that feels familiar.',
     challenges: [
       { t: 'Security first', d: 'Bugs in smart contracts can be irreversible, so every line needs testing and review.' },
@@ -219,7 +219,7 @@ export const industries: Industry[] = [
     scene: 'cybersecurity',
     metaTitle: 'Software for Cybersecurity Companies | AR Medias',
     metaDescription: 'Engineering for cybersecurity firms and MSSPs: client portals, security dashboards, alert automation, reporting and compliance tools, built securely.',
-    h1: 'Software for teams that keep others secure.',
+    headline: 'Software for teams that keep others secure.',
     lead: 'Security firms and managed service providers need portals, dashboards and automation that are as secure as the service they sell. We build them with you.',
     challenges: [
       { t: 'Alert overload', d: 'Analysts drown in alerts from many tools with no single view.' },
