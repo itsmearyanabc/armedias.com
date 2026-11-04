@@ -42,7 +42,7 @@ export const dedicated = {
     { q: 'How much does it cost to hire a dedicated developer from India?', a: 'It depends on the skills, experience and hours you need. After a free call we send a monthly price per developer, with everything it includes written down.' },
     { q: 'Will the developer work in our time zone?', a: 'Your developer overlaps with your working day for calls, stand-ups and reviews, and work continues during Indian hours, so you often start the day with progress.' },
     { q: 'Who owns the code?', a: 'You do. Everything your developers write, design or set up belongs to you from day one.' },
-    { q: 'Can we change the team size later?', a: 'Yes. You can add developers for a big release or reduce the team after launch. We agree the timing in advance so your work is never left half done.' },
+    { q: 'Can we add or remove developers later?', a: 'Yes. You can add developers for a big release or reduce the team after launch. We agree the timing in advance so your work is never left half done.' },
     { q: 'How do we stay updated?', a: 'Your developers work in your tools, join your meetings on Google Meet, and we hold regular update meetings with timely follow-ups after each one.' },
   ],
 };
