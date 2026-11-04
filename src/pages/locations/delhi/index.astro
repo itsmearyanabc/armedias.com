@@ -3,7 +3,7 @@ import Base from '../../../layouts/Base.astro';
 import Skyline from '../../../components/skylines/Skyline.astro';
 import WorkingStyle from '../../../components/WorkingStyle.astro';
 import ProjectCta from '../../../components/ProjectCta.astro';
-import { site } from '../../../data/site';
+import { site, maps } from '../../../data/site';
 import { serviceBySlug } from '../../../data/services';
 import { delhiServices, delhiAreas } from '../../../data/delhi';
 import { cityPageFor } from '../../../data/cities';
@@ -11,7 +11,6 @@ import { cityPageFor } from '../../../data/cities';
 const url = `${site.url}/locations/delhi/`;
 const title = 'IT & Software Company in Delhi | AR Medias';
 const description = 'AR Medias is an IT and software company in Kirti Nagar, New Delhi. Websites, mobile apps, CRM, ERP and AI automation for Delhi NCR businesses, with offline meetings and fixed INR quotes.';
-const mapQuery = encodeURIComponent(`AR Medias, ${site.address.street}, ${site.address.locality}, ${site.address.countryName}`);
 
 const faqs = [
   { q: 'Where is your office in Delhi?', a: `Our office is at ${site.address.street}, ${site.address.locality} ${site.address.postalCode}. You are welcome to visit; call or WhatsApp us first so we can set a time.` },
@@ -63,7 +62,7 @@ const schema = [
         <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>We build websites, mobile apps, CRM and ERP software and AI automation for businesses across Delhi NCR, from our office in Kirti Nagar. Meet us in person or on Google Meet, see progress in regular update meetings, and get a fixed quote in INR.</p>
         <div class="mt-9 flex flex-wrap gap-3" data-hero>
           <a href="/contact/" class="btn-primary" data-magnetic>Book a free call</a>
-          <a href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`} class="btn-ghost" rel="noopener" target="_blank">Get directions</a>
+          <a href={maps.directions} class="btn-ghost" rel="noopener" target="_blank">Get directions</a>
         </div>
       </div>
       <Skyline slug="india" tz="Asia/Kolkata" city="New Delhi" />
@@ -111,7 +110,7 @@ const schema = [
           <p><a href={`tel:${site.phoneE164}`} class="font-semibold text-navy hover:text-olive">{site.phone}</a> · <a href={`mailto:${site.email}`} class="font-semibold text-navy hover:text-olive">{site.email}</a></p>
           <p class="text-sm">GSTIN: {site.gstin}</p>
         </address>
-        <a href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`} class="btn-primary mt-8" rel="noopener" target="_blank">Get directions</a>
+        <a href={maps.directions} class="btn-primary mt-8" rel="noopener" target="_blank">Get directions</a>
       </div>
       <div>
         <h3 class="text-sm font-semibold uppercase tracking-[0.2em] text-slate">Serving Delhi NCR</h3>

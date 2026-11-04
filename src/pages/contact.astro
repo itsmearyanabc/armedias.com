@@ -1,12 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site, markets } from '../data/site';
+import { site, markets, maps } from '../data/site';
 import ContactForm from '../components/ContactForm.astro';
 
 const title = 'Contact AR Medias | Get a Free Quote for Your Project';
 const description = `Get a free quote for your website, app, CRM/ERP or AI automation project. Call ${site.phone}, WhatsApp us or visit our Kirti Nagar office.`;
-
-const mapQuery = encodeURIComponent(`AR Medias, ${site.address.street}, ${site.address.locality}, ${site.address.countryName}`);
 
 const channels = [
   { label: 'Call us', value: site.phone, href: `tel:${site.phoneE164}`, icon: 'M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z' },
@@ -66,7 +64,7 @@ const schema = [
           <p class="text-sm uppercase tracking-wider text-ember-300">Office</p>
           <address class="mt-2 not-italic leading-relaxed">{site.address.street},<br />{site.address.locality}, {site.address.countryName}</address>
           <p class="mt-2 text-sm text-white/60">GSTIN: {site.gstin}</p>
-          <a href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`} class="mt-3 inline-block font-semibold text-olive-300 hover:text-white" rel="noopener" target="_blank">Get directions →</a>
+          <a href={maps.directions} class="mt-3 inline-block font-semibold text-olive-300 hover:text-white" rel="noopener" target="_blank">Get directions →</a>
         </div>
       </div>
 
@@ -82,7 +80,7 @@ const schema = [
     <div class="overflow-hidden rounded-[2rem] ring-1 ring-navy/8">
       <iframe
         title="AR Medias office location, Kirti Nagar, New Delhi"
-        src={`https://www.google.com/maps?q=${mapQuery}&output=embed`}
+        src={maps.embed}
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
         class="h-[22rem] w-full border-0 grayscale-[0.4] sm:h-[28rem]"></iframe>

@@ -3,7 +3,7 @@
 // directions; city pages outside Delhi NCR pass their own body and hide the address.
 import RouteBackdrop from './RouteBackdrop.astro';
 import Spotlight from './Spotlight.astro';
-import { site } from '../data/site';
+import { site, maps } from '../data/site';
 
 interface Props { heading: string; body?: string; showAddress?: boolean }
 const {
@@ -11,7 +11,6 @@ const {
   body = 'Free 30-minute call, on Google Meet or at our Kirti Nagar office. You leave with a clear plan, timeline and fixed price.',
   showAddress = true,
 } = Astro.props;
-const mapQuery = encodeURIComponent(`AR Medias, ${site.address.street}, ${site.address.locality}, ${site.address.countryName}`);
 ---
 
 <section class="container-x py-24">
@@ -25,6 +24,6 @@ const mapQuery = encodeURIComponent(`AR Medias, ${site.address.street}, ${site.a
       <a href="/contact/" class="btn-ember" data-magnetic>Book a free call</a>
       <a href={site.whatsapp} class="btn border-2 border-white/40 text-white hover:border-white" rel="noopener" target="_blank">WhatsApp us</a>
     </div>
-    {showAddress && <p class="relative mt-8 text-sm text-white/70">{site.address.street}, {site.address.locality} {site.address.postalCode} · <a href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`} class="font-semibold text-ember-300 hover:text-white" rel="noopener" target="_blank">Get directions →</a></p>}
+    {showAddress && <p class="relative mt-8 text-sm text-white/70">{site.address.street}, {site.address.locality} {site.address.postalCode} · <a href={maps.directions} class="font-semibold text-ember-300 hover:text-white" rel="noopener" target="_blank">Get directions →</a></p>}
   </div>
 </section>

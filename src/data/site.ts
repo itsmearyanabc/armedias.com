@@ -1,5 +1,8 @@
 import { services } from './services';
 
+// The Google Business Profile listing for the Kirti Nagar office (named "ARMEDIAS" on Google)
+const googleListing = 'https://www.google.com/maps?cid=17702723482862989545';
+
 export const site = {
   name: 'AR Medias',
   // Other spellings people search for, so search engines connect them to this site
@@ -30,7 +33,16 @@ export const site = {
     countryName: 'India',
   },
   tagline: 'Software, apps, CRM/ERP and AI automation for growing businesses.',
-  sameAs: ['https://in.linkedin.com/in/aryan-yadav-9b954a2a6'],
+  sameAs: ['https://in.linkedin.com/in/aryan-yadav-9b954a2a6', googleListing],
+};
+
+// Google Maps links for the office. Directions open the listing itself (by its place ID),
+// falling back to a search for the name and address.
+const mapsQuery = encodeURIComponent(`${site.name}, ${site.address.street}, ${site.address.locality}, ${site.address.countryName}`);
+export const maps = {
+  listing: googleListing,
+  directions: `https://www.google.com/maps/search/?api=1&query=${mapsQuery}&query_place_id=ChIJGfhFKwjw3g0R6bAD8Ta1rPU`,
+  embed: `https://www.google.com/maps?q=${mapsQuery}&output=embed`,
 };
 
 // Each market gets its own /locations/<slug>/ page. These are distinct pages, not
