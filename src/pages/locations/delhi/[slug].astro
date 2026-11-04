@@ -1,11 +1,12 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import Skyline from '../../../components/skylines/Skyline.astro';
-import DelhiWays from '../../../components/DelhiWays.astro';
+import WorkingStyle from '../../../components/WorkingStyle.astro';
 import DelhiCta from '../../../components/DelhiCta.astro';
 import { site } from '../../../data/site';
 import { serviceBySlug } from '../../../data/services';
 import { process as steps } from '../../../data/process';
+import { industries } from '../../../data/industries';
 import { delhiServices, delhiAreas, type DelhiService } from '../../../data/delhi';
 
 export function getStaticPaths() {
@@ -16,6 +17,7 @@ const { d } = Astro.props as { d: DelhiService };
 const s = serviceBySlug[d.service];
 const url = `${site.url}/locations/delhi/${d.slug}/`;
 const others = delhiServices.filter((x) => x.slug !== d.slug);
+const forIndustries = industries.filter((i) => i.services.includes(s.slug));
 // "Website development" reads as "website development" mid-sentence; "AI", "CRM" and "ERP" stay as they are.
 const inSentence = /^[A-Z][a-z]/.test(d.name) ? d.name[0].toLowerCase() + d.name.slice(1) : d.name;
 
@@ -106,7 +108,53 @@ const schema = [
     </div>
   </section>
 
-  <DelhiWays />
+  <!-- INCLUDED AND PRICE -->
+  <section class="bg-mist/60 py-24 lg:py-28">
+    <div class="container-x grid gap-12 lg:grid-cols-2">
+      <div>
+        <p class="eyebrow" data-reveal="fade">What's included</p>
+        <h2 class="mt-4 text-3xl font-bold sm:text-4xl">Everything in your {inSentence} project.</h2>
+        <ul class="mt-8 grid gap-3 sm:grid-cols-2" data-reveal="stagger">
+          {s.deliverables.map((x) => (
+            <li class="flex items-start gap-3 rounded-2xl bg-white p-4 ring-1 ring-navy/5">
+              <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-gradient-to-br from-ember to-sun text-navy">
+                <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9" /></svg>
+              </span>
+              <span class="font-medium text-navy">{x}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <p class="eyebrow" data-reveal="fade">Pricing in Delhi</p>
+        <h2 class="mt-4 text-3xl font-bold sm:text-4xl">What affects the price.</h2>
+        <p class="mt-5 text-lg leading-relaxed text-slate">Every project gets a written scope and a fixed quote in INR before work starts, so the price does not change midway. These are the things that move it most:</p>
+        <ol class="mt-8 space-y-4" data-reveal="stagger">
+          {s.costFactors.map((c, i) => (
+            <li class="flex items-start gap-4">
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-navy font-display text-sm font-bold text-ember">0{i + 1}</span>
+              <span class="pt-1.5 text-lg text-navy">{c}</span>
+            </li>
+          ))}
+        </ol>
+        <p class="mt-8 text-slate">How fixed-price and monthly engagements work: <a href="/pricing/" class="font-semibold text-olive hover:text-navy">pricing →</a></p>
+      </div>
+    </div>
+  </section>
+
+  <WorkingStyle />
+
+  {forIndustries.length > 0 && (
+    <section class="py-16">
+      <div class="container-x">
+        <p class="eyebrow" data-reveal="fade">Industries</p>
+        <h2 class="mt-4 text-3xl font-bold sm:text-4xl">{s.name} for Delhi NCR industries.</h2>
+        <ul class="mt-8 flex flex-wrap gap-2">
+          {forIndustries.map((i) => <li><a href={`/industries/${i.slug}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 font-semibold text-navy transition-colors hover:border-ember hover:bg-ember">{i.name}</a></li>)}
+        </ul>
+      </div>
+    </section>
+  )}
 
   <!-- PROCESS -->
   <section class="py-24 lg:py-28">

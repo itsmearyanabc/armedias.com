@@ -2,7 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import Skyline from '../../components/skylines/Skyline.astro';
 import { site, pillars, markets } from '../../data/site';
-import { delhiServices } from '../../data/delhi';
+import { delhiServices, delhiWorkingStyle } from '../../data/delhi';
+import WorkingStyle from '../../components/WorkingStyle.astro';
 
 export function getStaticPaths() {
   return markets.map((m) => ({ params: { slug: m.slug }, props: { m } }));
@@ -12,14 +13,29 @@ const { m } = Astro.props;
 const services = pillars.flatMap((p) => p.items);
 const others = markets.filter((x) => x.slug !== m.slug);
 
-const title = `Software & App Development Company in ${m.country} | AR Medias`;
+// Most markets search by country; the UAE searches by Dubai first.
+const title = `Software & App Development Company in ${m.titlePlace ?? m.country} | AR Medias`;
 const description = `Websites, apps, CRM/ERP and AI automation for businesses in ${m.area}. Fixed quotes in ${m.currency} and calls in your time zone.`;
 
 const faqs = [
   m.faq,
   { q: `Do you work with businesses in ${m.country}?`, a: `Yes. We work with clients across ${m.area}. Projects run remotely, with calls scheduled during ${m.city} business hours and billing in ${m.currency}.` },
   { q: `How do you handle data privacy for ${m.country} projects?`, a: `We design data storage, consent and access controls with ${m.privacyLaw} in mind, and can host data in the region you require.` },
+  { q: `How much does software development cost for ${m.country} businesses?`, a: `It depends on the scope, features and integrations. After a free call we send a written scope with a fixed price in ${m.currency}, so the cost does not change midway.` },
   { q: 'How do we get started?', a: 'Book a free 30-minute call. We review your goals and send a written scope with a fixed quote and timeline.' },
+];
+
+// Show a clock on each city only when the market spans several time zones.
+const multiTz = new Set(m.cities.map((c) => c.tz)).size > 1;
+const icon = Object.fromEntries(delhiWorkingStyle.map((w) => [w.t, w.icon]));
+// India clients can meet us in person, so the India page uses the Delhi list as is.
+const workingStyle = m.slug === 'india' ? delhiWorkingStyle : [
+  { t: 'Calls in your working hours', d: `Google Meet calls scheduled inside ${m.city} business hours, with screen sharing to review designs and builds together.`, icon: icon['Google Meet calls'] },
+  { t: 'Project update meetings', d: 'Regular update meetings with a live demo of what is done, what is next and anything we need from you.', icon: icon['Project update meetings'] },
+  { t: 'Timely follow-ups', d: 'We reply within one business day and follow up after every meeting with clear next steps.', icon: icon['Timely follow-ups'] },
+  { t: `Fixed quote in ${m.currency}`, d: 'A written scope and a fixed price before work starts, with milestone payments. No surprise invoices.', icon: icon['Fixed quote in INR'] },
+  { t: 'You own everything', d: 'Source code, designs, domains and accounts are yours from day one.', icon: 'M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM12 10v11M12 15h4M12 19h3' },
+  { t: 'Visit us in New Delhi', d: 'In India? Meet the team at our Kirti Nagar office for a workshop or handover.', icon: icon['Offline meetings'] },
 ];
 
 const schema = [
@@ -75,6 +91,27 @@ const schema = [
       </ul>
     </div>
   </section>
+
+  <section class="py-20">
+    <div class="container-x">
+      <p class="eyebrow" data-reveal="fade">Cities we work with</p>
+      <h2 class="mt-4 text-3xl font-bold sm:text-4xl">Working with businesses across {m.country}.</h2>
+      <p class="mt-4 max-w-2xl text-lg text-slate">{m.slug === 'india'
+        ? 'Projects run on Google Meet with regular update meetings and timely follow-ups. Delhi NCR clients can also meet us in person at our Kirti Nagar office.'
+        : `Calls are scheduled inside your working hours on Google Meet, with regular project update meetings and timely follow-ups.${multiTz ? ' Local time now:' : ''}`}</p>
+      <ul class="mt-8 flex flex-wrap gap-2" data-reveal="stagger">
+        {m.cities.map((c) => (
+          <li>
+            {m.slug === 'india' && c.name === 'Delhi NCR'
+              ? <a href="/locations/delhi/" class="inline-flex items-center gap-2 rounded-full bg-navy px-4 py-2 font-semibold text-white hover:bg-olive">{c.name} <span aria-hidden="true">→</span></a>
+              : <span class="inline-flex items-center gap-2 rounded-full border border-navy/10 px-4 py-2 font-medium text-navy">{c.name}{multiTz && <time class="text-sm text-slate" data-clock={c.tz}>--:--</time>}</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <WorkingStyle items={workingStyle} heading={m.slug === 'india' ? undefined : `How we work with ${m.country} businesses.`} />
 
   {m.slug === 'india' && (
     <section class="py-20">
