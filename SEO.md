@@ -106,10 +106,16 @@ add Yandex Webmaster and Yandex Business for the Russian pages.
    Clutch, GoodFirms, DesignRush, Crunchbase, Justdial, IndiaMART, Sulekha, Trustpilot,
    Instagram, Facebook, X. Then add those profile links in `/admin/` → Social links.
 5. **Ask 5–10 past clients for Google reviews**, then Clutch reviews.
-6. **Yandex Webmaster** (webmaster.yandex.ru): verification file is in `public/`
-   (`yandex_dc19fd24f1b04d64.html`). After deploy, click *Check* in Yandex Webmaster, then
-   submit `https://armedias.com/sitemap-index.xml` and add the five Russian city pages under
-   *Indexing → Reindex pages*. Later: a Yandex Business listing.
+6. **Yandex Webmaster** (webmaster.yandex.ru). Verification file `public/yandex_dc19fd24f1b04d64.html`
+   is live; click *Check* if not verified yet. Then:
+   - *Indexing → Sitemap files*: add `https://armedias.com/sitemap-index.xml` (shows "In queue"
+     for a few days at first).
+   - *Indexing → Reindex pages* (Переобход страниц), Russian pages first:
+     `/locations/russia/moscow/`, `/saint-petersburg/`, `/kazan/`, `/novosibirsk/`,
+     `/yekaterinburg/`, then `/locations/russia/` and the homepage (daily limit is small).
+   - *Site information → Regionality*: set Russia, with `https://armedias.com/locations/russia/`
+     as the proof page.
+   - Check *Indexing → Pages in search* after 1–2 weeks. Later: a Yandex Business listing.
 7. **Directory profiles for every country we target**: Clutch and GoodFirms appear in most
    page-one results in every market, so list all eight markets (India, UAE, USA, Canada,
    Australia, Japan, China, Russia) and the services there. Then DesignRush, F6S,
