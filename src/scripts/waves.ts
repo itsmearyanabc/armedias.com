@@ -13,9 +13,12 @@ export function initWaves(el: HTMLElement) {
   let effect: Effect | undefined;
   let loading: Promise<void> | undefined;
   let visible = true;
+  // Set once the page is idle after load. The observer fires as soon as it observes, so
+  // without this gate WebGL would start during page load and delay the first paint.
+  let ready = false;
 
   const start = async () => {
-    if (effect || loading) return;
+    if (!ready || effect || loading) return;
     loading = (async () => {
       const [THREE, mod] = await Promise.all([import('three'), import('vanta/dist/vanta.waves.min.js')]);
       // Vanta ships a UMD bundle; depending on interop the factory sits one `default` deeper
@@ -51,6 +54,6 @@ export function initWaves(el: HTMLElement) {
 
   // Wait until the page has painted and settled before pulling in WebGL
   const idle = (cb: () => void) => ('requestIdleCallback' in window ? requestIdleCallback(cb, { timeout: 2500 }) : setTimeout(cb, 1200));
-  const kick = () => idle(() => visible && start());
+  const kick = () => idle(() => { ready = true; if (visible) start(); });
   document.readyState === 'complete' ? kick() : addEventListener('load', kick, { once: true });
 }

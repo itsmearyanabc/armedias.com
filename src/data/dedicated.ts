@@ -4,7 +4,7 @@
 export const dedicated = {
   path: '/hire-dedicated-developers/',
   metaTitle: 'Hire Dedicated Developers in India | AR Medias',
-  metaDescription: 'Hire dedicated developers and designers from AR Medias in New Delhi, India. They work only on your product, in your tools, with overlap in your working day, billed monthly.',
+  metaDescription: 'Hire dedicated developers and designers from AR Medias, New Delhi. They work only on your product, in your tools and hours, billed monthly.',
   h1: 'Hire dedicated developers in India',
   lead: 'Add developers and designers from our New Delhi team who work only on your product, inside your tools and sprint process, with overlap in your working day. Billed monthly, and the team grows or shrinks with your roadmap.',
   roles: [
