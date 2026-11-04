@@ -5,6 +5,7 @@ import { services, serviceBySlug, type Service } from '../../data/services';
 import { process as steps } from '../../data/process';
 import { industries } from '../../data/industries';
 import Illustration from '../../components/illustrations/Illustration.astro';
+import { delhiServices } from '../../data/delhi';
 
 export function getStaticPaths() {
   return services.map((s) => ({ params: { slug: s.slug }, props: { s } }));
@@ -14,6 +15,7 @@ const { s } = Astro.props as { s: Service };
 const related = s.related.map((slug) => serviceBySlug[slug]);
 const url = `${site.url}/services/${s.slug}/`;
 const forIndustries = industries.filter((i) => i.services.includes(s.slug));
+const delhi = delhiServices.find((d) => d.service === s.slug);
 
 // Orbit visual: split the stack into an inner and outer ring
 const orbitTech = s.tech.map((t) => t.replace('WhatsApp Business API', 'WhatsApp API'));
@@ -205,6 +207,14 @@ const schema = [
       </div>
     </div>
   </section>
+
+  {delhi && (
+    <section class="border-t border-navy/8 py-10">
+      <div class="container-x">
+        <p class="text-lg text-slate">Based in Delhi NCR? Meet us at our Kirti Nagar office: <a href={`/locations/delhi/${delhi.slug}/`} class="font-semibold text-olive hover:text-navy">{delhi.h1} →</a></p>
+      </div>
+    </section>
+  )}
 
   {forIndustries.length > 0 && (
     <section class="border-t border-navy/8 py-12">

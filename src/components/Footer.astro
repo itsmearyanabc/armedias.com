@@ -37,6 +37,7 @@ const year = new Date().getFullYear();
     <div>
       <h2 class="font-display text-sm font-semibold uppercase tracking-[0.2em] text-white">Where we work</h2>
       <ul class="mt-4 space-y-2">
+        <li><a class="hover:text-ember-300" href="/locations/delhi/">IT company in Delhi</a></li>
         {markets.map((m) => <li><a class="hover:text-ember-300" href={`/locations/${m.slug}/`}>Software company in {m.country}</a></li>)}
       </ul>
     </div>

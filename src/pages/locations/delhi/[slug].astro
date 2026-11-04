@@ -1,0 +1,182 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Skyline from '../../../components/skylines/Skyline.astro';
+import DelhiWays from '../../../components/DelhiWays.astro';
+import DelhiCta from '../../../components/DelhiCta.astro';
+import { site } from '../../../data/site';
+import { serviceBySlug } from '../../../data/services';
+import { process as steps } from '../../../data/process';
+import { delhiServices, delhiAreas, type DelhiService } from '../../../data/delhi';
+
+export function getStaticPaths() {
+  return delhiServices.map((d) => ({ params: { slug: d.slug }, props: { d } }));
+}
+
+const { d } = Astro.props as { d: DelhiService };
+const s = serviceBySlug[d.service];
+const url = `${site.url}/locations/delhi/${d.slug}/`;
+const others = delhiServices.filter((x) => x.slug !== d.slug);
+// "Website development" reads as "website development" mid-sentence; "AI", "CRM" and "ERP" stay as they are.
+const inSentence = /^[A-Z][a-z]/.test(d.name) ? d.name[0].toLowerCase() + d.name.slice(1) : d.name;
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${url}#service`,
+    name: d.h1,
+    serviceType: s.name,
+    description: d.metaDescription,
+    url,
+    provider: { '@id': `${site.url}/#organization` },
+    areaServed: [
+      { '@type': 'City', name: 'New Delhi' },
+      ...delhiAreas.slice(1).map((name) => ({ '@type': 'City', name })),
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: d.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'India', item: `${site.url}/locations/india/` },
+      { '@type': 'ListItem', position: 3, name: 'Delhi', item: `${site.url}/locations/delhi/` },
+      { '@type': 'ListItem', position: 4, name: d.name, item: url },
+    ],
+  },
+];
+---
+
+<Base title={d.metaTitle} description={d.metaDescription} {schema}>
+  <!-- HERO -->
+  <section class="relative overflow-hidden pb-16 pt-32 lg:pb-24 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+      <div class="blob absolute bottom-0 left-1/4 size-[26rem] rounded-full bg-ember/10 blur-3xl"></div>
+    </div>
+    <div class="container-x grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
+      <div>
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero>
+          <a href="/" class="hover:text-olive">Home</a> / <a href="/locations/india/" class="hover:text-olive">India</a> / <a href="/locations/delhi/" class="hover:text-olive">Delhi</a> / <span>{d.name}</span>
+        </nav>
+        <p class="eyebrow mt-6" data-hero>Kirti Nagar, New Delhi · <time data-clock="Asia/Kolkata">--:--</time></p>
+        <h1 class="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl xl:text-6xl" data-hero>{d.h1}</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>{d.lead}</p>
+        <div class="mt-9 flex flex-wrap gap-3" data-hero>
+          <a href="/contact/" class="btn-primary" data-magnetic>Book a free call</a>
+          <a href={site.whatsapp} class="btn-ghost" rel="noopener" target="_blank">WhatsApp us</a>
+        </div>
+      </div>
+      <Skyline slug="india" tz="Asia/Kolkata" city="New Delhi" />
+    </div>
+  </section>
+
+  <!-- WHO IT'S FOR -->
+  <section class="border-y border-navy/8 bg-mist/60 py-10">
+    <div class="container-x flex flex-wrap items-center gap-3">
+      <h2 class="mr-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate" data-no-split>Who we help</h2>
+      {d.fits.map((f) => <span class="rounded-full bg-white px-4 py-2 text-sm font-medium text-navy ring-1 ring-navy/5">{f}</span>)}
+    </div>
+  </section>
+
+  <!-- WHAT WE BUILD -->
+  <section class="py-24 lg:py-28">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">What we build</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">{s.name} for Delhi NCR businesses.</h2>
+      </div>
+      <ul class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {d.builds.map((b, i) => (
+          <li data-tilt class="group relative overflow-hidden rounded-3xl bg-mist p-6 transition-colors duration-300 hover:bg-navy sm:p-7">
+            <span class="font-display text-4xl font-bold text-navy/10 transition-colors group-hover:text-ember/40">0{i + 1}</span>
+            <h3 class="mt-3 text-xl font-bold transition-colors group-hover:text-white">{b.t}</h3>
+            <p class="mt-2 leading-relaxed text-slate transition-colors group-hover:text-white/75">{b.d}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-10 text-slate" data-reveal="fade">
+        Full details, deliverables and technologies: <a href={`/services/${s.slug}/`} class="font-semibold text-olive hover:text-navy">{s.name} services →</a>
+      </p>
+    </div>
+  </section>
+
+  <DelhiWays />
+
+  <!-- PROCESS -->
+  <section class="py-24 lg:py-28">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">How it works</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">From first meeting to launch.</h2>
+      </div>
+      <ol class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5" data-reveal="stagger">
+        {steps.map((st, i) => (
+          <li class="group relative overflow-hidden rounded-3xl bg-mist p-6 transition-colors duration-300 hover:bg-ember hover:text-navy">
+            <span class="font-display text-5xl font-bold text-navy/10 transition-colors group-hover:text-white/25">0{i + 1}</span>
+            <h3 class="mt-4 text-xl font-bold group-hover:text-white">{st.t}</h3>
+            <p class="mt-1 text-sm text-slate group-hover:text-white/80">{st.short}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="mt-8 text-slate">{s.timeline}</p>
+    </div>
+  </section>
+
+  <!-- AREAS -->
+  <section class="border-y border-navy/8 py-10">
+    <div class="container-x flex flex-wrap items-center gap-3">
+      <h2 class="mr-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate" data-no-split>Serving Delhi NCR</h2>
+      {delhiAreas.map((a) => <span class="rounded-full border border-navy/10 px-4 py-2 text-sm font-medium text-navy">{a}</span>)}
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-24 lg:py-28">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+      <div>
+        <p class="eyebrow" data-reveal="fade">FAQ</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Questions from Delhi clients.</h2>
+      </div>
+      <div class="divide-y divide-navy/10 border-y border-navy/10">
+        {d.faqs.map((f) => (
+          <details class="group py-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-xl font-semibold">
+              {f.q}
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-mist transition-transform duration-300 group-open:rotate-45 group-open:bg-olive group-open:text-white">+</span>
+            </summary>
+            <p class="mt-4 max-w-2xl leading-relaxed text-slate">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- MORE IN DELHI -->
+  <section class="bg-mist/60 py-16">
+    <div class="container-x">
+      <h2 class="text-2xl font-bold sm:text-3xl">More services in Delhi</h2>
+      <ul class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {others.map((o) => (
+          <li><a href={`/locations/delhi/${o.slug}/`} class="flex items-center justify-between rounded-2xl bg-white px-6 py-5 font-semibold ring-1 ring-navy/5 transition-colors hover:bg-olive hover:text-white">{o.name} in Delhi<span aria-hidden="true">→</span></a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <DelhiCta heading={`Let's plan your ${inSentence} project in Delhi.`} />
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLTimeElement>('[data-clock]').forEach((el) => {
+    const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: el.dataset.clock, hour: '2-digit', minute: '2-digit' });
+    const tick = () => (el.textContent = fmt.format(new Date()));
+    tick();
+    setInterval(tick, 30_000);
+  });
+</script>

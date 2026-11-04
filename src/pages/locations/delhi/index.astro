@@ -1,0 +1,145 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Skyline from '../../../components/skylines/Skyline.astro';
+import DelhiWays from '../../../components/DelhiWays.astro';
+import DelhiCta from '../../../components/DelhiCta.astro';
+import { site } from '../../../data/site';
+import { serviceBySlug } from '../../../data/services';
+import { delhiServices, delhiAreas } from '../../../data/delhi';
+
+const url = `${site.url}/locations/delhi/`;
+const title = 'IT & Software Company in Delhi | AR Medias';
+const description = 'AR Medias is an IT and software company in Kirti Nagar, New Delhi. Websites, mobile apps, CRM, ERP and AI automation for Delhi NCR businesses, with offline meetings and fixed INR quotes.';
+const mapQuery = encodeURIComponent(`AR Medias, ${site.address.street}, ${site.address.locality}, ${site.address.countryName}`);
+
+const faqs = [
+  { q: 'Where is your office in Delhi?', a: `Our office is at ${site.address.street}, ${site.address.locality} ${site.address.postalCode}. You are welcome to visit; call or WhatsApp us first so we can set a time.` },
+  { q: 'Do you meet clients in person?', a: 'Yes. We hold offline meetings at our office or at yours anywhere in Delhi NCR, and use Google Meet for quick calls and regular project update meetings.' },
+  { q: 'Which areas do you serve?', a: `We work with businesses across ${delhiAreas.join(', ')} and the rest of Delhi NCR, as well as across India and in six other countries.` },
+  { q: 'How quickly do you respond?', a: 'We reply within one business day and follow up after every meeting with clear next steps.' },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${url}#webpage`,
+    url,
+    name: title,
+    about: { '@id': `${site.url}/#organization` },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'India', item: `${site.url}/locations/india/` },
+      { '@type': 'ListItem', position: 3, name: 'Delhi', item: url },
+    ],
+  },
+];
+---
+
+<Base {title} {description} {schema}>
+  <!-- HERO -->
+  <section class="relative overflow-hidden pb-16 pt-32 lg:pb-24 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+      <div class="blob absolute bottom-0 left-1/4 size-[26rem] rounded-full bg-ember/10 blur-3xl"></div>
+    </div>
+    <div class="container-x grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
+      <div>
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero>
+          <a href="/" class="hover:text-olive">Home</a> / <a href="/locations/india/" class="hover:text-olive">India</a> / <span>Delhi</span>
+        </nav>
+        <p class="eyebrow mt-6" data-hero>Kirti Nagar, New Delhi · <time data-clock="Asia/Kolkata">--:--</time></p>
+        <h1 class="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl xl:text-6xl" data-hero>IT and software company in Delhi</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>We build websites, mobile apps, CRM and ERP software and AI automation for businesses across Delhi NCR, from our office in Kirti Nagar. Meet us in person or on Google Meet, see progress in regular update meetings, and get a fixed quote in INR.</p>
+        <div class="mt-9 flex flex-wrap gap-3" data-hero>
+          <a href="/contact/" class="btn-primary" data-magnetic>Book a free call</a>
+          <a href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`} class="btn-ghost" rel="noopener" target="_blank">Get directions</a>
+        </div>
+      </div>
+      <Skyline slug="india" tz="Asia/Kolkata" city="New Delhi" />
+    </div>
+  </section>
+
+  <!-- SERVICES IN DELHI -->
+  <section class="bg-mist/60 py-24 lg:py-28">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">Services in Delhi</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">What we build for Delhi NCR businesses.</h2>
+      </div>
+      <ul class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {delhiServices.map((d) => {
+          const s = serviceBySlug[d.service];
+          return (
+            <li>
+              <a href={`/locations/delhi/${d.slug}/`} data-tilt class="group flex h-full flex-col rounded-3xl bg-white p-7 ring-1 ring-navy/5 transition-colors duration-300 hover:bg-navy">
+                <span class="grid size-12 place-items-center rounded-2xl bg-navy text-olive-300 transition-colors group-hover:bg-ember group-hover:text-navy">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={s.icon} /></svg>
+                </span>
+                <h3 class="mt-5 text-xl font-bold transition-colors group-hover:text-white">{d.name} in Delhi</h3>
+                <p class="mt-2 flex-1 text-slate transition-colors group-hover:text-white/75">{d.builds[0].d}</p>
+                <span class="mt-5 font-semibold text-olive transition-colors group-hover:text-ember-300">Learn more →</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+      <p class="mt-10 text-slate" data-reveal="fade">Looking for something else? See <a href="/services/" class="font-semibold text-olive hover:text-navy">all our services →</a></p>
+    </div>
+  </section>
+
+  <DelhiWays />
+
+  <!-- VISIT -->
+  <section class="py-24 lg:py-28">
+    <div class="container-x grid items-start gap-12 lg:grid-cols-2">
+      <div>
+        <p class="eyebrow" data-reveal="fade">Visit us</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Our office in Kirti Nagar.</h2>
+        <address class="mt-8 space-y-3 text-lg not-italic text-slate">
+          <p>{site.address.street},<br />{site.address.locality} {site.address.postalCode}, {site.address.countryName}</p>
+          <p><a href={`tel:${site.phoneE164}`} class="font-semibold text-navy hover:text-olive">{site.phone}</a> · <a href={`mailto:${site.email}`} class="font-semibold text-navy hover:text-olive">{site.email}</a></p>
+          <p class="text-sm">GSTIN: {site.gstin}</p>
+        </address>
+        <a href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`} class="btn-primary mt-8" rel="noopener" target="_blank">Get directions</a>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-[0.2em] text-slate">Serving Delhi NCR</h3>
+        <ul class="mt-4 flex flex-wrap gap-2">
+          {delhiAreas.map((a) => <li class="rounded-full border border-navy/10 px-4 py-2 font-medium text-navy">{a}</li>)}
+        </ul>
+        <div class="mt-10 divide-y divide-navy/10 border-y border-navy/10">
+          {faqs.map((f) => (
+            <details class="group py-5">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-lg font-semibold">
+                {f.q}
+                <span class="grid size-9 shrink-0 place-items-center rounded-full bg-mist transition-transform duration-300 group-open:rotate-45 group-open:bg-olive group-open:text-white">+</span>
+              </summary>
+              <p class="mt-3 leading-relaxed text-slate">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <DelhiCta heading="Have a project in Delhi NCR? Let's meet." />
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLTimeElement>('[data-clock]').forEach((el) => {
+    const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: el.dataset.clock, hour: '2-digit', minute: '2-digit' });
+    const tick = () => (el.textContent = fmt.format(new Date()));
+    tick();
+    setInterval(tick, 30_000);
+  });
+</script>
