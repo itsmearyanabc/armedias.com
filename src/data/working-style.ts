@@ -40,3 +40,15 @@ export function remoteWorkingStyle({ city, currency }: { city: string; currency:
     { t: 'Visit us in New Delhi', d: 'Visiting Delhi? Meet the team at our Kirti Nagar office for a workshop or handover.', icon: icons.office },
   ];
 }
+
+// Russian city pages (/locations/russia/<city>/): the remote list in Russian, quotes in USD.
+export function remoteWorkingStyleRu(cityIn: string): WorkingStyleItem[] {
+  return [
+    { t: 'Созвоны в ваше рабочее время', d: `Встречи в Google Meet в рабочие часы ${cityIn}, с демонстрацией экрана для разбора дизайна и сборок.`, icon: icons.meet },
+    { t: 'Регулярные демо', d: 'Регулярные встречи с живой демонстрацией: что готово, что дальше и что нужно от вас.', icon: icons.updates },
+    { t: 'Быстрые ответы', d: 'Отвечаем в течение одного рабочего дня и после каждой встречи присылаем следующие шаги.', icon: icons.followUps },
+    { t: 'Фиксированная цена в USD', d: 'Письменное ТЗ и фиксированная цена до начала работ, оплата по этапам. Без неожиданных счетов.', icon: icons.quote },
+    { t: 'Всё принадлежит вам', d: 'Исходный код, дизайн, домены и аккаунты принадлежат вам с первого дня.', icon: icons.own },
+    { t: 'Офис в Нью-Дели', d: 'Будете в Дели? Приезжайте в наш офис в Кирти Нагар на воркшоп или сдачу проекта.', icon: icons.office },
+  ];
+}

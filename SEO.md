@@ -47,10 +47,49 @@ that decides rankings. Work through "Launch week" first, then the monthly routin
 | `/locations/australia/` | software development company Australia | Sydney app developers, Xero integration |
 | `/locations/japan/` | software development company Japan | offshore development Japan |
 | `/locations/china/` | software development Shanghai | WeChat mini program development |
+| `/locations/russia/` | software development company Russia / Moscow | Telegram bot development, Bitrix24 integration |
 | `/pricing/` | website/app/CRM development cost | software development pricing India |
 
 Rule of thumb: one page per keyword group. Don't create a second page that targets the
 same main keyword; improve the existing one instead.
+
+## City pages outside India (4 November 2026)
+
+Research: Google suggestions per city × service (US, Canada, Australia, UAE, UK, Japanese
+Google) and Yandex suggestions (Russia), saved in
+`docs/market-research-2026-11-04/city-suggest.json`. A city counts as searched when Google
+or Yandex completes "<service> <city>" with that city; "crowded" means agency brand names
+already appear in those suggestions. Suggestions show what people type, not how many times,
+so there are no volumes here.
+
+Pick rule: every tier-1 hub with demand (high competition, bigger prize) plus the cities with
+real demand but few agencies in the suggestions (lower competition, faster wins).
+
+| Market | High competition (hubs) | Lower competition (faster wins) | H1 follows |
+|---|---|---|---|
+| USA | New York, Los Angeles, Dallas, Austin, Chicago, Houston | Boston, Denver, Columbus, Raleigh | "software / custom software / app development company in <city>" |
+| Canada | Toronto, Vancouver | Calgary, Ottawa, Edmonton | "software development company in <city>"; Ottawa leads with bilingual web design |
+| Australia | Sydney, Melbourne | Brisbane, Adelaide, Perth | "software development company in <city>"; Melbourne "custom software development services" |
+| UAE | Dubai, Abu Dhabi | Sharjah, Ajman | "software development company in <city>"; Abu Dhabi "web/app development" |
+| Russia (pages in Russian) | Moscow, Saint Petersburg | Kazan, Novosibirsk, Yekaterinburg | "разработка сайтов <город> (под ключ)", "создание сайтов спб" |
+
+What each city adds to the search (used in the page copy): healthcare software (Chicago,
+Dallas, San Diego), AI app development (New York, Seattle), dental websites (Toronto),
+NDIS websites (Brisbane), bilingual web design (Ottawa), ERP and logistics software (Dubai),
+free zones (Sharjah). Russian buyers also search "разработка телеграм ботов",
+"внедрение битрикс24" and "ии агенты для бизнеса".
+
+Not built yet, on purpose:
+- **Japan:** Japanese searches ("システム開発会社 東京", "アプリ開発会社 福岡") need Japanese pages
+  and a native reviewer (T-51). Strongest cities: Fukuoka, Tokyo, Osaka, Nagoya.
+- **China:** Baidu and Chinese-language hosting first (T-53).
+- **English searches for Russian cities return no suggestions at all**, so Russia gets
+  Russian pages only. Have a native speaker read them before pushing.
+- **UK is not a site market yet**, but has real demand: London and Manchester are crowded;
+  Liverpool, Birmingham, Leeds and Edinburgh show demand with few agencies.
+
+Next for these pages: list on Clutch/GoodFirms per country, get real client reviews, and
+add Yandex Webmaster and Yandex Business for the Russian pages.
 
 ## Launch week (only you can do these)
 
@@ -102,6 +141,7 @@ same main keyword; improve the existing one instead.
 | Canada | Clutch Canada, Yelp.ca, Canadian business directories |
 | Australia | Clutch Australia, TrueLocal, Yellow Pages AU |
 | Japan | Clutch, Japan Dev / international outsourcing directories (Japanese content needed for local search) |
+| Russia | Yandex (most-used search engine there) needs Russian pages, Yandex Webmaster and Yandex Business; Google covers the rest |
 | China | Baidu needs Chinese pages and ICP-licensed hosting to rank; English pages reach foreign companies in Shanghai |
 
 ## Don'ts

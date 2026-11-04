@@ -1,0 +1,208 @@
+---
+import Base from '../../../layouts/Base.astro';
+import MarketMap from '../../../components/MarketMap.astro';
+import WorkingStyle from '../../../components/WorkingStyle.astro';
+import ProjectCta from '../../../components/ProjectCta.astro';
+import { site, pillars, markets } from '../../../data/site';
+import { industries } from '../../../data/industries';
+import { process as steps } from '../../../data/process';
+import { worldCities, type WorldCity } from '../../../data/world-cities';
+import { remoteWorkingStyle } from '../../../data/working-style';
+
+// Service-area pages for cities outside India at /locations/<country>/<city>/. India has
+// its own route (locations/india/[city].astro), which takes precedence over this one.
+export function getStaticPaths() {
+  return worldCities.map((c) => ({ params: { country: c.market, city: c.slug }, props: { c } }));
+}
+
+const { c } = Astro.props as { c: WorldCity };
+const m = markets.find((x) => x.slug === c.market)!;
+const url = `${site.url}/locations/${m.slug}/${c.slug}/`;
+const services = pillars.flatMap((p) => p.items);
+const industrySlug = Object.fromEntries(industries.map((i) => [i.name, i.slug]));
+const others = worldCities.filter((x) => x.market === c.market && x.slug !== c.slug);
+const workingStyle = remoteWorkingStyle({ city: c.name, currency: m.currency });
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${url}#service`,
+    name: c.h1,
+    description: c.metaDescription,
+    url,
+    provider: { '@id': `${site.url}/#organization` },
+    areaServed: { '@type': 'City', name: c.alsoKnownAs ?? c.name, containedInPlace: { '@type': 'Country', name: m.schemaName } },
+    serviceType: services.map((s) => s.name),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: c.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: m.country, item: `${site.url}/locations/${m.slug}/` },
+      { '@type': 'ListItem', position: 3, name: c.name, item: url },
+    ],
+  },
+];
+---
+
+<Base title={c.metaTitle} description={c.metaDescription} {schema}>
+  <!-- HERO -->
+  <section class="relative overflow-hidden pb-16 pt-32 lg:pb-24 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+      <div class="blob absolute bottom-0 left-1/4 size-[26rem] rounded-full bg-ember/10 blur-3xl"></div>
+    </div>
+    <div class="container-x grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
+      <div>
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero>
+          <a href="/" class="hover:text-olive">Home</a> / <a href={`/locations/${m.slug}/`} class="hover:text-olive">{m.country}</a> / <span>{c.name}</span>
+        </nav>
+        <p class="eyebrow mt-6" data-hero>{c.region} · <time data-clock={c.tz}>--:--</time> local time</p>
+        <h1 class="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl xl:text-6xl" data-hero>{c.h1}</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>{c.lead}</p>
+        <div class="mt-9 flex flex-wrap gap-3" data-hero>
+          <a href="/contact/" class="btn-primary" data-magnetic>Book a free call</a>
+          <a href="/work/" class="btn-ghost">See our work</a>
+        </div>
+      </div>
+      <figure class="rounded-[2rem] bg-white p-5 shadow-2xl shadow-navy/10 ring-1 ring-navy/5 sm:p-7" data-reveal="up">
+        <MarketMap coords={c.coords} />
+        <figcaption class="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm">
+          <span class="font-display font-semibold text-navy">New Delhi → {c.name}</span>
+          <span class="text-slate">Google Meet calls in {c.name} hours · fixed quote in {m.currency}</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- WHO WE HELP -->
+  <section class="border-y border-navy/8 bg-mist/60 py-10">
+    <div class="container-x flex flex-wrap items-center gap-3">
+      <h2 class="mr-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate" data-no-split>Who we help in {c.name}</h2>
+      {c.fits.map((f) => <span class="rounded-full bg-white px-4 py-2 text-sm font-medium text-navy ring-1 ring-navy/5">{f}</span>)}
+    </div>
+  </section>
+
+  <!-- WHAT BUSINESSES NEED -->
+  <section class="py-24 lg:py-28">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">What we build</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">What {c.name} businesses ask us for.</h2>
+      </div>
+      <ul class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {c.needs.map((n, i) => (
+          <li data-tilt class="group relative overflow-hidden rounded-3xl bg-mist p-6 transition-colors duration-300 hover:bg-navy sm:p-7">
+            <span aria-hidden="true" class="font-display text-4xl font-bold text-navy/10 transition-colors group-hover:text-ember/40">0{i + 1}</span>
+            <h3 class="mt-3 text-xl font-bold transition-colors group-hover:text-white">{n.t}</h3>
+            <p class="mt-2 leading-relaxed text-slate transition-colors group-hover:text-white/75">{n.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ALL SERVICES -->
+  <section class="bg-mist/60 py-20">
+    <div class="container-x">
+      <h2 class="text-3xl font-bold sm:text-4xl" data-reveal="up">Services for {c.alsoKnownAs ? `${c.name} (${c.alsoKnownAs})` : c.name} businesses</h2>
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {services.map((s) => (
+          <li><a href={s.href} class="flex items-center justify-between rounded-2xl bg-white px-6 py-5 font-semibold ring-1 ring-navy/5 transition-colors hover:bg-olive hover:text-white">{s.name}<span aria-hidden="true">→</span></a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <WorkingStyle items={workingStyle} heading={`How we work with ${c.name} businesses.`} />
+
+  <!-- INDUSTRIES -->
+  <section class="py-16">
+    <div class="container-x">
+      <p class="eyebrow" data-reveal="fade">Industries</p>
+      <h2 class="mt-4 text-3xl font-bold sm:text-4xl">Industries we build for in {c.area}.</h2>
+      <ul class="mt-8 flex flex-wrap gap-2">
+        {c.industries.map((name) => (
+          <li>
+            {industrySlug[name]
+              ? <a href={`/industries/${industrySlug[name]}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 font-semibold text-navy transition-colors hover:border-ember hover:bg-ember">{name}</a>
+              : <span class="inline-block rounded-full border border-navy/10 px-4 py-2 font-medium text-navy">{name}</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="pb-24 pt-8 lg:pb-28">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">How it works</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">From first call to launch.</h2>
+      </div>
+      <ol class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5" data-reveal="stagger">
+        {steps.map((st, i) => (
+          <li class="group relative overflow-hidden rounded-3xl bg-mist p-6 transition-colors duration-300 hover:bg-ember hover:text-navy">
+            <span aria-hidden="true" class="font-display text-5xl font-bold text-navy/10 transition-colors group-hover:text-white/25">0{i + 1}</span>
+            <h3 class="mt-4 text-xl font-bold group-hover:text-white">{st.t}</h3>
+            <p class="mt-1 text-sm text-slate group-hover:text-white/80">{st.short}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="pb-24 lg:pb-28">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+      <div>
+        <p class="eyebrow" data-reveal="fade">FAQ</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Questions from {c.name} clients.</h2>
+      </div>
+      <div class="divide-y divide-navy/10 border-y border-navy/10">
+        {c.faqs.map((f) => (
+          <details class="group py-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-xl font-semibold">
+              {f.q}
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-mist transition-transform duration-300 group-open:rotate-45 group-open:bg-olive group-open:text-white">+</span>
+            </summary>
+            <p class="mt-4 max-w-2xl leading-relaxed text-slate">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- OTHER CITIES -->
+  <section class="border-t border-navy/10 py-12">
+    <div class="container-x">
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate">We also work with businesses in</p>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {others.map((o) => <li><a href={`/locations/${m.slug}/${o.slug}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-olive hover:text-olive">{o.name}</a></li>)}
+        <li><a href={`/locations/${m.slug}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-olive hover:text-olive">All of {m.country}</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <ProjectCta
+    heading={`Have a project in ${c.name}? Let's talk.`}
+    body={`Free 30-minute call on Google Meet, in ${c.name} business hours. You leave with a clear plan, timeline and fixed price in ${m.currency}.`}
+    showAddress={false}
+  />
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLTimeElement>('[data-clock]').forEach((el) => {
+    const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: el.dataset.clock, hour: '2-digit', minute: '2-digit' });
+    const tick = () => (el.textContent = fmt.format(new Date()));
+    tick();
+    setInterval(tick, 30_000);
+  });
+</script>

@@ -4,6 +4,8 @@ import Skyline from '../../components/skylines/Skyline.astro';
 import { site, pillars, markets } from '../../data/site';
 import { delhiServices } from '../../data/delhi';
 import { cityPageFor } from '../../data/cities';
+import { worldCitiesFor } from '../../data/world-cities';
+import { russiaCities } from '../../data/russia-cities';
 import { delhiWorkingStyle, remoteWorkingStyle } from '../../data/working-style';
 import WorkingStyle from '../../components/WorkingStyle.astro';
 
@@ -14,6 +16,12 @@ export function getStaticPaths() {
 const { m } = Astro.props;
 const services = pillars.flatMap((p) => p.items);
 const others = markets.filter((x) => x.slug !== m.slug);
+// City pages for this market (outside India); the city chips below link to them.
+const cityPages: { name: string; slug: string; tz: string }[] = m.slug === 'russia'
+  ? russiaCities.map((c) => ({ name: c.nameEn, slug: c.slug, tz: c.tz }))
+  : worldCitiesFor(m.slug);
+const listed = new Set(m.cities.map((c) => c.name));
+const extraCities = cityPages.filter((c) => !listed.has(c.name));
 
 // Most markets search by country; the UAE searches by Dubai first.
 const title = `Software & App Development Company in ${m.titlePlace ?? m.country} | AR Medias`;
@@ -100,8 +108,13 @@ const schema = [
               ? <a href="/locations/delhi/" class="inline-flex items-center gap-2 rounded-full bg-navy px-4 py-2 font-semibold text-white hover:bg-olive">{c.name} <span aria-hidden="true">→</span></a>
               : m.slug === 'india' && cityPageFor(c.name)
                 ? <a href={`/locations/india/${cityPageFor(c.name)!.slug}/`} class="inline-flex items-center gap-2 rounded-full border border-navy/10 px-4 py-2 font-medium text-navy hover:border-olive hover:text-olive">{c.name} <span aria-hidden="true">→</span></a>
-                : <span class="inline-flex items-center gap-2 rounded-full border border-navy/10 px-4 py-2 font-medium text-navy">{c.name}{multiTz && <time class="text-sm text-slate" data-clock={c.tz}>--:--</time>}</span>}
+                : cityPages.find((p) => p.name === c.name)
+                  ? <a href={`/locations/${m.slug}/${cityPages.find((p) => p.name === c.name)!.slug}/`} class="inline-flex items-center gap-2 rounded-full border border-navy/10 px-4 py-2 font-medium text-navy hover:border-olive hover:text-olive">{c.name}{multiTz && <time class="text-sm text-slate" data-clock={c.tz}>--:--</time>} <span aria-hidden="true">→</span></a>
+                  : <span class="inline-flex items-center gap-2 rounded-full border border-navy/10 px-4 py-2 font-medium text-navy">{c.name}{multiTz && <time class="text-sm text-slate" data-clock={c.tz}>--:--</time>}</span>}
           </li>
+        ))}
+        {extraCities.map((c) => (
+          <li><a href={`/locations/${m.slug}/${c.slug}/`} class="inline-flex items-center gap-2 rounded-full border border-navy/10 px-4 py-2 font-medium text-navy hover:border-olive hover:text-olive">{c.name}{multiTz && <time class="text-sm text-slate" data-clock={c.tz}>--:--</time>} <span aria-hidden="true">→</span></a></li>
         ))}
       </ul>
     </div>

@@ -44,7 +44,12 @@ A longer plain-text version with every service, industry and market: https://arm
 - [Contact](https://armedias.com/contact/)
 
 ## Markets
-- India, UAE, USA, Canada, Australia, Japan, China: https://armedias.com/locations/india/ (and /uae/, /usa/, /canada/, /australia/, /japan/, /china/)
+- India, UAE, USA, Canada, Australia, Japan, China, Russia: https://armedias.com/locations/india/ (and /uae/, /usa/, /canada/, /australia/, /japan/, /china/, /russia/)
 - Delhi NCR (office in Kirti Nagar, in-person meetings): https://armedias.com/locations/delhi/
 - Indian cities: https://armedias.com/locations/india/mumbai/ (and /bangalore/, /hyderabad/, /chennai/, /pune/, /kolkata/, /ahmedabad/, /noida/, /gurgaon/)
+- US cities: https://armedias.com/locations/usa/new-york/ (and /los-angeles/, /dallas/, /austin/, /chicago/, /houston/, /boston/, /denver/, /columbus/, /raleigh/)
+- Canadian cities: https://armedias.com/locations/canada/toronto/ (and /vancouver/, /calgary/, /ottawa/, /edmonton/)
+- Australian cities: https://armedias.com/locations/australia/sydney/ (and /melbourne/, /brisbane/, /adelaide/, /perth/)
+- UAE cities: https://armedias.com/locations/uae/dubai/ (and /abu-dhabi/, /sharjah/, /ajman/)
+- Russian cities (in Russian): https://armedias.com/locations/russia/moscow/ (and /saint-petersburg/, /kazan/, /novosibirsk/, /yekaterinburg/)
 - Hire dedicated developers (monthly, work only on your product): https://armedias.com/hire-dedicated-developers/

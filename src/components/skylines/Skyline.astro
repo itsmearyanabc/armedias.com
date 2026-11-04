@@ -8,8 +8,9 @@ import Canada from './Canada.astro';
 import Australia from './Australia.astro';
 import Japan from './Japan.astro';
 import China from './China.astro';
+import Russia from './Russia.astro';
 
-const cities = { india: India, uae: Uae, usa: Usa, canada: Canada, australia: Australia, japan: Japan, china: China } as const;
+const cities = { india: India, uae: Uae, usa: Usa, canada: Canada, australia: Australia, japan: Japan, china: China, russia: Russia } as const;
 
 interface Props { slug: keyof typeof cities; tz: string; city: string }
 const { slug, tz, city } = Astro.props;

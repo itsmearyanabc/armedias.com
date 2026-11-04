@@ -6,6 +6,8 @@ import { industries } from '../data/industries';
 import { delhiServices, delhiAreas } from '../data/delhi';
 import { delhiWorkingStyle } from '../data/working-style';
 import { indiaCities } from '../data/cities';
+import { worldCities } from '../data/world-cities';
+import { russiaCities } from '../data/russia-cities';
 import { dedicated } from '../data/dedicated';
 
 const url = (path: string) => new URL(path, site.url).href;
@@ -76,6 +78,20 @@ export function GET() {
       `Serving ${c.area}. ${c.lead}`,
       `What businesses there ask for:\n${list(c.needs.map((n) => `${n.t}: ${n.d}`))}`,
       faqs(c.faqs),
+    ].join('\n\n')),
+    '## Cities in other countries',
+    ...worldCities.map((c) => [
+      `### ${c.h1}`,
+      `URL: ${url(`/locations/${c.market}/${c.slug}/`)}`,
+      `Serving ${c.area}, remotely from New Delhi. ${c.lead}`,
+      `What businesses there ask for:\n${list(c.needs.map((n) => `${n.t}: ${n.d}`))}`,
+      faqs(c.faqs),
+    ].join('\n\n')),
+    '## Cities in Russia (pages in Russian)',
+    ...russiaCities.map((c) => [
+      `### ${c.h1}`,
+      `URL: ${url(`/locations/russia/${c.slug}/`)}`,
+      `${c.nameEn}. ${c.lead}`,
     ].join('\n\n')),
   ].join('\n\n');
 

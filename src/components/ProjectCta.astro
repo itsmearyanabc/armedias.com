@@ -5,11 +5,13 @@ import RouteBackdrop from './RouteBackdrop.astro';
 import Spotlight from './Spotlight.astro';
 import { site, maps } from '../data/site';
 
-interface Props { heading: string; body?: string; showAddress?: boolean }
+interface Props { heading: string; body?: string; showAddress?: boolean; ctaLabel?: string; whatsappLabel?: string }
 const {
   heading,
   body = 'Free 30-minute call, on Google Meet or at our Kirti Nagar office. You leave with a clear plan, timeline and fixed price.',
   showAddress = true,
+  ctaLabel = 'Book a free call',
+  whatsappLabel = 'WhatsApp us',
 } = Astro.props;
 ---
 
@@ -21,8 +23,8 @@ const {
     <h2 class="relative mx-auto max-w-3xl text-4xl font-bold text-white sm:text-5xl">{heading}</h2>
     <p class="relative mx-auto mt-5 max-w-xl text-lg text-white/85">{body}</p>
     <div class="relative mt-9 flex flex-wrap justify-center gap-3">
-      <a href="/contact/" class="btn-ember" data-magnetic>Book a free call</a>
-      <a href={site.whatsapp} class="btn border-2 border-white/40 text-white hover:border-white" rel="noopener" target="_blank">WhatsApp us</a>
+      <a href="/contact/" class="btn-ember" data-magnetic>{ctaLabel}</a>
+      <a href={site.whatsapp} class="btn border-2 border-white/40 text-white hover:border-white" rel="noopener" target="_blank">{whatsappLabel}</a>
     </div>
     {showAddress && <p class="relative mt-8 text-sm text-white/70">{site.address.street}, {site.address.locality} {site.address.postalCode} · <a href={maps.directions} class="font-semibold text-ember-300 hover:text-white" rel="noopener" target="_blank">Get directions →</a></p>}
   </div>

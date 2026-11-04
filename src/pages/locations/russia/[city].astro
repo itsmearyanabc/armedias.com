@@ -1,0 +1,181 @@
+---
+// Russian-language city pages for Russia (see src/data/russia-cities.ts). Same layout as the
+// other city pages; copy, FAQ and schema are in Russian because Russian buyers search Yandex
+// in Russian. This route takes precedence over locations/[country]/[city].astro.
+import Base from '../../../layouts/Base.astro';
+import MarketMap from '../../../components/MarketMap.astro';
+import WorkingStyle from '../../../components/WorkingStyle.astro';
+import ProjectCta from '../../../components/ProjectCta.astro';
+import { site, pillars } from '../../../data/site';
+import { russiaCities, servicesRu, type RussiaCity } from '../../../data/russia-cities';
+import { remoteWorkingStyleRu } from '../../../data/working-style';
+
+export function getStaticPaths() {
+  return russiaCities.map((c) => ({ params: { city: c.slug }, props: { c } }));
+}
+
+const { c } = Astro.props as { c: RussiaCity };
+const url = `${site.url}/locations/russia/${c.slug}/`;
+const services = pillars.flatMap((p) => p.items).map((s) => {
+  const slug = s.href.split('/').filter(Boolean).pop()!;
+  return { href: s.href, name: servicesRu[slug] ?? s.name };
+});
+const others = russiaCities.filter((x) => x.slug !== c.slug);
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${url}#service`,
+    name: c.h1,
+    description: c.metaDescription,
+    url,
+    inLanguage: 'ru',
+    provider: { '@id': `${site.url}/#organization` },
+    areaServed: { '@type': 'City', name: c.nameEn, containedInPlace: { '@type': 'Country', name: 'Russia' } },
+    serviceType: services.map((s) => s.name),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    inLanguage: 'ru',
+    mainEntity: c.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Russia', item: `${site.url}/locations/russia/` },
+      { '@type': 'ListItem', position: 3, name: c.name, item: url },
+    ],
+  },
+];
+---
+
+<Base title={c.metaTitle} description={c.metaDescription} {schema} lang="ru">
+  <!-- HERO -->
+  <section class="relative overflow-hidden pb-16 pt-32 lg:pb-24 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+      <div class="blob absolute bottom-0 left-1/4 size-[26rem] rounded-full bg-ember/10 blur-3xl"></div>
+    </div>
+    <div class="container-x grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
+      <div>
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero>
+          <a href="/" class="hover:text-olive">Главная</a> / <a href="/locations/russia/" class="hover:text-olive">Россия</a> / <span>{c.name}</span>
+        </nav>
+        <p class="eyebrow mt-6" data-hero>{c.region} · <time data-clock={c.tz}>--:--</time> местное время</p>
+        <h1 class="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl xl:text-6xl" data-hero>{c.h1}</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>{c.lead}</p>
+        <div class="mt-9 flex flex-wrap gap-3" data-hero>
+          <a href="/contact/" class="btn-primary" data-magnetic>Бесплатная консультация</a>
+          <a href="/work/" class="btn-ghost">Наши проекты</a>
+        </div>
+      </div>
+      <figure class="rounded-[2rem] bg-white p-5 shadow-2xl shadow-navy/10 ring-1 ring-navy/5 sm:p-7" data-reveal="up">
+        <MarketMap coords={c.coords} />
+        <figcaption class="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm">
+          <span class="font-display font-semibold text-navy">Нью-Дели → {c.name}</span>
+          <span class="text-slate">Google Meet в ваше рабочее время · фиксированная цена в USD</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- WHO WE HELP -->
+  <section class="border-y border-navy/8 bg-mist/60 py-10">
+    <div class="container-x flex flex-wrap items-center gap-3">
+      <h2 class="mr-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate" data-no-split>Кому помогаем {c.nameIn}</h2>
+      {c.fits.map((f) => <span class="rounded-full bg-white px-4 py-2 text-sm font-medium text-navy ring-1 ring-navy/5">{f}</span>)}
+    </div>
+  </section>
+
+  <!-- WHAT BUSINESSES NEED -->
+  <section class="py-24 lg:py-28">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">Что мы делаем</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">С чем к нам приходят компании {c.nameGen}.</h2>
+      </div>
+      <ul class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {c.needs.map((n, i) => (
+          <li data-tilt class="group relative overflow-hidden rounded-3xl bg-mist p-6 transition-colors duration-300 hover:bg-navy sm:p-7">
+            <span aria-hidden="true" class="font-display text-4xl font-bold text-navy/10 transition-colors group-hover:text-ember/40">0{i + 1}</span>
+            <h3 class="mt-3 text-xl font-bold transition-colors group-hover:text-white">{n.t}</h3>
+            <p class="mt-2 leading-relaxed text-slate transition-colors group-hover:text-white/75">{n.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ALL SERVICES -->
+  <section class="bg-mist/60 py-20">
+    <div class="container-x">
+      <h2 class="text-3xl font-bold sm:text-4xl" data-reveal="up">Все услуги для бизнеса {c.nameIn}</h2>
+      <p class="mt-3 text-slate">Подробные страницы услуг на английском языке.</p>
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {services.map((s) => (
+          <li><a href={s.href} hreflang="en" class="flex items-center justify-between rounded-2xl bg-white px-6 py-5 font-semibold ring-1 ring-navy/5 transition-colors hover:bg-olive hover:text-white">{s.name}<span aria-hidden="true">→</span></a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <WorkingStyle items={remoteWorkingStyleRu(c.nameGen)} eyebrow="Как мы работаем" heading={`Как мы работаем с компаниями ${c.nameGen}.`} />
+
+  <!-- FAQ -->
+  <section class="py-24 lg:py-28">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+      <div>
+        <p class="eyebrow" data-reveal="fade">Вопросы и ответы</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Частые вопросы.</h2>
+      </div>
+      <div class="divide-y divide-navy/10 border-y border-navy/10">
+        {c.faqs.map((f) => (
+          <details class="group py-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-xl font-semibold">
+              {f.q}
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-mist transition-transform duration-300 group-open:rotate-45 group-open:bg-olive group-open:text-white">+</span>
+            </summary>
+            <p class="mt-4 max-w-2xl leading-relaxed text-slate">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- OTHER CITIES -->
+  <section class="border-t border-navy/10 py-12">
+    <div class="container-x">
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate">Мы также работаем с компаниями</p>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {others.map((o) => <li><a href={`/locations/russia/${o.slug}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-olive hover:text-olive">{o.nameIn}</a></li>)}
+        <li><a href="/locations/russia/" hreflang="en" class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-olive hover:text-olive">По всей России (English)</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <ProjectCta
+    heading={`Есть проект ${c.nameIn}? Давайте обсудим.`}
+    body={`Бесплатный 30-минутный созвон в Google Meet в рабочее время ${c.nameGen}. Вы получите понятный план, сроки и фиксированную цену в USD.`}
+    showAddress={false}
+    ctaLabel="Записаться на консультацию"
+    whatsappLabel="Написать в WhatsApp"
+  />
+</Base>
+
+<style is:global>
+  /* Space Grotesk has no Cyrillic; Russian headings use Inter so they render consistently */
+  html[lang='ru'] :is(h1, h2, h3, summary, .font-display) { font-family: 'Inter Variable', ui-sans-serif, system-ui, sans-serif; }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLTimeElement>('[data-clock]').forEach((el) => {
+    const fmt = new Intl.DateTimeFormat('ru-RU', { timeZone: el.dataset.clock, hour: '2-digit', minute: '2-digit' });
+    const tick = () => (el.textContent = fmt.format(new Date()));
+    tick();
+    setInterval(tick, 30_000);
+  });
+</script>
