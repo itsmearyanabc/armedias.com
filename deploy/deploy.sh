@@ -14,14 +14,17 @@ cd "$RELEASE"
 npm ci --no-audit --no-fund
 npm run build
 
+# The release being replaced, so IndexNow is told only about pages this deploy changed
+PREVIOUS=$(readlink -f "$APP/current" || true)
 ln -sfn "$RELEASE" "$APP/current"
 pm2 delete armedias >/dev/null 2>&1 || true
 pm2 start "$APP/current/deploy/ecosystem.config.cjs"
 pm2 save
 nginx -t && systemctl reload nginx
 
-# Ask IndexNow search engines to recrawl the pages (never fails the deploy)
-(cd "$APP/current" && node scripts/indexnow.mjs) || true
+# Ask IndexNow search engines to recrawl the pages this deploy added, changed or removed
+# (never fails the deploy)
+(cd "$APP/current" && node scripts/indexnow.mjs "$PREVIOUS") || true
 
 # Keep the five most recent releases
 ls -1dt "$APP"/releases/* | tail -n +6 | xargs -r rm -rf
