@@ -122,7 +122,27 @@ add Yandex Webmaster and Yandex Business for the Russian pages.
    TopDevelopers and TechBehemoths. Use the same name, address and phone everywhere.
 8. **Reviews on those directories**: ask past clients, especially any outside India, for
    honest Clutch and GoodFirms reviews. Never write or buy them.
-9. **In about 4 weeks**: check Search Console and Yandex Webmaster for which city pages get
+9. **Google: request indexing for the top pages** (Search Console → URL inspection →
+   *Request indexing*, about 10 a day; the sitemap covers the other pages). Prefix each
+   path with `https://armedias.com`.
+   - Day 1: `/`, `/services/`, `/hire-dedicated-developers/`, `/locations/india/`,
+     `/locations/delhi/`, `/locations/usa/`, `/locations/uae/`, `/locations/canada/`,
+     `/locations/australia/`, `/locations/russia/`
+   - Day 2 (lower competition): `/locations/usa/columbus/`, `/locations/usa/denver/`,
+     `/locations/usa/raleigh/`, `/locations/usa/boston/`, `/locations/canada/calgary/`,
+     `/locations/canada/ottawa/`, `/locations/canada/edmonton/`,
+     `/locations/australia/brisbane/`, `/locations/australia/adelaide/`,
+     `/locations/australia/perth/`
+   - Day 3: `/locations/uae/sharjah/`, `/locations/uae/ajman/`, `/locations/uae/abu-dhabi/`,
+     `/locations/uae/dubai/`, `/locations/usa/dallas/`, `/locations/usa/new-york/`,
+     `/locations/usa/austin/`, `/locations/usa/los-angeles/`, `/locations/usa/chicago/`,
+     `/locations/usa/houston/`
+   - Day 4: `/locations/canada/toronto/`, `/locations/canada/vancouver/`,
+     `/locations/australia/sydney/`, `/locations/australia/melbourne/`, then the main
+     service pages.
+   Bing and Yandex need no manual requests for changed pages: every deploy pings them
+   through IndexNow (`scripts/indexnow.mjs`). Skip Baidu, Naver and Seznam for now.
+10. **In about 4 weeks**: check Search Console and Yandex Webmaster for which city pages get
    impressions, and strengthen those first.
 
 ## Monthly routine
