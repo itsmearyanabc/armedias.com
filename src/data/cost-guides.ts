@@ -75,8 +75,8 @@ export const costGuides: CostGuide[] = [
     metaDescription: 'What a website costs in 2026 in India, the USA, UAE, Canada, Australia, Japan, China and Russia, from published market guides. Share your budget for a fixed quote.',
     h1: 'How much does a website cost',
     h1Accent: 'in 2026?',
-    lead: 'Market prices for websites in eight countries, from simple builder sites to custom platforms, taken from published 2026 price guides. Whatever your budget, there is a sensible way to start.',
-    quickAnswer: 'It depends on who builds it and what it needs to do. A builder site costs a small yearly fee, a simple site built for you starts in the low thousands of rupees in India, and custom platforms run into lakhs in India or six figures in US dollars.',
+    lead: 'What shapes the cost of a website in eight countries, from simple builder sites to custom platforms. Whatever your budget, there is a sensible way to start: tell us what you have and we will plan what fits.',
+    quickAnswer: 'It depends on what your website needs to do and who builds it. Tell us your budget and we will plan a version that fits it, then grow it as your business grows.',
     checked: '7 November 2026',
     markets: [
       {

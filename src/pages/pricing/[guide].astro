@@ -9,7 +9,6 @@ import ProjectCta from '../../components/ProjectCta.astro';
 import FeatureCard from '../../components/FeatureCard.astro';
 import MarketMap from '../../components/MarketMap.astro';
 import Illustration from '../../components/illustrations/Illustration.astro';
-import { priceText } from '../../lib/cost-format';
 import { site, markets } from '../../data/site';
 import { services } from '../../data/services';
 import { costGuides, type CostGuide } from '../../data/cost-guides';
@@ -26,11 +25,8 @@ const info = (slug: string) => markets.find((m) => m.slug === slug)!;
 const sources = [...new Map(guide.markets.flatMap((m) => m.sources).map((s) => [s.url, s])).values()];
 const countries = guide.markets.map((m) => info(m.slug));
 const currencies = guide.markets.filter((m) => m.currency).length;
-// One headline figure per country for the overview: the typical business site, else the first row.
-const glance = guide.markets.map((m) => {
-  const t = m.tiers.find((x) => x.key === 'business') ?? m.tiers.find((x) => x.key === 'landing') ?? m.tiers[0];
-  return { m, c: info(m.slug), label: t?.label ?? 'What drives the cost', value: t ? priceText(t, m) : 'See the cost drivers' };
-});
+// Country overview: maps and links only. Prices never lead; they sit behind a click in each country.
+const glance = guide.markets.map((m) => ({ m, c: info(m.slug) }));
 const budgetAsk = encodeURIComponent(`Hi AR Medias, I'd like a ${service.name.toLowerCase()} quote. My budget is: `);
 
 const schema = [
@@ -113,16 +109,16 @@ const schema = [
   <!-- AT A GLANCE -->
   <section class="pb-8" aria-labelledby="glance-heading">
     <div class="container-x">
-      <h2 id="glance-heading" class="sr-only">At a glance: a typical price in each country</h2>
+      <h2 id="glance-heading" class="sr-only">Choose your country</h2>
       <ul class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4" data-reveal="stagger">
-        {glance.map(({ m, c, label, value }) => (
+        {glance.map(({ m, c }) => (
           <li>
             <a href={`#${m.slug}`} data-tilt class="group block h-full rounded-3xl border border-navy/10 bg-white p-4 transition-colors hover:border-olive hover:bg-olive hover:text-white sm:p-6">
               <MarketMap coords={c.coords} class="mb-3 sm:mb-4" />
               <p class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-olive group-hover:text-white/80 sm:text-sm"><Flag code={c.code} />{m.currency ?? c.code}</p>
               <p class="mt-1 font-display text-xl font-bold sm:mt-2 sm:text-2xl">{c.country}</p>
-              <p class="mt-2 text-xs text-slate group-hover:text-white/80 sm:text-sm">{label}</p>
-              <p class="mt-1 font-display text-sm font-bold text-navy group-hover:text-white sm:text-base">{value}</p>
+              <p class="mt-2 text-xs text-slate group-hover:text-white/80 sm:text-sm">{c.city}</p>
+              <p class="mt-1 font-display text-sm font-bold text-navy group-hover:text-white sm:text-base">What shapes the cost <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">→</span></p>
             </a>
           </li>
         ))}

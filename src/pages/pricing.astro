@@ -121,7 +121,7 @@ const schema = [
       <div class="max-w-2xl">
         <p class="eyebrow" data-reveal="fade">Cost guides</p>
         <h2 class="mt-4 text-4xl font-bold sm:text-5xl">What it costs in your country.</h2>
-        <p class="mt-5 text-lg text-slate" data-reveal="up">Market prices from published guides, in local currency, with a planner that sends your plan and budget to us.</p>
+        <p class="mt-5 text-lg text-slate" data-reveal="up">What shapes the cost in each country, with a planner that sends your plan and budget to us.</p>
       </div>
       <ul class="mt-10 grid gap-5 md:grid-cols-2" data-reveal="stagger">
         {costGuides.map((g) => (
@@ -133,7 +133,7 @@ const schema = [
               <span class="relative mt-5 flex flex-wrap gap-1.5">
                 {g.markets.map((x) => { const mk = markets.find((y) => y.slug === x.slug); return mk ? <Flag code={mk.code} class="h-3.5 w-5" /> : null; })}
               </span>
-              <span class="relative mt-6 font-semibold text-ember-300">See prices in {g.markets.length} countries <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">→</span></span>
+              <span class="relative mt-6 font-semibold text-ember-300">Costs explained for {g.markets.length} countries <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">→</span></span>
             </a>
           </li>
         ))}

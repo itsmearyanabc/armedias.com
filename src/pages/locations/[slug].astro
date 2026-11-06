@@ -189,7 +189,6 @@ const schema = [
   </section>
 
   {costGuides.filter((g) => g.markets.some((x) => x.slug === m.slug)).map((g) => {
-    const cm = g.markets.find((x) => x.slug === m.slug);
     return (
       <section class="py-10">
         <div class="container-x">
@@ -198,9 +197,9 @@ const schema = [
             <span class="relative">
               <span class="block text-xs font-semibold uppercase tracking-[0.2em] text-ember-300">Cost guide 2026</span>
               <span class="mt-2 block font-display text-2xl font-bold sm:text-3xl">What a {g.short} costs in {m.country}</span>
-              <span class="mt-2 block max-w-xl text-white/70">Market prices{cm?.currency ? ` in ${cm.currency}` : ''} from published guides, and a planner that sends your budget to us on WhatsApp.</span>
+              <span class="mt-2 block max-w-xl text-white/70">What shapes the cost in {m.country}, and a planner that sends your plan and budget to us on WhatsApp.</span>
             </span>
-            <span class="btn-ember relative shrink-0">See the prices <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span></span>
+            <span class="btn-ember relative shrink-0">Plan my website <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span></span>
           </a>
         </div>
       </section>
