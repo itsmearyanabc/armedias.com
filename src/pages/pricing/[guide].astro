@@ -6,6 +6,10 @@ import Flag from '../../components/Flag.astro';
 import CostCountryTabs from '../../components/CostCountryTabs.astro';
 import CostPlanner from '../../components/CostPlanner.astro';
 import ProjectCta from '../../components/ProjectCta.astro';
+import FeatureCard from '../../components/FeatureCard.astro';
+import MarketMap from '../../components/MarketMap.astro';
+import Illustration from '../../components/illustrations/Illustration.astro';
+import { priceText } from '../../lib/cost-format';
 import { site, markets } from '../../data/site';
 import { services } from '../../data/services';
 import { costGuides, type CostGuide } from '../../data/cost-guides';
@@ -22,6 +26,11 @@ const info = (slug: string) => markets.find((m) => m.slug === slug)!;
 const sources = [...new Map(guide.markets.flatMap((m) => m.sources).map((s) => [s.url, s])).values()];
 const countries = guide.markets.map((m) => info(m.slug));
 const currencies = guide.markets.filter((m) => m.currency).length;
+// One headline figure per country for the overview: the typical business site, else the first row.
+const glance = guide.markets.map((m) => {
+  const t = m.tiers.find((x) => x.key === 'business') ?? m.tiers.find((x) => x.key === 'landing') ?? m.tiers[0];
+  return { m, c: info(m.slug), label: t?.label ?? 'What drives the cost', value: t ? priceText(t, m) : 'See the cost drivers' };
+});
 const budgetAsk = encodeURIComponent(`Hi AR Medias, I'd like a ${service.name.toLowerCase()} quote. My budget is: `);
 
 const schema = [
@@ -85,6 +94,7 @@ const schema = [
       </div>
 
       <div class="relative" data-hero>
+        <div aria-hidden="true" class="mx-auto -mb-10 w-full max-w-xs sm:-mb-14 sm:max-w-sm"><Illustration name="globe" title="Globe showing routes from New Delhi to eight countries" /></div>
         <div class="relative overflow-hidden rounded-[2rem] bg-navy p-8 text-white shadow-2xl shadow-navy/25 sm:p-10" data-tilt>
           <div aria-hidden="true" class="pointer-events-none absolute -bottom-24 -right-16 size-72 rounded-full bg-ember/25 blur-3xl"></div>
           <p class="relative text-xs font-semibold uppercase tracking-[0.2em] text-ember-300">Short answer</p>
@@ -97,6 +107,26 @@ const schema = [
           <p class="relative mt-6 text-sm text-white/70">These are market figures. We quote after a free call, based on your scope and budget.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- AT A GLANCE -->
+  <section class="pb-8" aria-labelledby="glance-heading">
+    <div class="container-x">
+      <h2 id="glance-heading" class="sr-only">At a glance: a typical price in each country</h2>
+      <ul class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4" data-reveal="stagger">
+        {glance.map(({ m, c, label, value }) => (
+          <li>
+            <a href={`#${m.slug}`} data-tilt class="group block h-full rounded-3xl border border-navy/10 bg-white p-4 transition-colors hover:border-olive hover:bg-olive hover:text-white sm:p-6">
+              <MarketMap coords={c.coords} class="mb-3 sm:mb-4" />
+              <p class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-olive group-hover:text-white/80 sm:text-sm"><Flag code={c.code} />{m.currency ?? c.code}</p>
+              <p class="mt-1 font-display text-xl font-bold sm:mt-2 sm:text-2xl">{c.country}</p>
+              <p class="mt-2 text-xs text-slate group-hover:text-white/80 sm:text-sm">{label}</p>
+              <p class="mt-1 font-display text-sm font-bold text-navy group-hover:text-white sm:text-base">{value}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
@@ -113,13 +143,7 @@ const schema = [
         <p class="mt-5 text-lg text-slate" data-reveal="up">The same in every country. Knowing them helps you compare quotes for the same scope.</p>
       </div>
       <ol class="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
-        {guide.factors.map((f, i) => (
-          <li data-tilt class="group relative overflow-hidden rounded-3xl bg-white p-7 ring-1 ring-navy/8">
-            <span aria-hidden="true" class="font-display text-5xl font-bold text-navy/10 transition-colors group-hover:text-ember/40">{String(i + 1).padStart(2, '0')}</span>
-            <h3 class="mt-2 text-xl font-bold">{f.t}</h3>
-            <p class="mt-3 leading-relaxed text-slate">{f.d}</p>
-          </li>
-        ))}
+        {guide.factors.map((f, i) => <FeatureCard icon={f.icon} title={f.t} text={f.d} index={i} />)}
       </ol>
     </div>
   </section>
@@ -158,16 +182,11 @@ const schema = [
         <h2 class="mt-4 text-4xl font-bold sm:text-5xl">How a project with us is priced.</h2>
       </div>
       <ul class="mt-12 grid gap-5 md:grid-cols-3" data-reveal="stagger">
-        {[
-          { t: 'Fixed quote after a free call', d: 'You get a written scope and a fixed price before any work starts.' },
-          { t: 'Billed in your currency', d: 'Indian clients get GST invoices; clients abroad are invoiced in their own currency.' },
-          { t: 'Milestone payments', d: 'An advance to start, then payments as each agreed stage is delivered.' },
-        ].map((c) => (
-          <li data-tilt class="rounded-3xl bg-mist/70 p-7 ring-1 ring-navy/8">
-            <h3 class="text-xl font-bold">{c.t}</h3>
-            <p class="mt-3 leading-relaxed text-slate">{c.d}</p>
-          </li>
-        ))}
+        {([
+          { icon: 'handshake', t: 'Fixed quote after a free call', d: 'You get a written scope and a fixed price before any work starts.' },
+          { icon: 'receipt', t: 'Billed in your currency', d: 'Indian clients get GST invoices; clients abroad are invoiced in their own currency.' },
+          { icon: 'rocket', t: 'Milestone payments', d: 'An advance to start, then payments as each agreed stage is delivered.' },
+        ] as const).map((c) => <FeatureCard icon={c.icon} title={c.t} text={c.d} />)}
       </ul>
       <ul class="mt-10 flex flex-wrap gap-2" aria-label="Country pages">
         {countries.map((c) => (

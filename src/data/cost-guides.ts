@@ -39,6 +39,9 @@ export interface MarketCost {
 
 export interface PlannerOption { id: string; label: string }
 
+/** Names accepted by AnimatedIcon.astro. */
+export type IconName = 'layers' | 'founder' | 'receipt' | 'key' | 'clock' | 'bolt' | 'target' | 'chat' | 'sparkle' | 'handshake' | 'demo' | 'board' | 'lock' | 'rocket' | 'stack' | 'mentor' | 'home';
+
 export interface CostGuide {
   slug: string;
   /** services.ts slug of the service this guide prices. */
@@ -57,7 +60,7 @@ export interface CostGuide {
     types: { id: string; label: string; detail: string; tiers: TierKey[] }[];
     features: PlannerOption[];
   };
-  factors: { t: string; d: string }[];
+  factors: { t: string; d: string; icon: IconName }[];
   faqs: { q: string; a: string }[];
 }
 
@@ -270,12 +273,12 @@ export const costGuides: CostGuide[] = [
       ],
     },
     factors: [
-      { t: 'Who builds it', d: 'A website builder, a freelancer, a small studio or a large agency can quote very different prices for a similar site.' },
-      { t: 'Design', d: 'A template is quicker and cheaper; a custom design takes more rounds and more time.' },
-      { t: 'Pages and content', d: 'More pages mean more design, writing and testing. Having your text and photos ready keeps the cost down.' },
-      { t: 'Features', d: 'Payments, bookings, logins, CRM links and WhatsApp automation each add build and testing work.' },
-      { t: 'Languages', d: 'Every extra language adds translation, layout checks and, for Arabic, right-to-left design.' },
-      { t: 'Running costs', d: 'Domain, hosting, maintenance and SEO continue after launch, so budget for them from day one.' },
+      { icon: 'founder', t: 'Who builds it', d: 'A website builder, a freelancer, a small studio or a large agency can quote very different prices for a similar site.' },
+      { icon: 'layers', t: 'Design', d: 'A template is quicker and cheaper; a custom design takes more rounds and more time.' },
+      { icon: 'stack', t: 'Pages and content', d: 'More pages mean more design, writing and testing. Having your text and photos ready keeps the cost down.' },
+      { icon: 'bolt', t: 'Features', d: 'Payments, bookings, logins, CRM links and WhatsApp automation each add build and testing work.' },
+      { icon: 'chat', t: 'Languages', d: 'Every extra language adds translation, layout checks and, for Arabic, right-to-left design.' },
+      { icon: 'receipt', t: 'Running costs', d: 'Domain, hosting, maintenance and SEO continue after launch, so budget for them from day one.' },
     ],
     faqs: [
       { q: 'How much does a website cost in India?', a: 'Published 2026 guides put a simple 1–5 page site at about ₹5,000 to ₹50,000, a small business site at ₹10,000 to ₹80,000 and an agency-built online store from about ₹1,50,000. Builder plans cost ₹2,000 to ₹6,000 a year.' },

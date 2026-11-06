@@ -3,6 +3,7 @@
 // full; with it, the list becomes tabs that open on the visitor's country (from the URL hash,
 // for links like /pricing/website-development-cost/#usa, or their time zone).
 import Flag from './Flag.astro';
+import Skyline from './skylines/Skyline.astro';
 import { markets, site } from '../data/site';
 import type { CostGuide, CostTier, MarketCost } from '../data/cost-guides';
 import { priceText } from '../lib/cost-format';
@@ -63,7 +64,10 @@ const askText = (country: string) => `Hi AR Medias, I'm in ${country} and I'm pl
               {m.currency && <span class="rounded-full bg-navy px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white">{currencyName(m.currency)} · {m.currency}</span>}
             </header>
             <div class="px-6 py-8 sm:px-9">
-              <p class="max-w-3xl text-lg leading-relaxed text-slate">{m.intro}</p>
+              <div class="grid items-center gap-8 lg:grid-cols-[1fr_22rem]">
+                <p class="max-w-3xl text-lg leading-relaxed text-slate">{m.intro}</p>
+                <div class="mx-auto w-full max-w-sm lg:max-w-none"><Skyline slug={m.slug as any} tz={mi.tz} city={mi.city} /></div>
+              </div>
 
               {m.tiers.length > 0 && (
                 <table class="mt-8 block w-full text-left sm:table sm:border-separate sm:border-spacing-y-2">
@@ -215,7 +219,9 @@ const askText = (country: string) => `Hi AR Medias, I'm in ${country} and I'm pl
     select(guessCountry(slugs) ?? slugs[0]);
     window.addEventListener('hashchange', () => {
       const slug = location.hash.slice(1);
-      if (slugs.includes(slug)) select(slug);
+      if (!slugs.includes(slug)) return;
+      select(slug);
+      panels.find((p) => p.dataset.panel === slug)?.scrollIntoView({ block: 'start' });
     });
   });
 </script>
