@@ -4,16 +4,31 @@ import SocialIcons from './SocialIcons.astro';
 
 const services = pillars.flatMap((p) => p.items);
 const year = new Date().getFullYear();
+
+// A small flock crosses once when the footer comes into view: some birds fly left to right,
+// some right to left, at different heights, sizes, speeds and start times.
+const flock = [
+  { dir: 'ltr', top: '22%', scale: 1, delay: 0, dur: 7 },
+  { dir: 'ltr', top: '12%', scale: 0.7, delay: 0.6, dur: 8 },
+  { dir: 'ltr', top: '34%', scale: 0.55, delay: 1.4, dur: 9 },
+  { dir: 'rtl', top: '16%', scale: 0.85, delay: 0.9, dur: 7.5 },
+  { dir: 'rtl', top: '28%', scale: 0.6, delay: 2, dur: 8.5 },
+  { dir: 'rtl', top: '8%', scale: 0.5, delay: 2.8, dur: 9.5 },
+];
 ---
 
 <footer data-footer class="relative overflow-hidden bg-navy text-white/75">
-  <!-- The logo's bird flies across once when the footer comes into view -->
-  <svg class="footer-bird" viewBox="0 0 80 40" width="80" height="40" aria-hidden="true">
-    <path class="wing wing--back" d="M38 20C30 8 16 4 4 6c10 4 18 10 26 18z" fill="#556b2f" />
-    <path d="M12 26c14 0 30-4 44-12 6-4 12-6 18-4l-6 4c-4 0-8 2-10 6-10 12-28 14-46 6z" fill="#fff" />
-    <circle cx="66" cy="13" r="1.6" fill="#13213a" />
-    <path class="wing" d="M40 20C34 6 22 0 10 0c8 6 16 12 22 22z" fill="#a9c46c" />
-  </svg>
+  <!-- The logo's bird and a few friends fly across once when the footer comes into view -->
+  {flock.map((b) => (
+    <svg class={`footer-bird footer-bird--${b.dir}`} style={`--top:${b.top};--s:${b.scale};--delay:${b.delay}s;--dur:${b.dur}s`} viewBox="0 0 80 40" width="80" height="40" aria-hidden="true">
+      <g transform={b.dir === 'rtl' ? 'translate(80 0) scale(-1 1)' : undefined}>
+        <path class="wing wing--back" d="M38 20C30 8 16 4 4 6c10 4 18 10 26 18z" fill="#556b2f" />
+        <path d="M12 26c14 0 30-4 44-12 6-4 12-6 18-4l-6 4c-4 0-8 2-10 6-10 12-28 14-46 6z" fill="#fff" />
+        <circle cx="66" cy="13" r="1.6" fill="#13213a" />
+        <path class="wing" d="M40 20C34 6 22 0 10 0c8 6 16 12 22 22z" fill="#a9c46c" />
+      </g>
+    </svg>
+  ))}
   <div aria-hidden="true" class="blob pointer-events-none absolute -right-40 -top-40 size-[34rem] rounded-full bg-ember/20 blur-3xl"></div>
   <div class="container-x relative grid grid-cols-2 gap-x-6 gap-y-12 py-16 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
     <div class="col-span-2 lg:col-span-1">
@@ -71,16 +86,27 @@ const year = new Date().getFullYear();
 </footer>
 
 <style>
-  .footer-bird { position: absolute; left: -100px; top: 22%; z-index: 1; opacity: 0; pointer-events: none; }
-  [data-footer].is-visible .footer-bird { animation: bird-fly 7s cubic-bezier(0.45, 0, 0.3, 1) forwards; }
+  .footer-bird { position: absolute; top: var(--top); z-index: 1; opacity: 0; pointer-events: none; scale: var(--s); }
+  .footer-bird--ltr { left: -100px; }
+  .footer-bird--rtl { right: -100px; }
+  [data-footer].is-visible .footer-bird--ltr { animation: bird-fly var(--dur) cubic-bezier(0.45, 0, 0.3, 1) var(--delay) forwards; }
+  [data-footer].is-visible .footer-bird--rtl { animation: bird-fly-back var(--dur) cubic-bezier(0.45, 0, 0.3, 1) var(--delay) forwards; }
   .footer-bird .wing { transform-box: fill-box; transform-origin: 100% 100%; animation: bird-flap 0.32s ease-in-out infinite alternate; }
   .footer-bird .wing--back { animation-delay: -0.16s; }
+  .footer-bird:nth-of-type(even) .wing { animation-duration: 0.28s; }
   @keyframes bird-fly {
     0% { transform: translate(0, 60px) rotate(-8deg); opacity: 0; }
     8% { opacity: 1; }
     50% { transform: translate(55vw, -20px) rotate(4deg); }
     92% { opacity: 1; }
     100% { transform: translate(115vw, -90px) rotate(-10deg); opacity: 0; }
+  }
+  @keyframes bird-fly-back {
+    0% { transform: translate(0, 50px) rotate(8deg); opacity: 0; }
+    8% { opacity: 1; }
+    50% { transform: translate(-55vw, -10px) rotate(-4deg); }
+    92% { opacity: 1; }
+    100% { transform: translate(-115vw, -80px) rotate(10deg); opacity: 0; }
   }
   @keyframes bird-flap { to { transform: scaleY(-0.6); } }
   @media (prefers-reduced-motion: reduce) { .footer-bird { display: none; } }
