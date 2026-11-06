@@ -6,7 +6,7 @@ const googleListing = 'https://www.google.com/maps?cid=17702723482862989545';
 export const site = {
   name: 'AR Medias',
   // Other spellings people search for, so search engines connect them to this site
-  alternateNames: ['ARMedias', 'Armedias', 'AR Medias IT Company'],
+  alternateNames: ['ARMedias', 'Armedias', 'AR Medias IT Company', 'AR Media', 'ARMedia'],
   legalName: 'AR Medias',
   url: 'https://armedias.com',
   founded: '2024-01-01',
