@@ -9,6 +9,7 @@ import { russiaCities } from '../../data/russia-cities';
 import { delhiWorkingStyle, remoteWorkingStyle } from '../../data/working-style';
 import WorkingStyle from '../../components/WorkingStyle.astro';
 import { marketGuides } from '../../data/market-guides';
+import { costGuides } from '../../data/cost-guides';
 
 export function getStaticPaths() {
   return markets.map((m) => ({ params: { slug: m.slug }, props: { m } }));
@@ -186,6 +187,25 @@ const schema = [
       <p class="text-lg text-slate">Need developers on your own team instead of a project? <a href="/hire-dedicated-developers/" class="font-semibold text-olive hover:text-navy">Hire dedicated developers →</a></p>
     </div>
   </section>
+
+  {costGuides.filter((g) => g.markets.some((x) => x.slug === m.slug)).map((g) => {
+    const cm = g.markets.find((x) => x.slug === m.slug);
+    return (
+      <section class="py-10">
+        <div class="container-x">
+          <a href={`/pricing/${g.slug}/#${m.slug}`} class="group relative flex flex-col gap-5 overflow-hidden rounded-[2rem] bg-navy p-8 text-white sm:flex-row sm:items-center sm:justify-between sm:p-10" data-reveal="up">
+            <span aria-hidden="true" class="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-ember/25 blur-3xl"></span>
+            <span class="relative">
+              <span class="block text-xs font-semibold uppercase tracking-[0.2em] text-ember-300">Cost guide 2026</span>
+              <span class="mt-2 block font-display text-2xl font-bold sm:text-3xl">What a {g.short} costs in {m.country}</span>
+              <span class="mt-2 block max-w-xl text-white/70">Market prices{cm?.currency ? ` in ${cm.currency}` : ''} from published guides, and a planner that sends your budget to us on WhatsApp.</span>
+            </span>
+            <span class="btn-ember relative shrink-0">See the prices <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span></span>
+          </a>
+        </div>
+      </section>
+    );
+  })}
 
   {m.slug === 'india' && (
     <section class="py-20">

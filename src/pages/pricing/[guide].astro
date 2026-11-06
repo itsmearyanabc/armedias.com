@@ -1,0 +1,223 @@
+---
+// Cost guides: market prices per country from published guides, a budget planner that sends
+// the visitor's plan to WhatsApp, and FAQs. Data and sources live in src/data/cost-guides.ts.
+import Base from '../../layouts/Base.astro';
+import Flag from '../../components/Flag.astro';
+import CostCountryTabs from '../../components/CostCountryTabs.astro';
+import CostPlanner from '../../components/CostPlanner.astro';
+import ProjectCta from '../../components/ProjectCta.astro';
+import { site, markets } from '../../data/site';
+import { services } from '../../data/services';
+import { costGuides, type CostGuide } from '../../data/cost-guides';
+
+export function getStaticPaths() {
+  return costGuides.map((guide) => ({ params: { guide: guide.slug }, props: { guide } }));
+}
+
+interface Props { guide: CostGuide }
+const { guide } = Astro.props;
+const service = services.find((s) => s.slug === guide.service)!;
+const url = `${site.url}/pricing/${guide.slug}/`;
+const info = (slug: string) => markets.find((m) => m.slug === slug)!;
+const sources = [...new Map(guide.markets.flatMap((m) => m.sources).map((s) => [s.url, s])).values()];
+const countries = guide.markets.map((m) => info(m.slug));
+const currencies = guide.markets.filter((m) => m.currency).length;
+const budgetAsk = encodeURIComponent(`Hi AR Medias, I'd like a ${service.name.toLowerCase()} quote. My budget is: `);
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    '@id': `${url}#article`,
+    headline: `${guide.h1} ${guide.h1Accent}`,
+    description: guide.metaDescription,
+    url,
+    mainEntityOfPage: url,
+    datePublished: '2026-11-07',
+    dateModified: '2026-11-07',
+    inLanguage: 'en',
+    author: { '@type': 'Person', name: site.founder.name, url: `${site.url}/about/aryan-yadav/` },
+    publisher: { '@id': `${site.url}/#organization` },
+    about: { '@type': 'Service', name: service.name, url: `${site.url}/services/${service.slug}/` },
+    spatialCoverage: countries.map((c) => ({ '@type': 'Country', name: c.schemaName })),
+    citation: sources.map((s) => ({ '@type': 'CreativeWork', name: s.title, url: s.url, publisher: { '@type': 'Organization', name: s.publisher } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: guide.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Pricing', item: `${site.url}/pricing/` },
+      { '@type': 'ListItem', position: 3, name: `${service.name} cost`, item: url },
+    ],
+  },
+];
+---
+
+<Base title={guide.metaTitle} description={guide.metaDescription} {schema}>
+  <!-- HERO -->
+  <section class="relative overflow-hidden pb-16 pt-32 lg:pt-40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
+      <div class="blob absolute -left-24 bottom-0 size-[26rem] rounded-full bg-ember/10 blur-3xl"></div>
+    </div>
+    <div class="container-x grid items-center gap-12 lg:grid-cols-[1.25fr_1fr]">
+      <div>
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero><a href="/" class="hover:text-olive">Home</a> / <a href="/pricing/" class="hover:text-olive">Pricing</a> / <span>{service.name} cost</span></nav>
+        <p class="eyebrow mt-6" data-hero>Cost guide 2026 · {countries.length} countries</p>
+        <h1 class="mt-4 text-5xl font-bold leading-[1.03] sm:text-6xl" data-hero>{guide.h1} <span class="text-olive">{guide.h1Accent}</span></h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>{guide.lead}</p>
+        <div class="mt-9 flex flex-wrap gap-3" data-hero>
+          <a href="#planner" class="btn-ember" data-magnetic>Plan my budget</a>
+          <a href="#prices" class="btn-ghost">See prices by country</a>
+        </div>
+        <ul class="mt-8 flex flex-wrap gap-2" data-hero aria-label="Jump to a country">
+          {countries.map((c) => (
+            <li><a href={`#${c.slug}`} class="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1.5 text-xs font-semibold text-navy ring-1 ring-navy/10 transition-colors hover:bg-navy hover:text-white"><Flag code={c.code} />{c.country}</a></li>
+          ))}
+        </ul>
+        <p class="mt-6 text-sm text-slate" data-hero>Checked {guide.checked} · Every figure links to its source · By {site.founder.name}, founder of {site.name}</p>
+      </div>
+
+      <div class="relative" data-hero>
+        <div class="relative overflow-hidden rounded-[2rem] bg-navy p-8 text-white shadow-2xl shadow-navy/25 sm:p-10" data-tilt>
+          <div aria-hidden="true" class="pointer-events-none absolute -bottom-24 -right-16 size-72 rounded-full bg-ember/25 blur-3xl"></div>
+          <p class="relative text-xs font-semibold uppercase tracking-[0.2em] text-ember-300">Short answer</p>
+          <p class="relative mt-4 font-display text-2xl font-semibold leading-snug">{guide.quickAnswer}</p>
+          <dl class="relative mt-8 grid grid-cols-3 gap-3 text-center">
+            <div class="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10"><dt class="text-xs text-white/60">Countries</dt><dd class="order-first font-display text-3xl font-bold"><span data-count={countries.length}>{countries.length}</span></dd></div>
+            <div class="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10"><dt class="text-xs text-white/60">Sources</dt><dd class="order-first font-display text-3xl font-bold"><span data-count={sources.length}>{sources.length}</span></dd></div>
+            <div class="rounded-2xl bg-white/8 p-3 ring-1 ring-white/10"><dt class="text-xs text-white/60">Currencies</dt><dd class="order-first font-display text-3xl font-bold"><span data-count={currencies}>{currencies}</span></dd></div>
+          </dl>
+          <p class="relative mt-6 text-sm text-white/70">These are market figures. We quote after a free call, based on your scope and budget.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CostCountryTabs {guide} />
+
+  <CostPlanner {guide} />
+
+  <!-- WHAT DRIVES THE COST -->
+  <section class="py-24">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">What drives the price</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Six things that move a quote.</h2>
+        <p class="mt-5 text-lg text-slate" data-reveal="up">The same in every country. Knowing them helps you compare quotes for the same scope.</p>
+      </div>
+      <ol class="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {guide.factors.map((f, i) => (
+          <li data-tilt class="group relative overflow-hidden rounded-3xl bg-white p-7 ring-1 ring-navy/8">
+            <span aria-hidden="true" class="font-display text-5xl font-bold text-navy/10 transition-colors group-hover:text-ember/40">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="mt-2 text-xl font-bold">{f.t}</h3>
+            <p class="mt-3 leading-relaxed text-slate">{f.d}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- SMALL BUDGET -->
+  <section class="relative overflow-hidden bg-navy py-24 text-white">
+    <div aria-hidden="true" class="blob pointer-events-none absolute -right-40 top-10 size-[30rem] rounded-full bg-ember/20 blur-3xl"></div>
+    <div class="container-x relative grid items-center gap-14 lg:grid-cols-[1fr_1.2fr]">
+      <div>
+        <p class="eyebrow text-ember-300!" data-reveal="fade">Smaller budget?</p>
+        <h2 class="mt-4 text-4xl font-bold text-white sm:text-5xl">Start smart, then grow.</h2>
+        <p class="mt-5 text-lg text-white/75" data-reveal="up">A good first version does not need every feature. Tell us your budget and we'll plan the version that brings in enquiries first.</p>
+        <a href={`${site.whatsapp}?text=${budgetAsk}`} target="_blank" rel="noopener nofollow" class="btn-ember mt-9" data-wa data-magnetic>Tell us your budget</a>
+      </div>
+      <ol class="grid gap-4 sm:grid-cols-3" data-reveal="stagger">
+        {[
+          { t: 'Pages that sell', d: 'Launch with the pages customers need to contact you: home, services and contact.' },
+          { t: 'A proven layout', d: 'A tested template, styled to your brand, costs less than a design from scratch.' },
+          { t: 'Add features later', d: 'Payments, bookings or a blog can come in the next phase, when the site is earning.' },
+        ].map((s, i) => (
+          <li class="rounded-3xl bg-white/6 p-6 ring-1 ring-white/10">
+            <span class="grid size-10 place-items-center rounded-full bg-ember font-display font-bold text-navy">{i + 1}</span>
+            <h3 class="mt-5 text-lg font-bold text-white">{s.t}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-white/70">{s.d}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- WORKING WITH US FROM ANY COUNTRY -->
+  <section class="py-24">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">From any country</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">How a project with us is priced.</h2>
+      </div>
+      <ul class="mt-12 grid gap-5 md:grid-cols-3" data-reveal="stagger">
+        {[
+          { t: 'Fixed quote after a free call', d: 'You get a written scope and a fixed price before any work starts.' },
+          { t: 'Billed in your currency', d: 'Indian clients get GST invoices; clients abroad are invoiced in their own currency.' },
+          { t: 'Milestone payments', d: 'An advance to start, then payments as each agreed stage is delivered.' },
+        ].map((c) => (
+          <li data-tilt class="rounded-3xl bg-mist/70 p-7 ring-1 ring-navy/8">
+            <h3 class="text-xl font-bold">{c.t}</h3>
+            <p class="mt-3 leading-relaxed text-slate">{c.d}</p>
+          </li>
+        ))}
+      </ul>
+      <ul class="mt-10 flex flex-wrap gap-2" aria-label="Country pages">
+        {countries.map((c) => (
+          <li><a href={`/locations/${c.slug}/`} class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-navy ring-1 ring-navy/10 transition-colors hover:bg-olive hover:text-white"><Flag code={c.code} />Working with clients in {c.country} →</a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bg-mist/60 py-24">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+      <div>
+        <p class="eyebrow" data-reveal="fade">FAQ</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">{service.name} cost questions.</h2>
+        <a href={`/services/${service.slug}/`} class="mt-8 inline-block font-semibold text-olive hover:text-navy">About our {service.name.toLowerCase()} →</a>
+      </div>
+      <div class="divide-y divide-navy/10 border-y border-navy/10">
+        {guide.faqs.map((f) => (
+          <details class="group py-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-xl font-semibold">
+              {f.q}
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-white transition-transform duration-300 group-open:rotate-45 group-open:bg-olive group-open:text-white">+</span>
+            </summary>
+            <p class="mt-4 max-w-2xl leading-relaxed text-slate">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SOURCES -->
+  <section class="py-16">
+    <div class="container-x">
+      <h2 class="font-display text-2xl font-bold">Sources and method</h2>
+      <p class="mt-3 max-w-3xl text-slate">We read each guide on {guide.checked} and copied its figures without converting currencies. Most guides are written by web agencies or platforms, so treat them as market indications and compare written quotes for the same scope. Where we found no reliable current figures, we say so instead of estimating.</p>
+      <ul class="mt-6 grid gap-x-8 gap-y-2 text-sm text-slate md:grid-cols-2">
+        {guide.markets.filter((m) => m.sources.length).map((m) => (
+          <li class="flex gap-3"><Flag code={info(m.slug).code} class="mt-1" /><span><span class="font-semibold text-navy">{info(m.slug).country}:</span> {m.sources.map((s, i) => <>{i > 0 && '; '}<a href={s.url} target="_blank" rel="nofollow noopener" class="underline decoration-navy/20 underline-offset-2 hover:text-olive">{s.publisher}</a> ({s.date})</>)}</span></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <ProjectCta heading="Tell us your budget. We'll plan what fits." />
+</Base>
+
+<script>
+  import { gsap } from 'gsap';
+  if (document.documentElement.classList.contains('js-motion')) {
+    gsap.from('[data-hero]', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.08 });
+  }
+</script>

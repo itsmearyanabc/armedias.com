@@ -4,6 +4,8 @@ import Illustration from '../components/illustrations/Illustration.astro';
 import { site, markets } from '../data/site';
 import { services } from '../data/services';
 import { engagementModels } from '../data/engagement';
+import { costGuides } from '../data/cost-guides';
+import Flag from '../components/Flag.astro';
 
 const title = 'Pricing | Fixed Quotes for Web, App, CRM & AI | AR Medias';
 const description = 'How AR Medias prices projects: free call, fixed quote, milestone payments, GST invoices in India and billing in your currency abroad.';
@@ -107,6 +109,32 @@ const schema = [
             </ul>
             <p class="mt-5 text-sm text-slate">{s.timeline}</p>
             <a href={`/services/${s.slug}/`} class="mt-5 font-semibold text-olive hover:text-navy">About {s.name.toLowerCase()} →</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- COST GUIDES -->
+  <section class="pb-24">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">Cost guides</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">What it costs in your country.</h2>
+        <p class="mt-5 text-lg text-slate" data-reveal="up">Market prices from published guides, in local currency, with a planner that sends your plan and budget to us.</p>
+      </div>
+      <ul class="mt-10 grid gap-5 md:grid-cols-2" data-reveal="stagger">
+        {costGuides.map((g) => (
+          <li>
+            <a href={`/pricing/${g.slug}/`} data-tilt class="group relative flex h-full flex-col overflow-hidden rounded-[2rem] bg-navy p-8 text-white shadow-2xl shadow-navy/20">
+              <span aria-hidden="true" class="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-ember/25 blur-3xl"></span>
+              <span class="relative text-xs font-semibold uppercase tracking-[0.2em] text-ember-300">Cost guide 2026</span>
+              <span class="relative mt-3 font-display text-2xl font-bold">How much does a {g.short} cost?</span>
+              <span class="relative mt-5 flex flex-wrap gap-1.5">
+                {g.markets.map((x) => { const mk = markets.find((y) => y.slug === x.slug); return mk ? <Flag code={mk.code} class="h-3.5 w-5" /> : null; })}
+              </span>
+              <span class="relative mt-6 font-semibold text-ember-300">See prices in {g.markets.length} countries <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">→</span></span>
+            </a>
           </li>
         ))}
       </ul>

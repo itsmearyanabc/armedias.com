@@ -1,0 +1,195 @@
+---
+// Budget planner for a cost guide. Visitors pick a country, project type, must-haves and
+// their own budget; it shows the closest published market range and sends the whole plan to
+// AR Medias on WhatsApp (through /api/whatsapp/, which counts the click). It never shows an
+// AR Medias price.
+import Flag from './Flag.astro';
+import { markets, site } from '../data/site';
+import type { CostGuide } from '../data/cost-guides';
+import { priceText } from '../lib/cost-format';
+
+interface Props { guide: CostGuide }
+const { guide } = Astro.props;
+
+const info = (slug: string) => markets.find((x) => x.slug === slug)!;
+const data = {
+  whatsapp: site.whatsapp,
+  markets: guide.markets.map((m) => ({
+    slug: m.slug,
+    country: info(m.slug).country,
+    currency: m.currency ?? null,
+    tiers: m.tiers.map((t) => ({ key: t.key, label: t.label, range: priceText(t, m), publisher: m.sources[t.source]?.publisher ?? '' })),
+  })),
+  types: guide.planner.types.map((t) => ({ id: t.id, label: t.label, tiers: t.tiers })),
+  features: guide.planner.features,
+};
+const first = guide.markets[0];
+---
+
+<section id="planner" class="scroll-mt-24 bg-mist/60 py-24" data-planner>
+  <script type="application/json" data-planner-json set:html={JSON.stringify(data)} />
+  <div class="container-x">
+    <div class="max-w-3xl">
+      <p class="eyebrow" data-reveal="fade">Budget planner</p>
+      <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Plan your website in a minute.</h2>
+      <p class="mt-5 text-lg text-slate" data-reveal="up">Choose what you need and see the market range for similar projects in your country. Then send the plan and your budget to us on WhatsApp, and we'll suggest what fits.</p>
+    </div>
+
+    <div class="mt-12 grid gap-8 lg:grid-cols-[1.35fr_1fr]">
+      <form class="space-y-8 rounded-[2rem] bg-white p-6 ring-1 ring-navy/8 sm:p-9" data-planner-form>
+        <fieldset>
+          <legend class="font-display text-lg font-bold"><span class="mr-2 text-ember">01</span>Where is your business?</legend>
+          <div class="mt-4 flex flex-wrap gap-2">
+            {guide.markets.map((m, i) => (
+              <label class="cursor-pointer">
+                <input type="radio" name="country" value={m.slug} class="peer sr-only" checked={i === 0} />
+                <span class="inline-flex items-center gap-2 rounded-full bg-mist px-4 py-2 text-sm font-semibold ring-1 ring-navy/10 transition-colors peer-checked:bg-navy peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-ember">
+                  <Flag code={info(m.slug).code} class="h-3.5 w-5" />{info(m.slug).country}
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="font-display text-lg font-bold"><span class="mr-2 text-ember">02</span>What do you need?</legend>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            {guide.planner.types.map((t, i) => (
+              <label class="cursor-pointer">
+                <input type="radio" name="type" value={t.id} class="peer sr-only" checked={i === 1} />
+                <span class="flex h-full flex-col rounded-2xl bg-mist/70 p-4 ring-1 ring-navy/8 transition-all peer-checked:bg-olive/10 peer-checked:ring-2 peer-checked:ring-olive peer-focus-visible:ring-2 peer-focus-visible:ring-ember">
+                  <span class="font-semibold text-navy">{t.label}</span>
+                  <span class="mt-1 text-sm text-slate">{t.detail}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="font-display text-lg font-bold"><span class="mr-2 text-ember">03</span>Must-haves</legend>
+          <div class="mt-4 flex flex-wrap gap-2">
+            {guide.planner.features.map((f) => (
+              <label class="cursor-pointer">
+                <input type="checkbox" name="feature" value={f.id} class="peer sr-only" />
+                <span class="inline-flex items-center gap-2 rounded-full bg-mist px-4 py-2 text-sm font-medium ring-1 ring-navy/10 transition-colors peer-checked:bg-ember/15 peer-checked:text-ember-700 peer-checked:ring-ember/40 peer-focus-visible:ring-2 peer-focus-visible:ring-ember">
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 4v12M4 10h12" /></svg>{f.label}
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <div>
+          <label for="planner-budget" class="font-display text-lg font-bold"><span class="mr-2 text-ember">04</span>Your budget <span class="text-sm font-normal text-slate">(optional)</span></label>
+          <div class="mt-4 flex items-stretch overflow-hidden rounded-2xl ring-1 ring-navy/12 focus-within:ring-2 focus-within:ring-olive">
+            <span class="grid place-items-center bg-navy px-4 text-sm font-semibold text-white" data-budget-currency>{first.currency ?? 'Budget'}</span>
+            <input id="planner-budget" name="budget" inputmode="numeric" autocomplete="off" placeholder="Any amount you have in mind" class="w-full bg-white px-4 py-3.5 text-navy outline-none" data-budget />
+          </div>
+          <p class="mt-2 text-sm text-slate">Small budgets are welcome. Starting with fewer pages and adding later is often the smartest route.</p>
+        </div>
+      </form>
+
+      <aside class="lg:sticky lg:top-28 lg:self-start" aria-live="polite">
+        <div class="relative overflow-hidden rounded-[2rem] bg-navy p-8 text-white shadow-2xl shadow-navy/25">
+          <div aria-hidden="true" class="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-ember/25 blur-3xl"></div>
+          <p class="relative text-xs font-semibold uppercase tracking-[0.2em] text-ember-300">Your plan</p>
+          <p class="relative mt-3 font-display text-2xl font-bold" data-out-title>Business website in {info(first.slug).country}</p>
+
+          <div class="relative mt-6 rounded-2xl bg-white/8 p-5 ring-1 ring-white/10">
+            <p class="text-sm text-white/70" data-out-label>Similar projects on the market</p>
+            <p class="mt-1 font-display text-3xl font-bold text-white" data-out-range>See the table above</p>
+            <p class="mt-2 text-xs text-white/60" data-out-source>Market figure from a published guide, not our price.</p>
+          </div>
+
+          <div class="relative mt-6">
+            <p class="text-sm text-white/70">How involved it is</p>
+            <div class="mt-2 grid grid-cols-3 gap-1.5" data-meter>
+              <span class="h-2 rounded-full bg-ember"></span><span class="h-2 rounded-full bg-white/15"></span><span class="h-2 rounded-full bg-white/15"></span>
+            </div>
+            <p class="mt-2 text-sm font-semibold text-white" data-meter-label>Simple</p>
+          </div>
+
+          <a href={site.whatsapp} target="_blank" rel="noopener nofollow" class="btn-ember relative mt-8 w-full justify-center" data-wa data-out-wa>Send my plan on WhatsApp</a>
+          <a href="/contact/" class="relative mt-3 block text-center text-sm font-semibold text-white/80 hover:text-white">Or book a free call →</a>
+          <p class="relative mt-6 text-xs leading-relaxed text-white/55">Ranges are market figures from the guides listed on this page, never AR Medias prices. You get a fixed quote from us after a free call.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script>
+  interface Tier { key: string; label: string; range: string; publisher: string }
+  interface Market { slug: string; country: string; currency: string | null; tiers: Tier[] }
+  interface Data { whatsapp: string; markets: Market[]; types: { id: string; label: string; tiers: string[] }[]; features: { id: string; label: string }[] }
+
+  document.querySelectorAll<HTMLElement>('[data-planner]').forEach((root) => {
+    const data = JSON.parse(root.querySelector('[data-planner-json]')!.textContent!) as Data;
+    const form = root.querySelector<HTMLFormElement>('[data-planner-form]')!;
+    const $ = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
+    const LEVELS = ['Simple', 'Standard', 'Advanced'];
+    const TYPE_WEIGHT: Record<string, number> = { landing: 0, business: 1, pro: 2, store: 2.5, custom: 3.5 };
+
+    const read = () => {
+      const fd = new FormData(form);
+      return {
+        country: String(fd.get('country')),
+        type: String(fd.get('type')),
+        features: fd.getAll('feature').map(String),
+        budget: String(fd.get('budget') ?? '').trim(),
+      };
+    };
+
+    const render = () => {
+      const s = read();
+      const market = data.markets.find((m) => m.slug === s.country)!;
+      const type = data.types.find((t) => t.id === s.type)!;
+      const tier = type.tiers.map((k) => market.tiers.find((t) => t.key === k)).find(Boolean);
+      const featureLabels = s.features.map((id) => data.features.find((f) => f.id === id)?.label ?? id);
+
+      $('[data-out-title]').textContent = `${type.label} in ${market.country}`;
+      $('[data-budget-currency]').textContent = market.currency ?? 'Budget';
+      if (tier) {
+        $('[data-out-label]').textContent = `Similar projects: ${tier.label}`;
+        $('[data-out-range]').textContent = tier.range;
+        $('[data-out-source]').textContent = `Market figure from ${tier.publisher}, not our price.`;
+      } else {
+        $('[data-out-label]').textContent = 'Similar projects on the market';
+        $('[data-out-range]').textContent = 'Ask us';
+        $('[data-out-source]').textContent = `We found no reliable public figures for this in ${market.country}. Share your scope and budget and we'll quote.`;
+      }
+
+      const score = (TYPE_WEIGHT[type.id] ?? 1) + s.features.length * 0.5;
+      const level = score < 1.6 ? 0 : score < 3.6 ? 1 : 2;
+      $('[data-meter]').querySelectorAll('span').forEach((bar, i) => {
+        bar.className = `h-2 rounded-full ${i <= level ? 'bg-ember' : 'bg-white/15'}`;
+      });
+      $('[data-meter-label]').textContent = LEVELS[level];
+
+      const lines = [
+        "Hi AR Medias, I'm planning a website.",
+        `Country: ${market.country}`,
+        `Type: ${type.label}`,
+        `Must-haves: ${featureLabels.length ? featureLabels.join(', ') : 'not sure yet'}`,
+        `Budget: ${s.budget ? `${market.currency ?? ''} ${s.budget}`.trim() : 'not sure yet'}`,
+        'Can we talk?',
+      ];
+      $<HTMLAnchorElement>('[data-out-wa]').href = `${data.whatsapp}?text=${encodeURIComponent(lines.join('\n'))}`;
+    };
+
+    form.addEventListener('change', (e) => {
+      const t = e.target as HTMLInputElement;
+      if (t.name === 'country') document.dispatchEvent(new CustomEvent('cost:pick', { detail: t.value }));
+      render();
+    });
+    form.addEventListener('input', render);
+    form.addEventListener('submit', (e) => e.preventDefault());
+    document.addEventListener('cost:country', (e) => {
+      const slug = (e as CustomEvent<string>).detail;
+      const radio = form.querySelector<HTMLInputElement>(`input[name="country"][value="${slug}"]`);
+      if (radio && !radio.checked) { radio.checked = true; render(); }
+    });
+    render();
+  });
+</script>
