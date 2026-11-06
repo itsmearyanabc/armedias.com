@@ -126,7 +126,9 @@ const jsonLd = [organization, website, ...schema];
     <WhatsAppButton />
     <script>
       import { initMotion } from '../scripts/motion';
+      import { pauseOffscreenLoops } from '../scripts/offscreen';
       initMotion();
+      pauseOffscreenLoops();
 
       // Cookieless pageview beacon for the admin dashboard (see src/server/analytics.ts)
       if (import.meta.env.PROD) {

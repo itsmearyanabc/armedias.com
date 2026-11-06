@@ -63,6 +63,11 @@ html.lenis, html.lenis body { height: auto; }
 /* Elements hidden until GSAP reveals them; only when JS + motion are allowed */
 .js-motion [data-reveal] { opacity: 0; }
 
+/* Looping animations wait while their block is off screen (see src/scripts/offscreen.ts).
+   !important because component styles set the `animation` shorthand, which resets play state. */
+.is-offscreen, .is-offscreen::before, .is-offscreen::after,
+.is-offscreen *, .is-offscreen *::before, .is-offscreen *::after { animation-play-state: paused !important; }
+
 @media (prefers-reduced-motion: reduce) {
   .marquee__track { animation: none; }
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
@@ -99,11 +104,17 @@ html.lenis, html.lenis body { height: auto; }
   100% { transform: translate(-3rem, 2rem) scale(0.95); }
 }
 
-/* Data packet travelling along automation flow lines */
-.flow-line { position: relative; }
+/* Data packet travelling along automation flow lines. It moves with transform, so the
+   compositor animates it without a layout every frame; the line is a size container, so
+   100cqw is its width and the packet covers exactly the same path as left: 0 → 100% - 7px. */
+.flow-line { position: relative; container-type: inline-size; }
 .flow-line::after { content: ''; position: absolute; top: -3px; left: 0; width: 7px; height: 7px; border-radius: 99px;
   background: var(--color-ember); box-shadow: 0 0 10px var(--color-ember-300); animation: packet 1.8s ease-in-out infinite; }
-@keyframes packet { from { left: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { left: calc(100% - 7px); opacity: 0; } }
+@keyframes packet { from { transform: translateX(0); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { transform: translateX(calc(100cqw - 7px)); opacity: 0; } }
+/* Browsers without container query units keep the original left-based motion */
+@supports not (width: 1cqw) {
+  @keyframes packet { from { left: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { left: calc(100% - 7px); opacity: 0; } }
+}
 
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }

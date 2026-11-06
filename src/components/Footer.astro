@@ -94,6 +94,9 @@ const flock = [
   .footer-bird .wing { transform-box: fill-box; transform-origin: 100% 100%; animation: bird-flap 0.32s ease-in-out infinite alternate; }
   .footer-bird .wing--back { animation-delay: -0.16s; }
   .footer-bird:nth-of-type(even) .wing { animation-duration: 0.28s; }
+  /* The birds are invisible before the flock takes off and after each one has flown out,
+     so their wings rest then instead of flapping unseen on every frame */
+  [data-footer]:not(.is-visible) .footer-bird .wing, .footer-bird.is-gone .wing { animation-play-state: paused; }
   @keyframes bird-fly {
     0% { transform: translate(0, 60px) rotate(-8deg); opacity: 0; }
     8% { opacity: 1; }
@@ -119,5 +122,9 @@ const flock = [
       if (e.isIntersecting) { footer.classList.add('is-visible'); io.disconnect(); }
     }, { threshold: 0.25 });
     io.observe(footer);
+    // A bird's flight runs once (`forwards`) and ends invisible; then its wings can rest
+    footer.querySelectorAll('.footer-bird').forEach((bird) => bird.addEventListener('animationend', (e) => {
+      if (e.target === bird) bird.classList.add('is-gone');
+    }));
   }
 </script>

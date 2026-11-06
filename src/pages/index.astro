@@ -510,7 +510,17 @@ const faqSchema = {
   if (typer && motion) {
     const words: string[] = JSON.parse(typer.dataset.words!);
     let i = 0;
+    // Between words, typing waits while the hero is off screen or the tab is hidden
+    let heroShown = true;
+    let resume: (() => void) | undefined;
+    const shown = () => heroShown && !document.hidden;
+    const whenShown = () => (shown() ? Promise.resolve() : new Promise<void>((r) => { resume = r; }));
+    const recheck = () => { if (shown() && resume) { resume(); resume = undefined; } };
+    const hero = typer.closest('section');
+    if (hero) new IntersectionObserver(([e]) => { heroShown = e.isIntersecting; recheck(); }).observe(hero);
+    document.addEventListener('visibilitychange', recheck);
     const type = async () => {
+      await whenShown();
       const word = words[i];
       for (let n = word.length; n >= 0; n--) { typer.textContent = word.slice(0, n); await wait(35); }
       i = (i + 1) % words.length;
@@ -529,9 +539,13 @@ const faqSchema = {
     gsap.from('.hero-cards .bar', { scaleY: 0, duration: 1, ease: 'power3.out', stagger: 0.05, delay: 0.8 });
 
     // Idle float + pointer parallax on hero cards
+    const floats: ReturnType<typeof gsap.to>[] = [];
     document.querySelectorAll<HTMLElement>('[data-float]').forEach((el, i) => {
-      gsap.to(el, { y: '+=12', duration: 2.6 + i * 0.4, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+      floats.push(gsap.to(el, { y: '+=12', duration: 2.6 + i * 0.4, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
     });
+    // The endless float pauses while the hero is off screen and continues from the same spot
+    const heroSection = document.querySelector('.hero');
+    if (heroSection) new IntersectionObserver(([e]) => floats.forEach((t) => (e.isIntersecting ? t.resume() : t.pause()))).observe(heroSection);
     if (matchMedia('(hover: hover)').matches) {
       const cards = [...document.querySelectorAll<HTMLElement>('[data-float]')].map((el) => ({
         depth: Number(el.dataset.float), x: gsap.quickTo(el, 'x', { duration: 0.8, ease: 'power3' }),
