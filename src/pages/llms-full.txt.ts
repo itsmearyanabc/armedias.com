@@ -21,6 +21,7 @@ export function GET() {
     `> ${site.name} is an IT services company founded on 1 January 2024 by ${site.founder.name} in New Delhi, India. ${site.tagline}`,
     [
       `- Website: ${site.url}/`,
+      `- Also written: ${site.alternateNames.join(', ')}`,
       `- Address: ${a.street}, ${a.locality} ${a.postalCode}, ${a.countryName}`,
       `- Email: ${site.email}`,
       `- Phone: ${site.phone}`,
@@ -31,6 +32,7 @@ export function GET() {
     ...services.map((s) => [
       `### ${s.name}`,
       `URL: ${url(`/services/${s.slug}/`)}`,
+      `Also called: ${s.aka.join(', ')}`,
       s.lead,
       `Who it is for:\n${list(s.forWho)}`,
       `What we deliver:\n${list(s.deliverables)}`,

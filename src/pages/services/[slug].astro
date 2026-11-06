@@ -29,6 +29,7 @@ const schema = [
     '@type': 'Service',
     '@id': `${url}#service`,
     name: s.name,
+    alternateName: s.aka,
     description: s.metaDescription,
     url,
     provider: { '@id': `${site.url}/#organization` },
