@@ -8,12 +8,15 @@ import { worldCitiesFor } from '../../data/world-cities';
 import { russiaCities } from '../../data/russia-cities';
 import { delhiWorkingStyle, remoteWorkingStyle } from '../../data/working-style';
 import WorkingStyle from '../../components/WorkingStyle.astro';
+import { marketGuides } from '../../data/market-guides';
 
 export function getStaticPaths() {
   return markets.map((m) => ({ params: { slug: m.slug }, props: { m } }));
 }
 
 const { m } = Astro.props;
+// Market-specific sections (hours table, hiring checklist, local requirements), where written.
+const guide = marketGuides[m.slug];
 const services = pillars.flatMap((p) => p.items);
 const others = markets.filter((x) => x.slug !== m.slug);
 // City pages for this market (outside India); the city chips below link to them.
@@ -24,14 +27,15 @@ const listed = new Set(m.cities.map((c) => c.name));
 const extraCities = cityPages.filter((c) => !listed.has(c.name));
 
 // Most markets search by country; the UAE searches by Dubai first.
-const title = `Software & App Development Company in ${m.titlePlace ?? m.country} | AR Medias`;
-const description = `Websites, apps, CRM/ERP and AI automation for businesses in ${m.area}. Fixed quotes in ${m.currency} and calls in your time zone.`;
+const title = guide?.metaTitle ?? `Software & App Development Company in ${m.titlePlace ?? m.country} | AR Medias`;
+const description = guide?.metaDescription ?? `Websites, apps, CRM/ERP and AI automation for businesses in ${m.area}. Fixed quotes in ${m.currency} and calls in your time zone.`;
 
 const faqs = [
   m.faq,
   { q: `Do you work with businesses in ${m.country}?`, a: `Yes. We work with clients across ${m.area}. Projects run remotely, with calls scheduled during ${m.city} business hours and billing in ${m.currency}.` },
   { q: `How do you handle data privacy for ${m.country} projects?`, a: `We design data storage, consent and access controls with ${m.privacyLaw} in mind, and can host data in the region you require.` },
-  { q: `How much does software development cost for ${m.country} businesses?`, a: `It depends on the scope, features and integrations. After a free call we send a written scope with a fixed price in ${m.currency}, so the cost does not change midway.` },
+  // A guide answers cost questions itself, in the wording buyers in that market search for.
+  ...(guide ? guide.faqs : [{ q: `How much does software development cost for ${m.country} businesses?`, a: `It depends on the scope, features and integrations. After a free call we send a written scope with a fixed price in ${m.currency}, so the cost does not change midway.` }]),
   { q: 'How do we get started?', a: 'Book a free 30-minute call. We review your goals and send a written scope with a fixed quote and timeline.' },
 ];
 
@@ -72,7 +76,7 @@ const schema = [
       <div>
       <nav aria-label="Breadcrumb" class="text-sm text-slate"><a href="/" class="hover:text-olive">Home</a> / <span>{m.country}</span></nav>
       <p class="eyebrow mt-6">{m.city} · <time data-clock={m.tz}>--:--</time> local time</p>
-      <h1 class="mt-4 max-w-4xl text-5xl font-bold leading-[1.05] sm:text-6xl lg:text-5xl xl:text-6xl">Software, app &amp; AI automation company for {m.country}</h1>
+      <h1 class="mt-4 max-w-4xl text-5xl font-bold leading-[1.05] sm:text-6xl lg:text-5xl xl:text-6xl">{guide ? guide.h1 : `Software, app & AI automation company for ${m.country}`}</h1>
       <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate">{m.intro}</p>
       <div class="mt-9 flex flex-wrap gap-3">
         <a href="/contact/" class="btn-primary" data-magnetic>Book a free call</a>
@@ -121,6 +125,61 @@ const schema = [
   </section>
 
   <WorkingStyle items={workingStyle} heading={m.slug === 'india' ? undefined : `How we work with ${m.country} businesses.`} />
+
+  {guide?.hours && (
+    <section class="py-20">
+      <div class="container-x">
+        <p class="eyebrow" data-reveal="fade">Time zones</p>
+        <h2 class="mt-4 text-3xl font-bold sm:text-4xl">{guide.hours.heading}</h2>
+        <p class="mt-4 max-w-2xl text-lg text-slate">{guide.hours.lead}</p>
+        <div class="mt-8 overflow-x-auto rounded-2xl ring-1 ring-navy/10">
+          <table class="w-full min-w-[36rem] text-left">
+            <thead class="bg-mist text-sm uppercase tracking-wider text-slate">
+              <tr><th class="px-5 py-3 font-semibold">US time zone</th><th class="px-5 py-3 font-semibold">New Delhi is ahead by (winter)</th><th class="px-5 py-3 font-semibold">(summer)</th></tr>
+            </thead>
+            <tbody class="divide-y divide-navy/10">
+              {guide.hours.zones.map((z) => (
+                <tr><td class="px-5 py-4"><span class="font-semibold text-navy">{z.name}</span><span class="block text-sm text-slate">{z.example}</span></td><td class="px-5 py-4 text-navy">{z.standard}</td><td class="px-5 py-4 text-navy">{z.daylight}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4 max-w-2xl text-sm text-slate">{guide.hours.note}</p>
+      </div>
+    </section>
+  )}
+
+  {guide && (
+    <section class="bg-mist/60 py-20">
+      <div class="container-x">
+        <p class="eyebrow" data-reveal="fade">{guide.checklist.eyebrow}</p>
+        <h2 class="mt-4 max-w-3xl text-3xl font-bold sm:text-4xl">{guide.checklist.heading}</h2>
+        <p class="mt-4 max-w-2xl text-lg text-slate">{guide.checklist.lead}</p>
+        <ol class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+          {guide.checklist.items.map((it, i) => (
+            <li class="rounded-2xl bg-white p-6 ring-1 ring-navy/5">
+              <p class="font-display text-sm font-semibold text-olive">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="mt-2 text-xl font-semibold">{it.t}</h3>
+              <p class="mt-2 leading-relaxed text-slate">{it.d}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  {guide && (
+    <section class="py-20">
+      <div class="container-x">
+        <h2 class="text-3xl font-bold sm:text-4xl">{guide.requirements.heading}</h2>
+        <div class="mt-10 grid gap-8 sm:grid-cols-2" data-reveal="stagger">
+          {guide.requirements.items.map((it) => (
+            <div><h3 class="text-xl font-semibold">{it.t}</h3><p class="mt-2 leading-relaxed text-slate">{it.d}</p></div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 
   <section class="border-b border-navy/8 py-10">
     <div class="container-x">
