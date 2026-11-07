@@ -3,6 +3,8 @@
 export interface Industry {
   slug: string;
   name: string;
+  /** Page heading when the name alone would repeat a service page's heading. */
+  h1?: string;
   scene: 'crm-development' | 'erp-development' | 'ai-automation' | 'ecommerce-development' | 'custom-software-development'
     | 'blockchain-development' | 'cybersecurity' | 'ai-machine-learning';
   metaTitle: string;
@@ -216,6 +218,7 @@ export const industries: Industry[] = [
   {
     slug: 'cybersecurity',
     name: 'Cybersecurity',
+    h1: 'Software for cybersecurity companies',
     scene: 'cybersecurity',
     metaTitle: 'Software for Cybersecurity Companies | AR Medias',
     metaDescription: 'Engineering for cybersecurity firms and MSSPs: client portals, security dashboards, alert automation, reporting and compliance tools, built securely.',

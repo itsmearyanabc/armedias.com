@@ -1,6 +1,6 @@
 # AR Medias
 
-> AR Medias is an IT services company founded on 1 January 2024 by Aryan Yadav in New Delhi, India. It builds websites, mobile apps, e-commerce stores, custom software, CRM and ERP systems, AI automation and machine learning, blockchain applications and cybersecurity services for businesses in India, the UAE, USA, Canada, Australia, Japan and China.
+> AR Medias is an IT services company founded on 1 January 2024 by Aryan Yadav in New Delhi, India. It builds websites, mobile apps, e-commerce stores, custom software, CRM and ERP systems, AI automation and machine learning, blockchain applications and cybersecurity services for businesses in India, the UAE, USA, Canada, Australia, Japan, China and Russia.
 
 A longer plain-text version with every service, industry and market: https://armedias.com/llms-full.txt
 
@@ -35,7 +35,8 @@ A longer plain-text version with every service, industry and market: https://arm
 
 ## Company
 - [About](https://armedias.com/about/)
-- [Pricing](https://armedias.com/pricing/)
+- [Pricing](https://armedias.com/pricing/): fixed quotes after a free call
+- [Website cost guide](https://armedias.com/pricing/website-development-cost/): what shapes website costs in 8 countries, with published market ranges
 - [Careers](https://armedias.com/careers/)
 - [Founder: Aryan Yadav](https://armedias.com/about/aryan-yadav/)
 - [Process](https://armedias.com/process/)

@@ -53,7 +53,7 @@ const schema = [
         <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero>
           <a href="/" class="hover:text-olive">Home</a> / <a href="/industries/" class="hover:text-olive">Industries</a> / <span>{ind.name}</span>
         </nav>
-        <h1 class="eyebrow mt-6 font-sans" data-hero>{ind.name}</h1>
+        <h1 class="eyebrow mt-6 font-sans" data-hero>{ind.h1 ?? ind.name}</h1>
         <p class="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight text-balance text-ink sm:text-5xl xl:text-6xl" data-hero>{ind.headline}</p>
         <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>{ind.lead}</p>
         <div class="mt-9 flex flex-wrap gap-3" data-hero>

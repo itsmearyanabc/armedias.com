@@ -72,7 +72,7 @@ export const costGuides: CostGuide[] = [
     service: 'website-development',
     short: 'website',
     metaTitle: 'Website Cost in 2026: India, USA, UAE, Japan & More | AR Medias',
-    metaDescription: 'What a website costs in 2026 in India, the USA, UAE, Canada, Australia, Japan, China and Russia, from published market guides. Share your budget for a fixed quote.',
+    metaDescription: 'Website costs in 2026 across India, the USA, UAE, Canada, Australia, Japan, China and Russia, from published market guides. Share your budget for a quote.',
     h1: 'How much does a website cost',
     h1Accent: 'in 2026?',
     lead: 'What shapes the cost of a website in eight countries, from simple builder sites to custom platforms. Whatever your budget, there is a sensible way to start: tell us what you have and we will plan what fits.',

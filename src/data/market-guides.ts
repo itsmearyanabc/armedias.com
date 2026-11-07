@@ -24,7 +24,7 @@ export interface MarketGuide {
 export const marketGuides: Record<string, MarketGuide> = {
   usa: {
     metaTitle: 'Software Development for US Businesses, from India | AR Medias',
-    metaDescription: 'Custom software, mobile apps and AI automation for US companies, built by a founder-led team in New Delhi. Fixed USD quotes, calls in US hours, you own the code.',
+    metaDescription: 'Custom software, mobile apps and AI automation for US companies, built by a founder-led team in New Delhi. Fixed USD quotes, calls in US hours.',
     h1: 'Software, app & AI development for US businesses, from India',
     hours: {
       heading: 'Your working day, in New Delhi time.',
