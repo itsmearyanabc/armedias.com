@@ -1,0 +1,184 @@
+---
+// One lead: contact details, the original enquiry, status, internal notes and history.
+import Admin from '../../layouts/Admin.astro';
+import logo from '../../assets/logo-mark.png';
+import { isAuthenticated } from '../../server/auth';
+import { dbMessage, LEAD_SOURCES, leadDetail, listStatuses, type LeadDetail, type LeadStatus } from '../../server/leads';
+
+export const prerender = false;
+
+if (!isAuthenticated(Astro.cookies)) return Astro.redirect('/admin/');
+Astro.response.headers.set('Cache-Control', 'no-store');
+
+const id = Number.parseInt(Astro.url.searchParams.get('id') ?? '', 10);
+let detail: LeadDetail | null = null;
+let statuses: LeadStatus[] = [];
+let error = '';
+if (Number.isInteger(id) && id > 0) {
+  try {
+    [detail, statuses] = await Promise.all([leadDetail(id), listStatuses()]);
+  } catch (err) {
+    error = dbMessage(err);
+  }
+}
+if (!detail && !error) Astro.response.status = 404;
+const lead = detail?.lead;
+const status = statuses.find((s) => s.id === lead?.status_id);
+const statusName = (name: unknown) => String(name ?? 'a removed status');
+
+const sourceLabel = (s: unknown) => LEAD_SOURCES[s as keyof typeof LEAD_SOURCES] ?? String(s ?? '');
+function describe(a: LeadDetail['activity'][number]): string {
+  const d = a.detail ?? {};
+  switch (a.kind) {
+    case 'created':
+      return d.imported ? `Copied from the old database as ${statusName(d.status)}` : `Lead created from ${sourceLabel(d.source) || 'the website form'} as ${statusName(d.status)}`;
+    case 'status_changed':
+      return `Status changed from ${statusName(d.from)} to ${statusName(d.to)}`;
+    case 'note_added':
+      return `Note added: "${String(d.preview ?? '')}${String(d.preview ?? '').length >= 120 ? '…' : ''}"`;
+    default:
+      return a.kind.replace(/_/g, ' ');
+  }
+}
+const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+const countryName = (code: string) => { try { return regionNames.of(code) ?? code; } catch { return code; } };
+---
+
+<Admin title={lead ? `Lead: ${lead.name}` : 'Lead not found'}>
+  <header class="sticky top-0 z-20 border-b border-navy/10 bg-white/90 backdrop-blur">
+    <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
+      <a href="/admin/dashboard/" class="flex items-center gap-2.5">
+        <img src={logo.src} alt="" width="56" height="40" class="h-8 w-auto" />
+        <span class="font-display font-bold tracking-[0.18em]"><span class="text-olive">AR</span> <span class="text-navy">MEDIAS</span></span>
+        <span class="rounded-full bg-navy px-2.5 py-0.5 text-xs font-semibold text-white">Admin</span>
+      </a>
+      <a href="/admin/dashboard/#leads" data-back class="rounded-full px-3 py-2 text-sm font-semibold text-navy hover:bg-mist">← Back to leads</a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:px-6">
+    {error && <p class="rounded-2xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">This lead couldn't be loaded: {error}</p>}
+    {!error && !lead && <p class="rounded-3xl bg-white p-10 text-center text-slate ring-1 ring-navy/5">This lead doesn't exist (it may have been deleted).</p>}
+
+    {lead && detail && (
+      <>
+        <section class="rounded-3xl bg-white p-6 ring-1 ring-navy/5" data-lead={lead.id}>
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p class="text-sm text-slate">{sourceLabel(lead.source)} · <time data-local datetime={lead.created_at}>{lead.created_at}</time></p>
+              <h1 class="mt-1 text-3xl font-bold">{lead.name}</h1>
+              {lead.company && <p class="text-slate">{lead.company}</p>}
+            </div>
+            <label class="grid gap-1 text-xs font-semibold uppercase tracking-wider text-slate">
+              Status
+              <select data-status class="status-select text-sm" style={`--c:${status?.color ?? '#6b7280'}`}>
+                {statuses.map((s) => <option value={s.id} selected={s.id === lead.status_id} data-color={s.color}>{s.name}</option>)}
+              </select>
+            </label>
+          </div>
+          <p data-msg role="status" class="mt-2 text-sm font-medium"></p>
+
+          <dl class="mt-6 grid gap-x-6 gap-y-4 text-sm sm:grid-cols-2 lg:grid-cols-3">
+            <div><dt class="text-slate">Email</dt><dd>{lead.email ? <a href={`mailto:${lead.email}`} class="font-semibold text-olive hover:underline">{lead.email}</a> : '–'}</dd></div>
+            <div><dt class="text-slate">Phone</dt><dd>{lead.phone ? <a href={`tel:${lead.phone}`} class="font-semibold text-navy">{lead.phone}</a> : '–'}</dd></div>
+            <div><dt class="text-slate">Service</dt><dd class="font-semibold text-navy">{lead.service ?? '–'}</dd></div>
+            <div><dt class="text-slate">Budget</dt><dd class="font-semibold text-navy">{lead.budget ?? '–'}</dd></div>
+            <div><dt class="text-slate">Country</dt><dd class="font-semibold text-navy">{lead.country ?? '–'}{lead.visitor_country && lead.visitor_country !== 'Unknown' && <span class="font-normal text-slate"> · visited from {countryName(lead.visitor_country)}</span>}</dd></div>
+            <div><dt class="text-slate">Source</dt><dd class="font-semibold text-navy">{sourceLabel(lead.source)}{lead.page && <span class="font-normal text-slate"> · {lead.page}</span>}</dd></div>
+          </dl>
+
+          <h2 class="mt-8 text-lg font-bold">Original enquiry</h2>
+          <p class="mt-2 whitespace-pre-wrap rounded-2xl bg-mist p-4 text-sm text-navy">{lead.message}</p>
+          {lead.source === 'website' && !lead.email_sent && <p class="mt-2 text-xs text-slate">The email notification for this lead was not delivered.</p>}
+        </section>
+
+        <div class="grid gap-6 lg:grid-cols-2">
+          <section class="rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+            <h2 class="text-lg font-bold">Internal notes</h2>
+            <p class="text-sm text-slate">Only visible here. The enquiry above is never changed.</p>
+            <form data-note class="mt-4 grid gap-2" novalidate>
+              <textarea name="body" rows="3" maxlength="5000" required placeholder="e.g. Called on Monday, sending a proposal by Friday." class="rounded-2xl border border-navy/15 bg-mist px-4 py-3 text-sm"></textarea>
+              <div><button type="submit" class="btn-primary">Add note</button></div>
+            </form>
+            {detail.notes.length === 0 ? <p class="mt-4 text-sm text-slate">No notes yet.</p> : (
+              <ul class="mt-5 space-y-3">
+                {detail.notes.map((n) => (
+                  <li class="rounded-2xl bg-mist p-4 text-sm">
+                    <p class="whitespace-pre-wrap text-navy">{n.body}</p>
+                    <p class="mt-2 text-xs text-slate"><time data-local datetime={n.created_at}>{n.created_at}</time></p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section class="rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+            <h2 class="text-lg font-bold">Activity</h2>
+            <ol class="mt-4 space-y-4 border-l-2 border-navy/10 pl-5 text-sm">
+              {detail.activity.map((a) => (
+                <li class="relative">
+                  <span class="absolute -left-[1.6rem] top-1 size-3 rounded-full bg-olive ring-4 ring-white"></span>
+                  <p class="text-navy">{describe(a)}</p>
+                  <p class="text-xs text-slate"><time data-local datetime={a.created_at}>{a.created_at}</time></p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        </div>
+      </>
+    )}
+  </main>
+</Admin>
+
+<style>
+  .status-select {
+    --c: #6b7280; appearance: none; cursor: pointer; border-radius: 999px; font-weight: 700; white-space: nowrap;
+    padding: 0.45rem 2rem 0.45rem 0.9rem; border: 1px solid color-mix(in srgb, var(--c) 35%, white);
+    background-color: color-mix(in srgb, var(--c) 13%, white); color: color-mix(in srgb, var(--c) 78%, black);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%2364748b' stroke-width='1.6'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 0.75rem center;
+  }
+</style>
+
+<script>
+  const fmt = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+  document.querySelectorAll<HTMLTimeElement>('time[data-local]').forEach((t) => { t.textContent = fmt.format(new Date(t.dateTime)); });
+
+  // Back keeps the filtered list the admin came from
+  const back = document.querySelector<HTMLAnchorElement>('[data-back]');
+  try {
+    const ref = new URL(document.referrer);
+    if (back && ref.origin === location.origin && ref.pathname === '/admin/dashboard/') back.href = `${ref.pathname}${ref.search}#leads`;
+  } catch { /* no referrer */ }
+
+  const box = document.querySelector<HTMLElement>('[data-lead]');
+  if (box) {
+    const leadId = Number(box.dataset.lead);
+    const msg = box.querySelector<HTMLElement>('[data-msg]')!;
+    const post = async (url: string, body: unknown) => {
+      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (res.status === 401) { location.assign('/admin/'); return null; }
+      const data = await res.json().catch(() => ({}));
+      if (!data.ok) { msg.className = 'mt-2 text-sm font-medium text-red-700'; msg.textContent = data.error || 'Could not save.'; }
+      return data.ok ? data : null;
+    };
+
+    const sel = box.querySelector<HTMLSelectElement>('[data-status]')!;
+    const before = sel.value;
+    sel.addEventListener('change', async () => {
+      sel.disabled = true;
+      if (await post('/api/admin/lead-status/', { ids: [leadId], statusId: Number(sel.value) })) location.reload();
+      else { sel.value = before; sel.disabled = false; }
+    });
+
+    const note = document.querySelector<HTMLFormElement>('[data-note]')!;
+    note.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const body = String(new FormData(note).get('body') ?? '').trim();
+      if (!body) return;
+      note.querySelector('button')!.disabled = true;
+      if (await post('/api/admin/lead-notes/', { leadId, body })) location.reload();
+      else note.querySelector('button')!.disabled = false;
+    });
+  }
+</script>

@@ -2,13 +2,13 @@
 // parameters as the dashboard). Selected rows are exported in the browser instead.
 import type { APIRoute } from 'astro';
 import { guard } from '../../../server/admin-api';
-import { dbMessage, leadPage, listStatuses, parseLeadFilters, PAGE_SIZE, type Lead } from '../../../server/leads';
+import { dbMessage, LEAD_SOURCES, leadPage, listStatuses, parseLeadFilters, PAGE_SIZE, type Lead } from '../../../server/leads';
 
 export const prerender = false;
 
 const MAX_ROWS = 20_000;
 const columns: [keyof Lead | 'status', string][] = [
-  ['created_at', 'Date (UTC)'], ['status', 'Status'], ['name', 'Name'], ['email', 'Email'], ['phone', 'Phone'],
+  ['created_at', 'Date (UTC)'], ['source', 'Source'], ['status', 'Status'], ['name', 'Name'], ['email', 'Email'], ['phone', 'Phone'],
   ['company', 'Company'], ['service', 'Service'], ['country', 'Country'], ['budget', 'Budget'], ['message', 'Message'], ['page', 'Page'],
 ];
 // Quote every cell. A leading = + - @ would run as a spreadsheet formula, so such cells get a
@@ -34,7 +34,7 @@ export const GET: APIRoute = async (ctx) => {
       if (chunk.rows.length < PAGE_SIZE) break;
     }
     const csv = [columns.map(([, label]) => cell(label)).join(','),
-      ...rows.map((l) => columns.map(([key]) => cell(key === 'status' ? names.get(l.status_id) : l[key])).join(','))].join('\r\n');
+      ...rows.map((l) => columns.map(([key]) => cell(key === 'status' ? names.get(l.status_id) : key === 'source' ? LEAD_SOURCES[l.source] : l[key])).join(','))].join('\r\n');
     return new Response('﻿' + csv, {
       headers: {
         'Content-Type': 'text/csv; charset=utf-8',

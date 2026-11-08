@@ -13,7 +13,12 @@ export interface Lead {
   id: number; created_at: string; name: string; email: string; phone: string | null; company: string | null;
   service: string | null; country: string | null; budget: string | null; message: string; page: string | null;
   visitor_country: string | null; email_sent: boolean; status_id: number; status_changed_at: string | null;
+  source: LeadSource; external_id: string | null;
 }
+
+export const LEAD_SOURCES = { website: 'Website form', google_forms: 'Google Forms', manual: 'Manual entry' } as const;
+export type LeadSource = keyof typeof LEAD_SOURCES;
+export const isLeadSource = (v: unknown): v is LeadSource => typeof v === 'string' && v in LEAD_SOURCES;
 
 export interface Application {
   id: number; created_at: string; name: string; email: string; phone: string | null; role: string; experience: string | null;
@@ -115,6 +120,7 @@ export interface LeadFilters {
   q: string;
   country: string;
   service: string;
+  source: LeadSource | '';
   from: string;         // YYYY-MM-DD (IST) or ''
   to: string;           // YYYY-MM-DD (IST) or ''
   sort: 'newest' | 'oldest';
@@ -129,6 +135,7 @@ export function parseLeadFilters(params: URLSearchParams): LeadFilters {
     q: (params.get('q') ?? '').trim().slice(0, 100),
     country: (params.get('country') ?? '').slice(0, 60),
     service: (params.get('service') ?? '').slice(0, 80),
+    source: isLeadSource(params.get('source')) ? (params.get('source') as LeadSource) : '',
     from: day('from'),
     to: day('to'),
     sort: params.get('sort') === 'oldest' ? 'oldest' : 'newest',
@@ -144,6 +151,7 @@ export function filterParams(f: LeadFilters, overrides: Partial<LeadFilters> = {
   if (merged.q) p.set('q', merged.q);
   if (merged.country) p.set('country', merged.country);
   if (merged.service) p.set('service', merged.service);
+  if (merged.source) p.set('source', merged.source);
   if (merged.from) p.set('from', merged.from);
   if (merged.to) p.set('to', merged.to);
   if (merged.sort !== 'newest') p.set('sort', merged.sort);
@@ -173,6 +181,7 @@ export async function leadPage(f: LeadFilters, statuses: LeadStatus[]): Promise<
     p_q: f.q || null,
     p_country: f.country || null,
     p_service: f.service || null,
+    p_source: f.source || null,
     p_from: f.from ? `${f.from}T00:00:00${IST}` : null,
     p_to: f.to ? `${nextDay(f.to)}T00:00:00${IST}` : null,
     p_oldest_first: f.sort === 'oldest',
@@ -184,6 +193,25 @@ export async function leadPage(f: LeadFilters, statuses: LeadStatus[]): Promise<
 /** Change the status of leads; returns how many actually changed. */
 export const setLeadStatus = (ids: number[], statusId: number) =>
   supabase.rpc<number>('set_lead_status', { p_ids: ids, p_status: statusId });
+
+export interface LeadNote { id: number; lead_id: number; created_at: string; body: string }
+export interface LeadActivity { id: number; lead_id: number; created_at: string; kind: string; detail: Record<string, unknown> }
+export interface LeadDetail { lead: Lead; notes: LeadNote[]; activity: LeadActivity[] }
+
+export interface LeadStats {
+  total: number; spam: number; converted: number;
+  by_status: Record<string, number>;
+  by_source: Record<string, number>;
+  by_country: { label: string; n: number }[];
+  by_service: { label: string; n: number }[];
+  monthly: { month: string; n: number }[];
+}
+
+/** Lead analytics, computed in the database from the leads themselves. */
+export const leadStats = () => supabase.rpc<LeadStats>('lead_stats');
+
+/** One lead with its notes and history, or null when it doesn't exist. */
+export const leadDetail = (id: number) => supabase.rpc<LeadDetail | null>('lead_detail', { p_id: id });
 
 export const deleteRecords = (table: Table, ids: number[]) => supabase.deleteIds(table, ids);
 

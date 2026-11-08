@@ -7,8 +7,10 @@ import { isAuthenticated } from '../../server/auth';
 import { getStats } from '../../server/analytics';
 import {
   dbMessage, filterParams, flushOutbox, leadPage, leadsSince, listApplications, listStatuses, outboxSize, PAGE_SIZE,
-  parseLeadFilters, type Application, type Lead, type LeadFilters, type LeadPage, type LeadStatus,
+  LEAD_SOURCES, leadStats, parseLeadFilters, type LeadStats, type Application, type Lead, type LeadFilters, type LeadPage, type LeadStatus,
 } from '../../server/leads';
+import { getConfig as googleFormsConfig, LEAD_FIELDS, syncHistory } from '../../server/google-forms';
+import { googleFormsScript } from '../../server/google-forms-script';
 import { eventTotal, getSocials, getWhatsApp, socialNetworks, whatsAppUrl } from '../../server/settings';
 
 export const prerender = false;
@@ -39,13 +41,41 @@ try {
 } catch (err) {
   dbError = dbMessage(err);
 }
+// Analytics load on their own so a problem there never hides the lead list
+let stats5: LeadStats | null = null;
+let statsError = '';
+if (!dbError) {
+  try { stats5 = await leadStats(); } catch (err) { statsError = dbMessage(err); }
+}
+const bySlug = (slug: string) => { const st = statuses.find((x) => x.slug === slug); return st ? stats5?.by_status[String(st.id)] ?? 0 : 0; };
+const nonSpam = stats5 ? stats5.total - stats5.spam : 0;
+const conversionRate = stats5 && nonSpam ? (stats5.converted / nonSpam) * 100 : null;
+const hasConvertedStatus = statuses.some((x) => x.counts_as_converted);
+const leadKpis = stats5 ? [
+  { label: 'Total leads', value: stats5.total.toLocaleString('en-IN') },
+  { label: 'New leads', value: bySlug('new').toLocaleString('en-IN') },
+  { label: 'Hot leads', value: bySlug('hot').toLocaleString('en-IN') },
+  { label: 'Cold leads', value: bySlug('cold').toLocaleString('en-IN') },
+  { label: 'Spam', value: stats5.spam.toLocaleString('en-IN') },
+  { label: 'Converted', value: stats5.converted.toLocaleString('en-IN') },
+  { label: 'Conversion rate', value: conversionRate === null ? '–' : `${conversionRate.toFixed(1)}%` },
+] : [];
+const maxMonth = Math.max(1, ...(stats5?.monthly.map((m) => m.n) ?? []));
+const monthFmt = new Intl.DateTimeFormat('en-IN', { month: 'short', year: '2-digit', timeZone: 'UTC' });
+const sourceRows = stats5 ? Object.entries(LEAD_SOURCES).map(([k, label]) => ({ label, n: stats5!.by_source[k] ?? 0 })) : [];
+const breakdowns = stats5 ? [
+  { title: 'Leads by source', rows: sourceRows },
+  { title: 'Leads by country', rows: stats5.by_country },
+  { title: 'Leads by service', rows: stats5.by_service },
+] : [];
+
 const queued = outboxSize();
 const statusById = new Map(statuses.map((s) => [s.id, s]));
 const tabStatus = filters.tab === 'all' ? null : statuses.find((s) => s.slug === filters.tab) ?? null;
 const leads: Lead[] = page.rows;
 const firstShown = page.total ? (filters.page - 1) * PAGE_SIZE + 1 : 0;
 const lastShown = Math.min(page.total, filters.page * PAGE_SIZE);
-const hasFilters = !!(filters.q || filters.country || filters.service || filters.from || filters.to);
+const hasFilters = !!(filters.q || filters.country || filters.service || filters.source || filters.from || filters.to);
 
 /** Link to the Leads section with some filters changed, keeping the overview range. */
 const leadsHref = (overrides: Partial<LeadFilters>) => {
@@ -57,6 +87,12 @@ const leadsHref = (overrides: Partial<LeadFilters>) => {
 const exportParams = filterParams(filters, { page: 1 }).toString();
 const statusPayload = statuses.map(({ id, slug, name, color }) => ({ id, slug, name, color }));
 const spamId = statuses.find((s) => s.slug === 'spam')?.id;
+
+const gforms = googleFormsConfig();
+const gformsLog = syncHistory();
+const gformsEndpoint = `${Astro.url.origin}/api/integrations/google-forms/`;
+const gformsScript = gforms ? googleFormsScript(gformsEndpoint, gforms.token) : '';
+const lastSync = gformsLog.find((r) => !['connected', 'disconnected', 'key replaced'].includes(r.trigger));
 
 const whatsapp = getWhatsApp();
 const socials = getSocials();
@@ -91,6 +127,7 @@ const cards = [
       </a>
       <nav class="flex items-center gap-1 text-sm font-semibold">
         <a href="#overview" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Overview</a>
+        <a href="#lead-analytics" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Analytics</a>
         <a href="#leads" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Leads <span class="ml-1 rounded-full bg-olive px-2 py-0.5 text-xs text-white">{page.all}</span></a>
         <a href="#applications" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Applications <span class="ml-1 rounded-full bg-navy px-2 py-0.5 text-xs text-white">{applications.length}</span></a>
         <a href="#settings" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Settings</a>
@@ -214,9 +251,75 @@ const cards = [
       </div>
     </section>
 
+    <!-- LEAD ANALYTICS -->
+    <section id="lead-analytics" class="scroll-mt-20">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 class="text-3xl font-bold">Lead analytics</h2>
+          <p class="mt-1 text-sm text-slate">All time, straight from the lead records. Charts leave out spam. Conversion rate = converted ÷ leads that aren't spam.</p>
+        </div>
+      </div>
+      {statsError && <p class="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">Lead analytics couldn't be loaded: {statsError}</p>}
+      {stats5 && (
+        <>
+          <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-7">
+            {leadKpis.map((c) => (
+              <li class="rounded-3xl bg-white p-5 ring-1 ring-navy/5">
+                <p class="text-sm text-slate">{c.label}</p>
+                <p class="mt-2 font-display text-3xl font-bold text-navy">{c.value}</p>
+              </li>
+            ))}
+          </ul>
+          {!hasConvertedStatus && <p class="mt-3 text-sm text-slate">No status counts as converted yet. Tick "Counts as converted" on a status in Settings.</p>}
+
+          <div class="mt-6 rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-bold">Leads per month</h3>
+              <span class="text-sm text-slate">Last 12 months · India time</span>
+            </div>
+            <div class="mt-6 flex h-48 items-end gap-2" role="img" aria-label="Leads per month for the last 12 months">
+              {stats5.monthly.map((m) => (
+                <div class="group relative flex h-full flex-1 flex-col items-center justify-end gap-1">
+                  <span class="text-xs font-semibold tabular-nums text-navy">{m.n || ''}</span>
+                  <div class="w-full rounded-t-md bg-olive/80 transition-colors group-hover:bg-navy" style={`height:${Math.max(m.n ? 4 : 1, (m.n / maxMonth) * 85)}%`}></div>
+                </div>
+              ))}
+            </div>
+            <div class="mt-2 flex gap-2 text-center text-[0.65rem] text-slate">
+              {stats5.monthly.map((m) => <span class="flex-1 truncate">{monthFmt.format(new Date(`${m.month}-01T00:00:00Z`))}</span>)}
+            </div>
+          </div>
+
+          <div class="mt-6 grid gap-6 lg:grid-cols-3">
+            {breakdowns.map((b) => {
+              const max = Math.max(1, ...b.rows.map((r) => r.n));
+              return (
+                <div class="rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+                  <h3 class="text-lg font-bold">{b.title}</h3>
+                  {b.rows.every((r) => r.n === 0) ? <p class="mt-4 text-sm text-slate">No leads yet.</p> : (
+                    <ol class="mt-4 space-y-2.5">
+                      {b.rows.map((r) => (
+                        <li class="grid grid-cols-[1fr_auto] items-center gap-3 text-sm">
+                          <span class="relative overflow-hidden rounded-lg bg-mist px-3 py-2">
+                            <span class="absolute inset-y-0 left-0 bg-olive/20" style={`width:${(r.n / max) * 100}%`}></span>
+                            <span class="relative block truncate font-medium text-navy">{r.label}</span>
+                          </span>
+                          <span class="w-10 text-right font-semibold tabular-nums text-navy">{r.n}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </section>
+
     <!-- LEADS -->
     <section id="leads" data-records data-endpoint="/api/admin/submissions/" data-noun="lead"
-      data-fields="created_at:Date,status:Status,name:Name,email:Email,phone:Phone,company:Company,service:Service,country:Country,budget:Budget,message:Message,page:Page"
+      data-fields="created_at:Date,source:Source,status:Status,name:Name,email:Email,phone:Phone,company:Company,service:Service,country:Country,budget:Budget,message:Message,page:Page"
       data-statuses={JSON.stringify(statusPayload)} data-tab-status={tabStatus?.id ?? ''} data-spam-id={spamId ?? ''}
       class="scroll-mt-20 rounded-3xl bg-white ring-1 ring-navy/5">
       <div class="flex flex-wrap items-center justify-between gap-3 border-b border-navy/10 p-6">
@@ -224,6 +327,30 @@ const cards = [
           <h2 class="text-2xl font-bold">Leads</h2>
           <p class="text-sm text-slate">Everything submitted through the contact forms. Change a status and the lead moves to that tab.</p>
         </div>
+        {!dbError && (
+          <details class="group w-full sm:w-auto" data-add-lead>
+            <summary class="btn-primary cursor-pointer list-none">+ Add lead</summary>
+            <form class="mt-4 grid gap-3 rounded-2xl bg-mist p-4 text-sm sm:w-[40rem] sm:grid-cols-2" novalidate>
+              <label class="filter"><span>Name *</span><input name="name" required maxlength="100" /></label>
+              <label class="filter"><span>Email</span><input name="email" type="email" maxlength="150" /></label>
+              <label class="filter"><span>Phone</span><input name="phone" maxlength="30" /></label>
+              <label class="filter"><span>Company</span><input name="company" maxlength="120" /></label>
+              <label class="filter"><span>Service</span><input name="service" list="lead-services" maxlength="80" /></label>
+              <label class="filter"><span>Country</span><input name="country" list="lead-countries" maxlength="60" /></label>
+              <label class="filter"><span>Budget</span><input name="budget" maxlength="40" /></label>
+              <label class="filter"><span>Status</span>
+                <select name="statusId">{statuses.map((s) => <option value={s.id} selected={s.is_default}>{s.name}</option>)}</select>
+              </label>
+              <label class="filter sm:col-span-2"><span>Notes from the conversation</span><textarea name="message" rows="3" maxlength="5000"></textarea></label>
+              <datalist id="lead-services">{page.services.map((v) => <option value={v} />)}</datalist>
+              <datalist id="lead-countries">{page.countries.map((v) => <option value={v} />)}</datalist>
+              <div class="flex items-center gap-3 sm:col-span-2">
+                <button type="submit" class="btn-primary">Save lead</button>
+                <p data-add-msg role="status" class="text-sm font-medium text-red-700"></p>
+              </div>
+            </form>
+          </details>
+        )}
         {queued > 0 && <p class="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800">{queued} new submission{queued === 1 ? '' : 's'} waiting to reach the database. They're retried every 5 minutes.</p>}
       </div>
 
@@ -267,6 +394,13 @@ const cards = [
               </select>
             </label>
             <label class="filter min-w-[9.5rem] flex-1">
+              <span>Source</span>
+              <select name="source" data-autosubmit>
+                <option value="">All sources</option>
+                {Object.entries(LEAD_SOURCES).map(([k, label]) => <option value={k} selected={k === filters.source}>{label}</option>)}
+              </select>
+            </label>
+            <label class="filter min-w-[9.5rem] flex-1">
               <span>From (IST)</span>
               <input name="from" type="date" value={filters.from} max={filters.to || undefined} />
             </label>
@@ -283,7 +417,7 @@ const cards = [
             </label>
             <div class="flex items-end gap-2">
               <button type="submit" class="tool">Apply filters</button>
-              {hasFilters && <a href={leadsHref({ q: '', country: '', service: '', from: '', to: '' })} class="tool">Clear filters</a>}
+              {hasFilters && <a href={leadsHref({ q: '', country: '', service: '', source: '', from: '', to: '' })} class="tool">Clear filters</a>}
             </div>
           </form>
 
@@ -327,11 +461,14 @@ const cards = [
                   {leads.map((l) => {
                     const st = statusById.get(l.status_id);
                     return (
-                      <tr data-row={JSON.stringify({ ...l, status: st?.name ?? '' })} class="border-b border-navy/5 align-top hover:bg-mist/60">
+                      <tr data-row={JSON.stringify({ ...l, status: st?.name ?? '', source: LEAD_SOURCES[l.source] ?? l.source })} class="border-b border-navy/5 align-top hover:bg-mist/60">
                         <td class="p-4"><input type="checkbox" data-pick value={l.id} aria-label={`Select lead from ${l.name}`} class="size-4 accent-olive" /></td>
-                        <td class="whitespace-nowrap p-4 text-slate"><time data-local datetime={l.created_at}>{l.created_at.replace('T', ' ').slice(0, 16)} UTC</time></td>
+                        <td class="whitespace-nowrap p-4 text-slate">
+                          <time data-local datetime={l.created_at}>{l.created_at.replace('T', ' ').slice(0, 16)} UTC</time>
+                          <span class="mt-1 block text-xs font-semibold text-slate/80">{LEAD_SOURCES[l.source] ?? l.source}</span>
+                        </td>
                         <td class="p-4">
-                          <p class="font-semibold text-navy">{l.name}</p>
+                          <a href={`/admin/lead/?id=${l.id}`} class="font-semibold text-navy hover:text-olive hover:underline">{l.name}</a>
                           <a href={`mailto:${l.email}`} class="block text-olive hover:underline">{l.email}</a>
                           {l.phone && <a href={`tel:${l.phone}`} class="block text-slate">{l.phone}</a>}
                           {l.company && <p class="text-slate">{l.company}</p>}
@@ -441,6 +578,11 @@ const cards = [
                   class="min-w-[9rem] flex-1 rounded-2xl border border-navy/15 bg-mist px-4 py-2.5 text-sm read-only:text-slate sm:max-w-xs" />
                 <span class="status-chip" style={`--c:${s.color}`} data-preview>{s.name}</span>
                 {s.is_system && <span class="text-xs font-semibold uppercase tracking-wider text-slate">Built-in</span>}
+                {s.slug !== 'spam' && (
+                  <label class="flex items-center gap-1.5 text-xs font-semibold text-slate">
+                    <input type="checkbox" data-converted checked={s.counts_as_converted} class="size-4 accent-olive" /> Counts as converted
+                  </label>
+                )}
                 <span class="ml-auto flex flex-wrap items-center gap-2 text-sm">
                   {s.is_default
                     ? <span class="rounded-full bg-olive px-3 py-1.5 text-xs font-semibold text-white">Default for new leads</span>
@@ -459,6 +601,89 @@ const cards = [
           </form>
           <p data-status-msg role="status" class="mt-3 text-sm font-medium"></p>
         </>
+      )}
+    </section>
+
+    <!-- GOOGLE FORMS -->
+    <section id="google-forms" class="scroll-mt-20 rounded-3xl bg-white p-6 ring-1 ring-navy/5" data-gforms>
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 class="text-2xl font-bold">Google Forms integration</h2>
+          <p class="mt-1 text-sm text-slate">Responses from a Google Form arrive in Leads with the source "Google Forms". The same response is never imported twice.</p>
+        </div>
+        <span class={`rounded-full px-3 py-1.5 text-xs font-semibold ${gforms ? 'bg-olive text-white' : 'bg-mist text-slate'}`}>
+          {gforms ? (gforms.formTitle ? `Connected · ${gforms.formTitle}` : 'Key created · waiting for the form') : 'Not connected'}
+        </span>
+      </div>
+      {gforms && lastSync && (
+        <p class="mt-3 text-sm text-slate">Last sync <time data-local datetime={lastSync.ts}>{lastSync.ts}</time>: {lastSync.inserted} new, {lastSync.duplicates} already imported{lastSync.failed ? `, ${lastSync.failed} failed` : ''}{lastSync.error ? ` · ${lastSync.error}` : ''}.</p>
+      )}
+
+      {!gforms ? (
+        <button data-gf-action="connect" class="btn-primary mt-6">Connect a Google Form</button>
+      ) : (
+        <>
+          <ol class="mt-6 grid gap-5 text-sm text-navy">
+            <li>
+              <p class="font-semibold">1. Open your form → <em>Extensions</em> → <em>Apps Script</em>. Delete what's there and paste this script (it contains your private key):</p>
+              <textarea readonly rows="6" class="mt-2 w-full rounded-2xl border border-navy/15 bg-mist p-3 font-mono text-xs" data-gf-script>{gformsScript}</textarea>
+              <button data-gf-copy class="tool mt-2">Copy script</button>
+            </li>
+            <li><p class="font-semibold">2. Click Save, choose <em>setup</em> in the function list, click Run and allow access. This imports every existing response and sends new ones automatically.</p></li>
+            <li><p class="font-semibold">3. For the Sync buttons: <em>Deploy</em> → <em>New deployment</em> → type <em>Web app</em>, execute as <em>Me</em>, access <em>Anyone</em>. Paste the web app URL here:</p>
+              <form data-gf-webapp class="mt-2 flex flex-wrap gap-2" novalidate>
+                <input name="url" value={gforms.webAppUrl} placeholder="https://script.google.com/macros/s/…/exec" class="min-w-[16rem] flex-1 rounded-2xl border border-navy/15 bg-mist px-4 py-2.5" />
+                <button type="submit" class="tool">Save URL</button>
+              </form>
+            </li>
+          </ol>
+
+          <div class="mt-6 flex flex-wrap gap-2">
+            <button data-gf-sync="recent" class="btn-primary" disabled={!gforms.webAppUrl}>Sync now</button>
+            <button data-gf-sync="all" class="tool" disabled={!gforms.webAppUrl}>Import all responses</button>
+            <button data-gf-action="connect" data-confirm="Create a new key? The script in your form stops working until you paste the new script." class="tool">New key</button>
+            <button data-gf-action="disconnect" data-confirm="Disconnect Google Forms? New responses stop arriving. Leads already imported stay." class="tool tool--danger">Disconnect</button>
+          </div>
+
+          <h3 class="mt-8 text-lg font-bold">Field mapping</h3>
+          {gforms.questions.length === 0 ? (
+            <p class="mt-2 text-sm text-slate">The form's questions appear here after the first response arrives (run <em>setup</em> in step 2).</p>
+          ) : (
+            <form data-gf-mapping class="mt-3 grid gap-2 text-sm" novalidate>
+              {gforms.questions.map((q) => (
+                <label class="grid items-center gap-2 rounded-2xl bg-mist px-4 py-2 sm:grid-cols-[1fr_14rem]">
+                  <span class="text-navy">{q}</span>
+                  <select name={q} class="rounded-xl border border-navy/15 bg-white px-3 py-2">
+                    <option value="">Keep in message</option>
+                    {Object.entries(LEAD_FIELDS).map(([k, label]) => <option value={k} selected={gforms.fieldMap[q] === k}>{label}</option>)}
+                  </select>
+                </label>
+              ))}
+              <p class="text-xs text-slate">Changes apply to responses imported from now on. Unmapped answers are added to the lead's message.</p>
+              <div><button type="submit" class="tool">Save mapping</button></div>
+            </form>
+          )}
+        </>
+      )}
+      <p data-gf-msg role="status" class="mt-4 text-sm font-medium"></p>
+
+      {gformsLog.length > 0 && (
+        <details class="mt-6">
+          <summary class="cursor-pointer text-sm font-semibold text-navy">Sync history</summary>
+          <div class="mt-3 overflow-x-auto">
+            <table class="w-full min-w-[36rem] text-left text-xs">
+              <thead class="uppercase tracking-wider text-slate"><tr><th class="p-2">When</th><th class="p-2">Trigger</th><th class="p-2">Received</th><th class="p-2">New</th><th class="p-2">Duplicates</th><th class="p-2">Failed</th><th class="p-2">Note</th></tr></thead>
+              <tbody>
+                {gformsLog.map((r) => (
+                  <tr class="border-t border-navy/5">
+                    <td class="p-2"><time data-local datetime={r.ts}>{r.ts}</time></td><td class="p-2">{r.trigger}</td><td class="p-2">{r.received}</td>
+                    <td class="p-2">{r.inserted}</td><td class="p-2">{r.duplicates}</td><td class={`p-2 ${r.failed ? 'font-semibold text-red-700' : ''}`}>{r.failed}</td><td class="p-2 text-slate">{r.error ?? ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
       )}
     </section>
 
@@ -755,6 +980,64 @@ const cards = [
   document.querySelectorAll<HTMLSelectElement>('[data-lead-filters] [data-autosubmit]').forEach((sel) =>
     sel.addEventListener('change', () => sel.form!.requestSubmit()));
 
+  // ---- Add a lead by hand ----
+  const addLead = document.querySelector<HTMLFormElement>('[data-add-lead] form');
+  addLead?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(addLead)) as Record<string, string>;
+    const res = await fetch('/api/admin/leads/', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...data, statusId: Number(data.statusId) }),
+    });
+    if (res.status === 401) return location.assign('/admin/');
+    const body = await res.json().catch(() => ({}));
+    if (!body.ok) { addLead.querySelector('[data-add-msg]')!.textContent = body.error || 'Could not save.'; return; }
+    location.assign(`/admin/lead/?id=${body.id}`);
+  });
+
+  // ---- Settings: Google Forms ----
+  const gf = document.querySelector<HTMLElement>('[data-gforms]');
+  if (gf) {
+    const msg = gf.querySelector<HTMLElement>('[data-gf-msg]')!;
+    const tell = (ok: boolean, text: string) => { msg.className = `mt-4 text-sm font-medium ${ok ? 'text-olive' : 'text-red-700'}`; msg.textContent = text; };
+    const send = async (body: Record<string, unknown>) => {
+      const res = await fetch('/api/admin/google-forms/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (res.status === 401) { location.assign('/admin/'); return null; }
+      const data = await res.json().catch(() => ({}));
+      if (!data.ok) tell(false, data.error || 'Something went wrong.');
+      return data.ok ? data : null;
+    };
+    const reload = () => { location.hash = 'google-forms'; location.reload(); };
+
+    gf.querySelectorAll<HTMLButtonElement>('[data-gf-action]').forEach((b) => b.addEventListener('click', async () => {
+      if (b.dataset.confirm && !confirm(b.dataset.confirm)) return;
+      if (await send({ action: b.dataset.gfAction })) reload();
+    }));
+    gf.querySelector('[data-gf-copy]')?.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(gf.querySelector<HTMLTextAreaElement>('[data-gf-script]')!.value);
+      tell(true, 'Script copied. Paste it into Apps Script.');
+    });
+    const webapp = gf.querySelector<HTMLFormElement>('[data-gf-webapp]');
+    webapp?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (await send({ action: 'webapp', url: new FormData(webapp).get('url') })) reload();
+    });
+    const mapping = gf.querySelector<HTMLFormElement>('[data-gf-mapping]');
+    mapping?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (await send({ action: 'mapping', map: Object.fromEntries(new FormData(mapping)) })) tell(true, 'Mapping saved.');
+    });
+    gf.querySelectorAll<HTMLButtonElement>('[data-gf-sync]').forEach((b) => b.addEventListener('click', async () => {
+      const label = b.textContent;
+      b.disabled = true;
+      b.textContent = 'Syncing…';
+      const data = await send({ action: 'sync', mode: b.dataset.gfSync });
+      b.disabled = false;
+      b.textContent = label;
+      if (data) { tell(true, data.message); setTimeout(reload, 2500); }
+    }));
+  }
+
   // ---- Settings: lead statuses ----
   const statusAdmin = document.querySelector<HTMLElement>('[data-status-admin]');
   if (statusAdmin) {
@@ -784,6 +1067,11 @@ const cards = [
       color.addEventListener('input', live);
       row.querySelector('[data-save]')!.addEventListener('click', async () => {
         if (await send('PATCH', { id, name: name.value, color: color.value })) reload();
+      });
+      row.querySelector<HTMLInputElement>('[data-converted]')?.addEventListener('change', async (e) => {
+        const box = e.currentTarget as HTMLInputElement;
+        if (await send('PATCH', { id, converted: box.checked })) tell(true, 'Saved. Analytics count this status as converted.');
+        else box.checked = !box.checked;
       });
       row.querySelector('[data-make-default]')?.addEventListener('click', async () => {
         if (await send('PATCH', { id, makeDefault: true })) reload();

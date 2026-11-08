@@ -3,6 +3,7 @@
 //   POST   { name, color }            create a status
 //   PATCH  { id, name, color }        rename / recolour
 //   PATCH  { id, makeDefault: true }  make it the default for new leads
+//   PATCH  { id, converted: bool }    count leads in this status as conversions
 //   DELETE { id }                     delete an unused custom status
 import type { APIRoute } from 'astro';
 import { bad, dbFail, guard, jsonBody, ok } from '../../../server/admin-api';
@@ -34,6 +35,10 @@ export const PATCH: APIRoute = async (ctx) => {
   const id = body && idOf(body);
   if (!body || !id) return bad('Invalid request.');
   try {
+    if (typeof body.converted === 'boolean') {
+      await supabase.rpc('set_status_converted', { p_id: id, p_value: body.converted });
+      return ok();
+    }
     if (body.makeDefault === true) {
       await supabase.rpc('set_default_lead_status', { p_id: id });
       return ok();
