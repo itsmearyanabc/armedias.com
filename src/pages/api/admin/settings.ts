@@ -1,12 +1,14 @@
 // Save settings from the admin panel: the WhatsApp link, or the social profile links.
 import type { APIRoute } from 'astro';
-import { isAuthenticated } from '../../../server/auth';
+import { guard } from '../../../server/admin-api';
 import { parseSocials, parseWhatsApp, setSetting, whatsAppUrl } from '../../../server/settings';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request, cookies }) => {
-  if (!isAuthenticated(cookies)) return Response.json({ ok: false, error: 'Not signed in.' }, { status: 401 });
+export const POST: APIRoute = async (ctx) => {
+  const denied = guard(ctx);
+  if (denied) return denied;
+  const { request } = ctx;
 
   let body: { whatsapp?: unknown; message?: unknown; socials?: Record<string, unknown> };
   try {

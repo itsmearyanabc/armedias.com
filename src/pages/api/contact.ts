@@ -1,9 +1,9 @@
 // Contact form endpoint. Runs on the Node server behind nginx; every other page is static.
-// Each lead is saved to the database (visible in /admin/) and emailed to CONTACT_TO.
+// Each lead is saved to Supabase (visible in /admin/) and emailed to CONTACT_TO.
 import type { APIRoute } from 'astro';
-import { db } from '../../server/db';
 import { clientIp } from '../../server/auth';
 import { countryOf } from '../../server/analytics';
+import { markEmailSent, saveSubmission } from '../../server/leads';
 import { isEmail, line, notify, rateLimiter, responder, text } from '../../server/forms';
 
 export const prerender = false;
@@ -41,11 +41,12 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const ip = clientIp(request, clientAddress);
   if (limit.tooSoon(ip)) return respond(false, 'You just sent a message. Please wait a minute before sending another.', 429);
 
-  // Save first: the lead is never lost even if email delivery fails
-  const { lastInsertRowid } = db.prepare(`INSERT INTO submissions
-    (created_at, name, email, phone, company, service, country, budget, message, page, visitor_country)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-    .run(new Date().toISOString(), name, email, phone || null, company || null, service, country, budget || null, message, page || null, countryOf(request));
+  // Save first: the lead is never lost even if email delivery fails. New leads get the
+  // default status chosen in Settings.
+  const saved = await saveSubmission('leads', {
+    created_at: new Date().toISOString(), name, email, phone: phone || null, company: company || null, service, country,
+    budget: budget || null, message, page: page || null, visitor_country: countryOf(request),
+  });
   limit.mark(ip);
 
   const sent = await notify(`New enquiry: ${service} (${country}) from ${name}`, [
@@ -64,7 +65,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     '---',
     `Sent from armedias.com on ${new Date().toISOString()}`,
   ].join('\n'), { name, address: email });
-  if (sent) db.prepare('UPDATE submissions SET email_sent = 1 WHERE id = ?').run(lastInsertRowid);
+  if (sent) await markEmailSent(saved);
 
   return respond(true);
 };

@@ -5,7 +5,10 @@ import Admin from '../../layouts/Admin.astro';
 import logo from '../../assets/logo-mark.png';
 import { isAuthenticated } from '../../server/auth';
 import { getStats } from '../../server/analytics';
-import { db } from '../../server/db';
+import {
+  dbMessage, filterParams, flushOutbox, leadPage, leadsSince, listApplications, listStatuses, outboxSize, PAGE_SIZE,
+  parseLeadFilters, type Application, type Lead, type LeadFilters, type LeadPage, type LeadStatus,
+} from '../../server/leads';
 import { eventTotal, getSocials, getWhatsApp, socialNetworks, whatsAppUrl } from '../../server/settings';
 
 export const prerender = false;
@@ -17,20 +20,44 @@ const ranges = [7, 30, 90] as const;
 const days = ranges.find((r) => String(r) === Astro.url.searchParams.get('range')) ?? 30;
 const stats = getStats(days);
 
-interface Lead {
-  id: number; created_at: string; name: string; email: string; phone: string | null; company: string | null;
-  service: string | null; country: string | null; budget: string | null; message: string; page: string | null;
-  visitor_country: string | null; email_sent: number;
-}
-const leads = db.prepare('SELECT * FROM submissions ORDER BY created_at DESC LIMIT 2000').all() as unknown as Lead[];
-
-interface Application {
-  id: number; created_at: string; name: string; email: string; phone: string | null; role: string; experience: string | null;
-  location: string | null; portfolio: string | null; cv: string; message: string | null;
-}
-const applications = db.prepare('SELECT * FROM applications ORDER BY created_at DESC LIMIT 2000').all() as unknown as Application[];
 const since = new Date(Date.now() - (days - 1) * 86_400_000).toISOString().slice(0, 10);
-const leadsInRange = leads.filter((l) => l.created_at.slice(0, 10) >= since).length;
+
+// Leads and applications come from Supabase. If it can't be reached the rest of the
+// dashboard still renders, with a notice in place of the lists.
+const filters = parseLeadFilters(Astro.url.searchParams);
+let statuses: LeadStatus[] = [];
+let page: LeadPage = { rows: [], total: 0, all: 0, counts: {}, countries: [], services: [] };
+let applications: Application[] = [];
+let leadsInRange = 0;
+let dbError = '';
+try {
+  await flushOutbox();
+  statuses = await listStatuses();
+  [page, applications, leadsInRange] = await Promise.all([
+    leadPage(filters, statuses), listApplications(), leadsSince(`${since}T00:00:00Z`),
+  ]);
+} catch (err) {
+  dbError = dbMessage(err);
+}
+const queued = outboxSize();
+const statusById = new Map(statuses.map((s) => [s.id, s]));
+const tabStatus = filters.tab === 'all' ? null : statuses.find((s) => s.slug === filters.tab) ?? null;
+const leads: Lead[] = page.rows;
+const firstShown = page.total ? (filters.page - 1) * PAGE_SIZE + 1 : 0;
+const lastShown = Math.min(page.total, filters.page * PAGE_SIZE);
+const hasFilters = !!(filters.q || filters.country || filters.service || filters.from || filters.to);
+
+/** Link to the Leads section with some filters changed, keeping the overview range. */
+const leadsHref = (overrides: Partial<LeadFilters>) => {
+  const p = filterParams(filters, { page: 1, ...overrides });
+  if (days !== 30) p.set('range', String(days));
+  const q = p.toString();
+  return `/admin/dashboard/${q ? `?${q}` : ''}#leads`;
+};
+const exportParams = filterParams(filters, { page: 1 }).toString();
+const statusPayload = statuses.map(({ id, slug, name, color }) => ({ id, slug, name, color }));
+const spamId = statuses.find((s) => s.slug === 'spam')?.id;
+
 const whatsapp = getWhatsApp();
 const socials = getSocials();
 const waClicks = eventTotal('whatsapp_click', since);
@@ -49,7 +76,7 @@ const cards = [
   { label: `Visitors · ${days} days`, value: stats.visitors },
   { label: `Page views · ${days} days`, value: stats.views },
   { label: 'Visitors today', value: stats.today.visitors },
-  { label: `New leads · ${days} days`, value: leadsInRange },
+  { label: `Leads received · ${days} days`, value: leadsInRange },
   { label: `WhatsApp clicks · ${days} days`, value: waClicks },
 ];
 ---
@@ -64,7 +91,7 @@ const cards = [
       </a>
       <nav class="flex items-center gap-1 text-sm font-semibold">
         <a href="#overview" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Overview</a>
-        <a href="#leads" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Leads <span class="ml-1 rounded-full bg-olive px-2 py-0.5 text-xs text-white">{leads.length}</span></a>
+        <a href="#leads" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Leads <span class="ml-1 rounded-full bg-olive px-2 py-0.5 text-xs text-white">{page.all}</span></a>
         <a href="#applications" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Applications <span class="ml-1 rounded-full bg-navy px-2 py-0.5 text-xs text-white">{applications.length}</span></a>
         <a href="#settings" class="rounded-full px-3 py-2 text-navy hover:bg-mist">Settings</a>
         <a href="/" target="_blank" rel="noopener" class="rounded-full px-3 py-2 text-navy hover:bg-mist">View site ↗</a>
@@ -188,64 +215,160 @@ const cards = [
     </section>
 
     <!-- LEADS -->
-    <section id="leads" data-records data-endpoint="/api/admin/submissions/" data-noun="lead" data-fields="created_at:Date,name:Name,email:Email,phone:Phone,company:Company,service:Service,country:Country,budget:Budget,message:Message,page:Page" class="scroll-mt-20 rounded-3xl bg-white ring-1 ring-navy/5">
+    <section id="leads" data-records data-endpoint="/api/admin/submissions/" data-noun="lead"
+      data-fields="created_at:Date,status:Status,name:Name,email:Email,phone:Phone,company:Company,service:Service,country:Country,budget:Budget,message:Message,page:Page"
+      data-statuses={JSON.stringify(statusPayload)} data-tab-status={tabStatus?.id ?? ''} data-spam-id={spamId ?? ''}
+      class="scroll-mt-20 rounded-3xl bg-white ring-1 ring-navy/5">
       <div class="flex flex-wrap items-center justify-between gap-3 border-b border-navy/10 p-6">
         <div>
           <h2 class="text-2xl font-bold">Leads</h2>
-          <p class="text-sm text-slate">Everything submitted through the contact forms, newest first.</p>
+          <p class="text-sm text-slate">Everything submitted through the contact forms. Change a status and the lead moves to that tab.</p>
         </div>
-        <input data-search type="search" placeholder="Search name, email, message…" class="w-full rounded-full border border-navy/15 bg-mist px-4 py-2 text-sm sm:w-72" />
+        {queued > 0 && <p class="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800">{queued} new submission{queued === 1 ? '' : 's'} waiting to reach the database. They're retried every 5 minutes.</p>}
       </div>
 
-      <div class="flex flex-wrap items-center gap-2 border-b border-navy/10 bg-mist/50 px-6 py-3 text-sm">
-        <span data-count class="mr-auto font-semibold text-navy">0 selected</span>
-        <button data-copy class="tool">Copy selected</button>
-        <button data-copy-all class="tool">Copy all</button>
-        <button data-csv class="tool">Download CSV</button>
-        <button data-delete class="tool tool--danger" disabled>Delete selected</button>
-      </div>
-      <p data-toast role="status" class="hidden px-6 py-2 text-sm font-medium text-olive"></p>
+      {dbError ? (
+        <p class="m-6 rounded-2xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">Leads couldn't be loaded: {dbError}</p>
+      ) : (
+        <>
+          <!-- Status tabs -->
+          <nav aria-label="Lead status" class="flex gap-2 overflow-x-auto border-b border-navy/10 px-6 py-3 text-sm">
+            <a href={leadsHref({ tab: 'all' })} aria-current={filters.tab === 'all' ? 'page' : undefined} class="lead-tab">
+              All Leads <span data-tab-count="all" class="lead-tab__n">{page.all}</span>
+            </a>
+            {statuses.map((s) => (
+              <a href={leadsHref({ tab: s.slug })} aria-current={filters.tab === s.slug ? 'page' : undefined} class="lead-tab" style={`--c:${s.color}`}>
+                <span class="size-2 rounded-full" style={`background:${s.color}`}></span>
+                {s.name} <span data-tab-count={s.id} class="lead-tab__n">{page.counts[String(s.id)] ?? 0}</span>
+              </a>
+            ))}
+          </nav>
 
-      {leads.length === 0 ? <p class="p-10 text-center text-slate">No leads yet. They'll appear here as soon as someone fills in a form.</p> : (
-        <div class="overflow-x-auto">
-          <table class="w-full min-w-[60rem] text-left text-sm">
-            <thead class="text-xs uppercase tracking-wider text-slate">
-              <tr class="border-b border-navy/10">
-                <th class="w-10 p-4"><input type="checkbox" data-all aria-label="Select all leads" class="size-4 accent-olive" /></th>
-                <th class="p-4">Date &amp; time</th>
-                <th class="p-4">Contact</th>
-                <th class="p-4">Service</th>
-                <th class="p-4">Country</th>
-                <th class="p-4">Budget</th>
-                <th class="p-4">Message</th>
-              </tr>
-            </thead>
-            <tbody>
-              {leads.map((l) => (
-                <tr data-row={JSON.stringify(l)} class="border-b border-navy/5 align-top hover:bg-mist/60">
-                  <td class="p-4"><input type="checkbox" data-pick value={l.id} aria-label={`Select lead from ${l.name}`} class="size-4 accent-olive" /></td>
-                  <td class="whitespace-nowrap p-4 text-slate"><time data-local datetime={l.created_at}>{l.created_at.replace('T', ' ').slice(0, 16)} UTC</time></td>
-                  <td class="p-4">
-                    <p class="font-semibold text-navy">{l.name}</p>
-                    <a href={`mailto:${l.email}`} class="block text-olive hover:underline">{l.email}</a>
-                    {l.phone && <a href={`tel:${l.phone}`} class="block text-slate">{l.phone}</a>}
-                    {l.company && <p class="text-slate">{l.company}</p>}
-                  </td>
-                  <td class="p-4 text-navy">{l.service}</td>
-                  <td class="p-4 text-navy">
-                    {l.country}
-                    {l.visitor_country && l.visitor_country !== 'Unknown' && <span class="block text-xs text-slate" title="Detected by Cloudflare">from {flag(l.visitor_country)} {l.visitor_country}</span>}
-                  </td>
-                  <td class="p-4 text-navy">{l.budget ?? '–'}</td>
-                  <td class="max-w-md p-4">
-                    <p class="whitespace-pre-wrap text-slate">{l.message}</p>
-                    <p class="mt-1 text-xs text-slate/70">{l.page ? `Sent from ${l.page}` : ''}{l.email_sent ? '' : ' · email not delivered'}</p>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+          <!-- Filters (a normal GET form, so filtered views can be bookmarked) -->
+          <form method="get" action="/admin/dashboard/#leads" data-lead-filters class="flex flex-wrap items-end gap-3 border-b border-navy/10 px-6 py-4 text-sm">
+            {filters.tab !== 'all' && <input type="hidden" name="tab" value={filters.tab} />}
+            {days !== 30 && <input type="hidden" name="range" value={days} />}
+            <label class="filter min-w-[14rem] flex-[2]">
+              <span>Search</span>
+              <input name="q" type="search" value={filters.q} placeholder="Name, email, phone, message…" />
+            </label>
+            <label class="filter min-w-[9.5rem] flex-1">
+              <span>Country</span>
+              <select name="country" data-autosubmit>
+                <option value="">All countries</option>
+                {page.countries.map((c) => <option selected={c === filters.country}>{c}</option>)}
+              </select>
+            </label>
+            <label class="filter min-w-[9.5rem] flex-1">
+              <span>Service</span>
+              <select name="service" data-autosubmit>
+                <option value="">All services</option>
+                {page.services.map((c) => <option selected={c === filters.service}>{c}</option>)}
+              </select>
+            </label>
+            <label class="filter min-w-[9.5rem] flex-1">
+              <span>From (IST)</span>
+              <input name="from" type="date" value={filters.from} max={filters.to || undefined} />
+            </label>
+            <label class="filter min-w-[9.5rem] flex-1">
+              <span>To (IST)</span>
+              <input name="to" type="date" value={filters.to} min={filters.from || undefined} />
+            </label>
+            <label class="filter w-[8.5rem] flex-none">
+              <span>Sort</span>
+              <select name="sort" data-autosubmit>
+                <option value="newest" selected={filters.sort === 'newest'}>Newest</option>
+                <option value="oldest" selected={filters.sort === 'oldest'}>Oldest</option>
+              </select>
+            </label>
+            <div class="flex items-end gap-2">
+              <button type="submit" class="tool">Apply filters</button>
+              {hasFilters && <a href={leadsHref({ q: '', country: '', service: '', from: '', to: '' })} class="tool">Clear filters</a>}
+            </div>
+          </form>
+
+          <!-- Toolbar -->
+          <div class="flex flex-wrap items-center gap-2 border-b border-navy/10 bg-mist/50 px-6 py-3 text-sm">
+            <span data-count class="mr-auto font-semibold text-navy">0 selected</span>
+            <label class="sr-only" for="bulk-status">Status for selected leads</label>
+            <select id="bulk-status" data-bulk-status class="tool" disabled>
+              <option value="">Set status…</option>
+              {statuses.map((s) => <option value={s.id}>{s.name}</option>)}
+            </select>
+            <button data-bulk-apply class="tool" disabled>Apply</button>
+            {spamId && <button data-bulk-spam class="tool" disabled>Mark as spam</button>}
+            <button data-copy class="tool">Copy selected</button>
+            <button data-copy-all class="tool">Copy page</button>
+            <button data-csv data-export={`/api/admin/leads-export/${exportParams ? `?${exportParams}` : ''}`} class="tool" title="Selected leads, or every lead matching the current tab and filters">Download CSV</button>
+            <button data-delete class="tool tool--danger" disabled>Delete selected</button>
+          </div>
+          <p data-toast role="status" class="hidden px-6 py-2 text-sm font-medium text-olive"></p>
+
+          {leads.length === 0 ? (
+            <p class="p-10 text-center text-slate">
+              {page.all === 0 && !hasFilters ? "No leads yet. They'll appear here as soon as someone fills in a form." : `No ${tabStatus ? `"${tabStatus.name}"` : ''} leads match these filters.`}
+            </p>
+          ) : (
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[68rem] text-left text-sm">
+                <thead class="text-xs uppercase tracking-wider text-slate">
+                  <tr class="border-b border-navy/10">
+                    <th class="w-10 p-4"><input type="checkbox" data-all aria-label="Select all leads on this page" class="size-4 accent-olive" /></th>
+                    <th class="p-4">Date &amp; time</th>
+                    <th class="p-4">Contact</th>
+                    <th class="p-4">Service</th>
+                    <th class="p-4">Country</th>
+                    <th class="p-4">Budget</th>
+                    <th class="p-4">Status</th>
+                    <th class="p-4">Message</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {leads.map((l) => {
+                    const st = statusById.get(l.status_id);
+                    return (
+                      <tr data-row={JSON.stringify({ ...l, status: st?.name ?? '' })} class="border-b border-navy/5 align-top hover:bg-mist/60">
+                        <td class="p-4"><input type="checkbox" data-pick value={l.id} aria-label={`Select lead from ${l.name}`} class="size-4 accent-olive" /></td>
+                        <td class="whitespace-nowrap p-4 text-slate"><time data-local datetime={l.created_at}>{l.created_at.replace('T', ' ').slice(0, 16)} UTC</time></td>
+                        <td class="p-4">
+                          <p class="font-semibold text-navy">{l.name}</p>
+                          <a href={`mailto:${l.email}`} class="block text-olive hover:underline">{l.email}</a>
+                          {l.phone && <a href={`tel:${l.phone}`} class="block text-slate">{l.phone}</a>}
+                          {l.company && <p class="text-slate">{l.company}</p>}
+                        </td>
+                        <td class="p-4 text-navy">{l.service}</td>
+                        <td class="p-4 text-navy">
+                          {l.country}
+                          {l.visitor_country && l.visitor_country !== 'Unknown' && <span class="block text-xs text-slate" title="Detected by Cloudflare">from {flag(l.visitor_country)} {l.visitor_country}</span>}
+                        </td>
+                        <td class="p-4 text-navy">{l.budget ?? '–'}</td>
+                        <td class="p-4">
+                          <select data-status aria-label={`Status of lead from ${l.name}`} class="status-select" style={`--c:${st?.color ?? '#6b7280'}`}>
+                            {statuses.map((s) => <option value={s.id} selected={s.id === l.status_id}>{s.name}</option>)}
+                          </select>
+                        </td>
+                        <td class="max-w-md p-4">
+                          <p class="whitespace-pre-wrap text-slate">{l.message}</p>
+                          <p class="mt-1 text-xs text-slate/70">{l.page ? `Sent from ${l.page}` : ''}{l.email_sent ? '' : ' · email not delivered'}</p>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {(leads.length > 0 || filters.page > 1) && (
+            <div class="flex flex-wrap items-center justify-between gap-3 px-6 py-4 text-sm text-slate">
+              <span>{leads.length ? `Showing ${firstShown}–${lastShown} of ${page.total}` : `Page ${filters.page} is past the last page.`}</span>
+              <span class="flex gap-2">
+                {filters.page > 1 && <a href={leadsHref({ page: Math.min(filters.page - 1, Math.max(1, Math.ceil(page.total / PAGE_SIZE))) })} class="tool">← Previous</a>}
+                {lastShown < page.total && <a href={leadsHref({ page: filters.page + 1 })} class="tool">Next →</a>}
+              </span>
+            </div>
+          )}
+        </>
       )}
     </section>
 
@@ -305,7 +428,41 @@ const cards = [
     </section>
 
     <!-- SETTINGS -->
-    <section id="settings" class="scroll-mt-20 rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+    <section id="settings" class="scroll-mt-20 rounded-3xl bg-white p-6 ring-1 ring-navy/5" data-status-admin>
+      <h2 id="lead-statuses" class="scroll-mt-24 text-2xl font-bold">Lead statuses</h2>
+      <p class="mt-1 text-sm text-slate">Every status gets its own tab in Leads. Built-in statuses can't be deleted; New Lead and Spam also keep their names. A custom status can be deleted once no lead uses it.</p>
+      {dbError ? <p class="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">Statuses couldn't be loaded: {dbError}</p> : (
+        <>
+          <ul class="mt-6 divide-y divide-navy/5 rounded-2xl ring-1 ring-navy/10">
+            {statuses.map((s) => (
+              <li data-status-row={s.id} class="flex flex-wrap items-center gap-3 p-3 sm:p-4">
+                <input type="color" name="color" value={s.color} aria-label={`Colour for ${s.name}`} class="h-10 w-12 cursor-pointer rounded-lg border border-navy/15 bg-white p-1" />
+                <input name="name" value={s.name} maxlength="40" readonly={s.slug === 'new' || s.slug === 'spam'} aria-label="Status name"
+                  class="min-w-[9rem] flex-1 rounded-2xl border border-navy/15 bg-mist px-4 py-2.5 text-sm read-only:text-slate sm:max-w-xs" />
+                <span class="status-chip" style={`--c:${s.color}`} data-preview>{s.name}</span>
+                {s.is_system && <span class="text-xs font-semibold uppercase tracking-wider text-slate">Built-in</span>}
+                <span class="ml-auto flex flex-wrap items-center gap-2 text-sm">
+                  {s.is_default
+                    ? <span class="rounded-full bg-olive px-3 py-1.5 text-xs font-semibold text-white">Default for new leads</span>
+                    : s.slug !== 'spam' && <button data-make-default class="tool">Make default</button>}
+                  <button data-save class="tool">Save</button>
+                  {!s.is_system && <button data-remove class="tool tool--danger">Delete</button>}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <form data-status-add class="mt-5 flex flex-wrap items-center gap-3" novalidate>
+            <input type="color" name="color" value="#7c3aed" aria-label="Colour for the new status" class="h-10 w-12 cursor-pointer rounded-lg border border-navy/15 bg-white p-1" />
+            <input name="name" required maxlength="40" placeholder="New status, e.g. Proposal Sent" aria-label="New status name"
+              class="min-w-[9rem] flex-1 rounded-2xl border border-navy/15 bg-mist px-4 py-2.5 text-sm sm:max-w-xs" />
+            <button type="submit" class="btn-primary">Add status</button>
+          </form>
+          <p data-status-msg role="status" class="mt-3 text-sm font-medium"></p>
+        </>
+      )}
+    </section>
+
+    <section class="rounded-3xl bg-white p-6 ring-1 ring-navy/5">
       <h2 class="text-2xl font-bold">WhatsApp button</h2>
       <p class="mt-1 text-sm text-slate">Where the floating WhatsApp button and every "WhatsApp us" link on the site send visitors. Changes apply instantly, no rebuild needed.</p>
       <form id="wa-form" class="mt-6 grid gap-5 lg:grid-cols-2" novalidate>
@@ -353,6 +510,34 @@ const cards = [
   .tool:disabled { opacity: 0.45; cursor: not-allowed; }
   .tool--danger { color: #b91c1c; }
   .tool--danger:hover:not(:disabled) { border-color: #b91c1c; color: #fff; background: #b91c1c; }
+
+  /* Status colours come from the database as --c */
+  .status-chip, .status-select {
+    --c: #6b7280;
+    border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c) 35%, white);
+    background-color: color-mix(in srgb, var(--c) 13%, white); color: color-mix(in srgb, var(--c) 78%, black);
+    font-size: 0.75rem; font-weight: 700; white-space: nowrap;
+  }
+  .status-chip { padding: 0.3rem 0.75rem; }
+  .status-select {
+    appearance: none; cursor: pointer; padding: 0.4rem 1.9rem 0.4rem 0.8rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%2364748b' stroke-width='1.6'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 0.7rem center;
+  }
+  .status-select:disabled { opacity: 0.6; cursor: wait; }
+
+  .lead-tab {
+    display: inline-flex; align-items: center; gap: 0.45rem; flex: none; border-radius: 999px;
+    padding: 0.45rem 0.9rem; font-weight: 600; color: var(--color-navy);
+  }
+  .lead-tab:hover { background: var(--color-mist); }
+  .lead-tab[aria-current='page'] { background: var(--color-navy); color: #fff; }
+  .lead-tab__n { border-radius: 999px; background: rgb(19 33 58 / 0.08); padding: 0.05rem 0.5rem; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+  .lead-tab[aria-current='page'] .lead-tab__n { background: rgb(255 255 255 / 0.2); }
+
+  .filter { display: grid; gap: 0.3rem; font-weight: 600; color: var(--color-navy); }
+  .filter span { font-size: 0.75rem; }
+  .filter input, .filter select { border-radius: 1rem; border: 1px solid rgb(19 33 58 / 0.15); background: var(--color-mist); padding: 0.55rem 0.9rem; font-weight: 400; min-width: 0; }
 </style>
 
 <script>
@@ -410,7 +595,7 @@ const cards = [
     const count = $<HTMLElement>('[data-count]')!;
     const del = $<HTMLButtonElement>('[data-delete]')!;
     const toast = $<HTMLElement>('[data-toast]')!;
-    const search = $<HTMLInputElement>('[data-search]')!;
+    const search = $<HTMLInputElement>('[data-search]');
 
     const record = (r: HTMLTableRowElement) => JSON.parse(r.dataset.row!) as Record<string, string | number | null>;
     const visible = () => rows.filter((r) => !r.hidden);
@@ -422,10 +607,16 @@ const cards = [
       setTimeout(() => toast.classList.add('hidden'), 3000);
     };
 
+    const bulk = [...section.querySelectorAll<HTMLButtonElement | HTMLSelectElement>('[data-bulk-status], [data-bulk-spam]')];
+    const bulkApply = $<HTMLButtonElement>('[data-bulk-apply]');
+    const bulkStatus = $<HTMLSelectElement>('[data-bulk-status]');
+
     const sync = () => {
       const n = picked().length;
       count.textContent = `${n} selected`;
       del.disabled = n === 0;
+      bulk.forEach((b) => (b.disabled = n === 0));
+      if (bulkApply) bulkApply.disabled = n === 0 || !bulkStatus?.value;
       if (all) {
         const vis = visible();
         all.checked = vis.length > 0 && vis.every((r) => r.querySelector<HTMLInputElement>('[data-pick]')!.checked);
@@ -439,7 +630,7 @@ const cards = [
       sync();
     });
 
-    search.addEventListener('input', () => {
+    search?.addEventListener('input', () => {
       const q = search.value.trim().toLowerCase();
       rows.forEach((r) => (r.hidden = !!q && !r.dataset.row!.toLowerCase().includes(q)));
       sync();
@@ -458,9 +649,17 @@ const cards = [
     $('[data-copy]')!.addEventListener('click', () => copy(picked()));
     $('[data-copy-all]')!.addEventListener('click', () => copy(visible()));
 
-    $('[data-csv]')!.addEventListener('click', () => {
+    $('[data-csv]')!.addEventListener('click', (e) => {
+      // Leads are paged: with nothing selected, the server exports every matching lead
+      const exportUrl = (e.currentTarget as HTMLElement).dataset.export;
+      if (exportUrl && !picked().length) return location.assign(exportUrl);
       const list = picked().length ? picked() : visible();
-      const cell = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+      // A leading = + - @ would run as a spreadsheet formula, so prefix it with '
+      const cell = (v: unknown) => {
+        const t = String(v ?? '');
+        const risky = /^[=+\-@\t\r]/.test(t) && !/^[+\-]?[\d\s().-]+$/.test(t); // plain phone numbers are safe
+        return `"${(risky ? `'${t}` : t).replace(/"/g, '""')}"`;
+      };
       const csv = [fields.map(([, label]) => label).join(','), ...list.map((r) => { const rec = record(r); return fields.map(([key]) => cell(rec[key])).join(','); })].join('\r\n');
       const a = Object.assign(document.createElement('a'), {
         href: URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' })),
@@ -482,10 +681,124 @@ const cards = [
       const data = await res.json().catch(() => ({}));
       if (res.status === 401) return location.assign('/admin/');
       if (!data.ok) { say(data.error || 'Delete failed.'); return sync(); }
-      list.forEach((r) => r.remove());
+      list.forEach((r) => { bump(record(r).status_id, -1); bump('all', -1); r.remove(); });
       rows.splice(0, rows.length, ...rows.filter((r) => !list.includes(r)));
       say(`Deleted ${plural(data.deleted)}.`);
       sync();
     });
+
+    // ---- Lead statuses (leads section only) ----
+    function bump(key: unknown, by: number) {
+      const el = section.querySelector<HTMLElement>(`[data-tab-count="${key}"]`);
+      if (el) el.textContent = String(Math.max(0, Number(el.textContent) + by));
+    }
+    if (!section.dataset.statuses) return;
+    const statuses = JSON.parse(section.dataset.statuses) as { id: number; slug: string; name: string; color: string }[];
+    const tabStatus = section.dataset.tabStatus ? Number(section.dataset.tabStatus) : null;
+
+    /** Save a new status for these rows, then move them out of a tab they no longer belong to. */
+    async function changeStatus(list: HTMLTableRowElement[], statusId: number): Promise<boolean> {
+      const target = statuses.find((s) => s.id === statusId);
+      if (!list.length || !target) return false;
+      const selects = list.map((r) => r.querySelector<HTMLSelectElement>('[data-status]')!);
+      selects.forEach((sel) => (sel.disabled = true));
+      try {
+        const res = await fetch('/api/admin/lead-status/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids: list.map((r) => record(r).id), statusId }),
+        });
+        if (res.status === 401) { location.assign('/admin/'); return false; }
+        const data = await res.json().catch(() => ({}));
+        if (!data.ok) { say(data.error || 'Could not change the status.'); return false; }
+        for (const r of list) {
+          const rec = record(r);
+          if (rec.status_id !== statusId) { bump(rec.status_id, -1); bump(statusId, 1); }
+          r.dataset.row = JSON.stringify({ ...rec, status_id: statusId, status: target.name });
+          const sel = r.querySelector<HTMLSelectElement>('[data-status]')!;
+          sel.value = String(statusId);
+          sel.style.setProperty('--c', target.color);
+          r.querySelector<HTMLInputElement>('[data-pick]')!.checked = false;
+          if (tabStatus !== null && tabStatus !== statusId) {
+            r.style.transition = 'opacity .35s';
+            r.style.opacity = '0';
+            setTimeout(() => { r.remove(); const i = rows.indexOf(r); if (i >= 0) rows.splice(i, 1); sync(); }, 350);
+          }
+        }
+        say(`${list.length === 1 ? 'Lead' : plural(list.length)} moved to ${target.name}.`);
+        sync();
+        return true;
+      } catch {
+        say('Could not reach the server. Please try again.');
+        return false;
+      } finally {
+        selects.forEach((sel) => (sel.disabled = false));
+      }
+    }
+
+    rows.forEach((r) => {
+      const sel = r.querySelector<HTMLSelectElement>('[data-status]')!;
+      sel.addEventListener('change', async () => {
+        const before = String(record(r).status_id);
+        if (!(await changeStatus([r], Number(sel.value)))) sel.value = before;
+      });
+    });
+    bulkStatus?.addEventListener('change', sync);
+    bulkApply?.addEventListener('click', async () => {
+      if (bulkStatus?.value && (await changeStatus(picked(), Number(bulkStatus.value)))) bulkStatus.value = '';
+      sync();
+    });
+    $('[data-bulk-spam]')?.addEventListener('click', () => changeStatus(picked(), Number(section.dataset.spamId)));
   });
+
+  // Filters: dropdowns apply as soon as they change
+  document.querySelectorAll<HTMLSelectElement>('[data-lead-filters] [data-autosubmit]').forEach((sel) =>
+    sel.addEventListener('change', () => sel.form!.requestSubmit()));
+
+  // ---- Settings: lead statuses ----
+  const statusAdmin = document.querySelector<HTMLElement>('[data-status-admin]');
+  if (statusAdmin) {
+    const msg = statusAdmin.querySelector<HTMLElement>('[data-status-msg]');
+    const tell = (ok: boolean, text: string) => {
+      if (!msg) return;
+      msg.className = `mt-3 text-sm font-medium ${ok ? 'text-olive' : 'text-red-700'}`;
+      msg.textContent = text;
+    };
+    const send = async (method: string, body: Record<string, unknown>) => {
+      const res = await fetch('/api/admin/statuses/', { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (res.status === 401) { location.assign('/admin/'); return null; }
+      const data = await res.json().catch(() => ({}));
+      if (!data.ok) tell(false, data.error || 'Could not save.');
+      return data.ok ? data : null;
+    };
+    // Reload to rebuild the tabs, keeping the place in Settings
+    const reload = () => { location.hash = 'lead-statuses'; location.reload(); };
+
+    statusAdmin.querySelectorAll<HTMLElement>('[data-status-row]').forEach((row) => {
+      const id = Number(row.dataset.statusRow);
+      const name = row.querySelector<HTMLInputElement>('input[name=name]')!;
+      const color = row.querySelector<HTMLInputElement>('input[name=color]')!;
+      const preview = row.querySelector<HTMLElement>('[data-preview]')!;
+      const live = () => { preview.textContent = name.value || '…'; preview.style.setProperty('--c', color.value); };
+      name.addEventListener('input', live);
+      color.addEventListener('input', live);
+      row.querySelector('[data-save]')!.addEventListener('click', async () => {
+        if (await send('PATCH', { id, name: name.value, color: color.value })) reload();
+      });
+      row.querySelector('[data-make-default]')?.addEventListener('click', async () => {
+        if (await send('PATCH', { id, makeDefault: true })) reload();
+      });
+      row.querySelector('[data-remove]')?.addEventListener('click', async () => {
+        if (!confirm(`Delete the status "${name.value}"? Leads never lose data; a status in use can't be deleted.`)) return;
+        if (await send('DELETE', { id })) reload();
+      });
+    });
+
+    const add = statusAdmin.querySelector<HTMLFormElement>('[data-status-add]');
+    add?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(add);
+      if (await send('POST', { name: data.get('name'), color: data.get('color') })) reload();
+    });
+  }
 </script>

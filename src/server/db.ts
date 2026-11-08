@@ -1,4 +1,4 @@
-// SQLite database for leads, analytics and admin security state, using Node's built-in
+// SQLite database for analytics, settings and admin security state, using Node's built-in
 // driver (no native modules to compile on the VPS). Lives in DATA_DIR, outside the release
 // folders, so data survives deploys.
 import { DatabaseSync } from 'node:sqlite';
@@ -14,6 +14,9 @@ db.exec(`
   PRAGMA journal_mode = WAL;
   PRAGMA busy_timeout = 3000;
 
+  -- Leads and applications now live in Supabase (see server/leads.ts). These two tables
+  -- hold what was received before the move; scripts/copy-to-supabase.mjs copies them over
+  -- and they are kept untouched as a backup.
   CREATE TABLE IF NOT EXISTS submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     created_at TEXT NOT NULL,
@@ -81,23 +84,18 @@ db.exec(`
     PRIMARY KEY (day, name)
   );
 
+  -- Submissions waiting for Supabase when it couldn't be reached (kind: leads | applications)
+  CREATE TABLE IF NOT EXISTS outbox (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL,
+    kind TEXT NOT NULL,
+    payload TEXT NOT NULL,
+    attempts INTEGER NOT NULL DEFAULT 0,
+    last_error TEXT
+  );
+
   CREATE TABLE IF NOT EXISTS sessions (
     token_hash TEXT PRIMARY KEY,
     expires_at INTEGER NOT NULL
   );
 `);
-
-/** Delete rows by id from an admin-managed table; returns how many were removed. */
-export function deleteRows(table: 'submissions' | 'applications', ids: number[]): number {
-  const del = db.prepare(`DELETE FROM ${table} WHERE id = ?`);
-  let deleted = 0;
-  db.exec('BEGIN');
-  try {
-    for (const id of ids) deleted += Number(del.run(id).changes);
-    db.exec('COMMIT');
-  } catch (err) {
-    db.exec('ROLLBACK');
-    throw err;
-  }
-  return deleted;
-}
