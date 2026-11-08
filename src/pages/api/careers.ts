@@ -2,11 +2,12 @@
 import type { APIRoute } from 'astro';
 import { clientIp } from '../../server/auth';
 import { markEmailSent, saveSubmission } from '../../server/leads';
-import { isEmail, line, notify, optionalUrl, rateLimiter, responder, text } from '../../server/forms';
+import { isDuplicate, recordSubmission, verifyTurnstile, waitMs } from '../../server/spam-guard';
+import { isEmail, line, notify, optionalUrl, responder, text } from '../../server/forms';
 
 export const prerender = false;
 
-const limit = rateLimiter(5 * 60_000);
+const LIMITS = { minGapMs: 5 * 60_000, perHour: 3 };
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   const respond = responder(request, '/careers/');
@@ -35,13 +36,19 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (!cv) return respond(false, 'Please add a link to your CV.', 422);
 
   const ip = clientIp(request, clientAddress);
-  if (limit.tooSoon(ip)) return respond(false, 'You just applied. Please wait a few minutes before sending another application.', 429);
+  if (waitMs('careers', ip, LIMITS)) return respond(false, 'You just applied. Please wait a few minutes before sending another application.', 429);
+
+  const check = await verifyTurnstile(line(form, 'cf-turnstile-response', 2048), ip);
+  if (!check.ok) return respond(false, 'The security check did not pass. Please try again.', 403);
+
+  const fingerprint = [email, role, cv];
+  if (isDuplicate('careers', fingerprint)) return respond(true);
 
   const saved = await saveSubmission('applications', {
     created_at: new Date().toISOString(), name, email, phone: phone || null, role, experience: experience || null,
     location: location || null, portfolio: portfolio || null, cv, message: message || null,
   });
-  limit.mark(ip);
+  recordSubmission('careers', ip, fingerprint);
 
   const sent = await notify(`Job application: ${role} from ${name}`, [
     `Name:       ${name}`,

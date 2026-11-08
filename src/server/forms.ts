@@ -1,5 +1,5 @@
-// Shared handling for public forms (contact, careers): field reading, per-IP rate limit,
-// JSON-or-redirect responses and email notifications.
+// Shared handling for public forms (contact, careers): field reading, JSON-or-redirect
+// responses and email notifications. Spam checks live in spam-guard.ts.
 import nodemailer from 'nodemailer';
 
 const env = (key: string) => process.env[key] ?? '';
@@ -31,19 +31,6 @@ export function optionalUrl(v: string): string | null {
   } catch {
     return null;
   }
-}
-
-/** One submission per IP per window, per form. */
-export function rateLimiter(windowMs: number) {
-  const last = new Map<string, number>();
-  return {
-    tooSoon: (ip: string) => Date.now() - (last.get(ip) ?? 0) < windowMs,
-    mark: (ip: string) => {
-      const now = Date.now();
-      last.set(ip, now);
-      for (const [k, t] of last) if (now - t > windowMs) last.delete(k);
-    },
-  };
 }
 
 /** JSON for the in-page form (Accept: application/json), a redirect for no-JS posts. */
