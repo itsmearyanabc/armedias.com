@@ -68,6 +68,11 @@ const { title = 'Get a free quote' } = Astro.props;
 
     <p class="mt-5 text-sm text-slate">By sending this form you agree to our <a href="/privacy-policy/" class="font-semibold text-olive underline-offset-2 hover:underline">privacy policy</a>. We only use your details to reply to your enquiry.</p>
     <p data-form-error role="alert" class="mt-4 hidden rounded-2xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700"></p>
+    <noscript>
+      <p class="mt-4 rounded-2xl bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900">
+        This form needs JavaScript for its spam check. You can still reach us at <a href={`mailto:${site.email}`} class="underline">{site.email}</a>, on WhatsApp or by phone at <a href={`tel:${site.phoneE164}`} class="underline">{site.phone}</a>.
+      </p>
+    </noscript>
 
     <button type="submit" class="btn-primary mt-6 w-full justify-center py-4 text-base disabled:opacity-60" data-magnetic>
       <span data-label>Send message</span>

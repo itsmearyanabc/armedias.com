@@ -40,10 +40,12 @@ const lockedMs = lockRemaining(clientIp(Astro.request, Astro.clientAddress));
         </span>
       </label>
 
+      <div data-check class="mt-6 flex min-h-[65px] justify-center empty:hidden"></div>
+
       <p data-msg role="alert" class="mt-5 hidden rounded-2xl px-4 py-3 text-sm font-medium"></p>
 
       <button type="submit" class="btn-primary mt-6 w-full justify-center py-3.5 text-base disabled:cursor-not-allowed disabled:opacity-50">Sign in</button>
-      <p class="mt-6 text-center text-xs text-slate">Protected by escalating lockouts after failed attempts.</p>
+      <p class="mt-6 text-center text-xs text-slate">Protected by Cloudflare Turnstile and escalating lockouts after failed attempts.</p>
     </form>
   </main>
 </Admin>
@@ -55,7 +57,12 @@ const lockedMs = lockRemaining(clientIp(Astro.request, Astro.clientAddress));
 </style>
 
 <script>
+  import { createCheck, TurnstileUnavailable } from '../../lib/turnstile-client';
+
   const form = document.querySelector<HTMLFormElement>('#login')!;
+  // Visible "Verify you are human" tick, shown straight away on this page
+  const check = createCheck(form.querySelector<HTMLElement>('[data-check]')!, 'admin_login', 'always');
+  check?.start().catch(() => {});
   const msg = form.querySelector<HTMLElement>('[data-msg]')!;
   const submit = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
   const password = form.querySelector<HTMLInputElement>('input[name=password]')!;
@@ -114,14 +121,27 @@ const lockedMs = lockRemaining(clientIp(Astro.request, Astro.clientAddress));
     submit.disabled = true;
     submit.textContent = 'Signing in…';
     try {
+      let token = '';
+      if (check) {
+        try {
+          token = await check.token(60_000);
+        } catch (err) {
+          say(err instanceof TurnstileUnavailable
+            ? "The security check couldn't load. Turn off ad blockers for armedias.com, or try another browser."
+            : (err as Error).message, 'error');
+          submit.disabled = false;
+          return;
+        }
+      }
       const res = await fetch('/api/admin/login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password: password.value }),
+        body: JSON.stringify({ email, password: password.value, token }),
       });
+      check?.reset();
       const data = await res.json();
       if (data.ok) return location.assign('/admin/dashboard/');
-      password.value = '';
+      if (!data.check) password.value = ''; // a failed human check keeps the password
       if (data.retryMs > 0) return lockFor(data.retryMs);
       say(`${data.error}${data.triesLeft ? ` ${data.triesLeft} attempt${data.triesLeft === 1 ? '' : 's'} left before a lockout.` : ''}`, 'error');
       submit.disabled = false;

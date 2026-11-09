@@ -1,10 +1,11 @@
 import type { APIRoute } from 'astro';
 import { attemptLogin, clientIp, createSession } from '../../../server/auth';
+import { verifyTurnstile } from '../../../server/spam-guard';
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request, cookies, clientAddress, url }) => {
-  let body: { email?: unknown; password?: unknown };
+  let body: { email?: unknown; password?: unknown; token?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -13,7 +14,12 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress, url }) =
   const email = typeof body.email === 'string' ? body.email.slice(0, 200) : '';
   const password = typeof body.password === 'string' ? body.password.slice(0, 200) : '';
 
-  const result = attemptLogin(clientIp(request, clientAddress), email, password);
+  const ip = clientIp(request, clientAddress);
+  // Human check first. A failed check is not a password attempt, so it never adds to the lockout.
+  const check = await verifyTurnstile(typeof body.token === 'string' ? body.token : '', ip);
+  if (!check.ok) return Response.json({ ok: false, error: 'Please tick "Verify you are human" and try again.', check: true }, { status: 403 });
+
+  const result = attemptLogin(ip, email, password);
   if (result.ok) {
     const secure = url.protocol === 'https:' || request.headers.get('x-forwarded-proto') === 'https';
     createSession(cookies, secure);

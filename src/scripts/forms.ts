@@ -1,59 +1,19 @@
 // Submits [data-ajax-form] forms (contact, careers) in place and shows their animated
 // success panel. Without JS the forms post normally and the server redirects.
 import { gsap } from 'gsap';
-import { TURNSTILE_SITE_KEY } from '../data/turnstile';
+import { createCheck, TurnstileUnavailable } from '../lib/turnstile-client';
 
-// Cloudflare Turnstile protects form submissions only. Its script loads when a visitor first
+// Cloudflare Turnstile protects form submissions only. It starts when a visitor first
 // touches a form, so page views (and crawlers, which never fill in forms) never load it.
-interface Turnstile {
-  render(el: HTMLElement, opts: Record<string, unknown>): string;
-  getResponse(id: string): string | undefined;
-  reset(id: string): void;
-}
-declare global { interface Window { turnstile?: Turnstile } }
-
-let turnstileScript: Promise<Turnstile> | null = null;
-function loadTurnstile(): Promise<Turnstile> {
-  turnstileScript ??= new Promise<Turnstile>((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-    s.async = true;
-    s.onload = () => (window.turnstile ? resolve(window.turnstile) : reject(new Error('Turnstile missing')));
-    s.onerror = () => { turnstileScript = null; reject(new Error('Turnstile blocked')); };
-    document.head.append(s);
-  });
-  return turnstileScript;
-}
-
-/** Security check for one form: rendered on first use, token awaited on submit, reset after. */
 function securityCheck(form: HTMLFormElement, before: HTMLElement) {
-  if (!TURNSTILE_SITE_KEY) return null;
   const box = document.createElement('div');
   box.className = 'mt-5 empty:hidden';
   before.before(box);
-  let widget: Promise<string> | null = null;
-  const ready = () => (widget ??= loadTurnstile().then((t) => t.render(box, {
-    sitekey: TURNSTILE_SITE_KEY,
-    action: form.action.includes('careers') ? 'careers' : 'contact',
-    appearance: 'interaction-only',
-    'response-field-name': 'cf-turnstile-response',
-  })).catch((err) => { widget = null; throw err; }));
-  form.addEventListener('focusin', () => { ready().catch(() => {}); }, { once: true });
-  form.addEventListener('pointerdown', () => { ready().catch(() => {}); }, { once: true });
-
-  return {
-    /** Wait for a token (Turnstile usually finishes while the visitor types). */
-    async token(): Promise<string> {
-      const id = await ready();
-      for (let i = 0; i < 60; i++) {
-        const t = window.turnstile!.getResponse(id);
-        if (t) return t;
-        await new Promise((r) => setTimeout(r, 250));
-      }
-      throw new Error('Please complete the security check above.');
-    },
-    reset: () => { widget?.then((id) => window.turnstile?.reset(id)).catch(() => {}); },
-  };
+  const check = createCheck(box, form.action.includes('careers') ? 'careers' : 'contact', 'interaction-only');
+  if (!check) { box.remove(); return null; }
+  form.addEventListener('focusin', () => { check.start().catch(() => {}); }, { once: true });
+  form.addEventListener('pointerdown', () => { check.start().catch(() => {}); }, { once: true });
+  return check;
 }
 
 export function initForms() {
@@ -108,8 +68,8 @@ export function initForms() {
         if (check) {
           label.textContent = 'Checking…';
           await check.token().catch((err: Error) => {
-            throw new Error(/blocked|missing/i.test(err.message)
-              ? "The security check couldn't load (an ad blocker can cause this). Please email or WhatsApp us instead."
+            throw new Error(err instanceof TurnstileUnavailable
+              ? "Our spam check couldn't run in this browser (an ad blocker or privacy setting can cause this). Please email info@armedias.com or WhatsApp us instead, and we'll reply just the same."
               : err.message);
           });
           label.textContent = 'Sending…';
