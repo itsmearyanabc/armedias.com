@@ -4,6 +4,18 @@ description: 'Should you build a custom CRM or use Zoho, HubSpot or Salesforce? 
 category: crm
 published: 2026-11-01
 service: crm-development
+updated: 2026-11-09
+faqs:
+  - q: 'Is a custom CRM better than Zoho, HubSpot or Salesforce?'
+    a: 'Neither is always better. An off-the-shelf CRM suits a standard B2B pipeline and a small team. A custom CRM makes sense when your process is industry-specific, your team is growing fast, or WhatsApp and local integrations are core to how you sell.'
+  - q: 'How long does a custom CRM take to build?'
+    a: 'A custom CRM takes weeks to build, while an off-the-shelf CRM can be running within days. The exact timeline depends on the modules, integrations and data you need to bring across.'
+  - q: 'Does a custom CRM have per-user fees?'
+    a: 'No. You pay to build and host a custom CRM, not for every user, so adding salespeople does not increase a monthly licence bill.'
+  - q: 'Can I keep Zoho or HubSpot and add custom features?'
+    a: 'Yes. Many businesses keep an off-the-shelf CRM as the core and build custom extensions around it, such as a WhatsApp integration, lead routing, a customer portal or reporting that combines several systems.'
+  - q: 'What should I prepare before choosing a CRM?'
+    a: 'Write down your sales process step by step: where leads come from, who handles them, what information you need at each stage and which reports you want each week.'
 ---
 
 Every growing sales team hits the same moment: leads are scattered across WhatsApp chats, spreadsheets and inboxes, follow-ups depend on memory, and nobody can say with confidence how much is in the pipeline. The answer is a CRM. The harder question is **which kind**.

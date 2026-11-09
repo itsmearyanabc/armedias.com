@@ -4,6 +4,18 @@ description: "What Google's Core Web Vitals (LCP, INP and CLS) measure, why they
 category: web-apps
 published: 2026-10-18
 service: website-development
+updated: 2026-11-09
+faqs:
+  - q: 'What are good Core Web Vitals scores?'
+    a: 'Largest Contentful Paint of 2.5 seconds or less, Interaction to Next Paint of 200 milliseconds or less, and Cumulative Layout Shift of 0.1 or less, measured at the 75th percentile of real visits.'
+  - q: 'Does website speed affect Google rankings?'
+    a: 'Yes. Page experience is one of the signals Google uses in ranking. It will not rescue thin content, but between similar pages the faster, more stable one has an edge.'
+  - q: 'What makes a website slow?'
+    a: 'The most common causes are oversized images, too much JavaScript, heavy themes and plugins, slow hosting, late-loading web fonts, and images or ads without reserved space.'
+  - q: 'How can I check my website''s speed?'
+    a: 'Use PageSpeed Insights for real-user data and a lab test, the Core Web Vitals report in Google Search Console, and Lighthouse in Chrome DevTools. Look at mobile results first.'
+  - q: 'Can a website have animations and still be fast?'
+    a: 'Yes. Animations stay fast when they use efficient properties, load after the main content and respect visitors who prefer reduced motion.'
 ---
 
 A slow website costs you twice: visitors leave before they see your offer, and search engines are less likely to show your pages in the first place. Google measures real-world page experience with a set of metrics called **Core Web Vitals**. Understanding them is the fastest way to know whether your site is helping or hurting your business.

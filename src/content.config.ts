@@ -20,6 +20,8 @@ const blog = defineCollection({
     // Service page this article supports; drives the in-article call to action
     service: z.string(),
     draft: z.boolean().default(false),
+    // Short answers drawn from the article, shown at its end and marked up as FAQPage
+    faqs: z.array(z.object({ q: z.string().max(120), a: z.string().max(400) })).default([]),
   }),
 });
 

@@ -4,6 +4,18 @@ description: 'A practical guide to WhatsApp Business API automation: lead captur
 category: ai-automation
 published: 2026-10-25
 service: ai-automation
+updated: 2026-11-09
+faqs:
+  - q: 'What is the difference between the WhatsApp Business App and the API?'
+    a: 'The free WhatsApp Business App runs on one phone with quick replies, labels and away messages. The WhatsApp Business Platform (API) supports several agents on one number, CRM integration, chatbots and approved template messages.'
+  - q: 'Can a business send WhatsApp messages automatically?'
+    a: 'Yes, through the WhatsApp Business API. Customers must have opted in, and messages you start outside the 24-hour customer service window must use templates approved by Meta.'
+  - q: 'What is the WhatsApp 24-hour rule?'
+    a: 'You can send free-form replies within 24 hours of a customer''s last message. After that, business-initiated messages must use an approved template.'
+  - q: 'Can an AI chatbot answer customers on WhatsApp?'
+    a: 'Yes. An AI assistant can answer common questions from your approved information and hand over to a person for complex or sensitive questions. It should not invent prices or make commitments.'
+  - q: 'How is the WhatsApp Business API charged?'
+    a: 'Meta bills conversations according to its current pricing, which varies by country and message category. Access is through Meta directly or an approved Business Solution Provider.'
 ---
 
 For many businesses, especially in India, the UAE and across Asia, WhatsApp is where customers actually talk. Enquiries arrive at all hours, the same questions repeat dozens of times a day, and important conversations get buried on one employee's phone.
