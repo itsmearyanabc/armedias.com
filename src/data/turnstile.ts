@@ -3,4 +3,4 @@
 // TURNSTILE_SECRET_KEY. Leave both empty to switch Turnstile off.
 // PUBLIC_TURNSTILE_SITE_KEY (from .env at build time) overrides the value below, which is
 // how local tests use Cloudflare's published test keys.
-export const TURNSTILE_SITE_KEY: string = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+export const TURNSTILE_SITE_KEY: string = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAF5SggfJyUD65XI4';
