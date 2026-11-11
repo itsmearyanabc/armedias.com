@@ -67,6 +67,9 @@ const breakdowns = stats5 ? [
   { title: 'Leads by source', rows: sourceRows },
   { title: 'Leads by country', rows: stats5.by_country },
   { title: 'Leads by service', rows: stats5.by_service },
+  // Shown once leads carry "found via" details (migration 0005)
+  ...(stats5.by_channel?.length ? [{ title: 'How leads found you', rows: stats5.by_channel }] : []),
+  ...(stats5.by_landing?.length ? [{ title: 'First page leads landed on', rows: stats5.by_landing }] : []),
 ] : [];
 
 const queued = outboxSize();
@@ -319,7 +322,7 @@ const cards = [
 
     <!-- LEADS -->
     <section id="leads" data-records data-endpoint="/api/admin/submissions/" data-noun="lead"
-      data-fields="created_at:Date,source:Source,status:Status,name:Name,email:Email,phone:Phone,company:Company,service:Service,country:Country,budget:Budget,message:Message,page:Page"
+      data-fields="created_at:Date,source:Source,found_via:Found via,landing:First page,status:Status,name:Name,email:Email,phone:Phone,company:Company,service:Service,country:Country,budget:Budget,message:Message,page:Page"
       data-statuses={JSON.stringify(statusPayload)} data-tab-status={tabStatus?.id ?? ''} data-spam-id={spamId ?? ''}
       class="scroll-mt-20 rounded-3xl bg-white ring-1 ring-navy/5">
       <div class="flex flex-wrap items-center justify-between gap-3 border-b border-navy/10 p-6">
@@ -461,11 +464,11 @@ const cards = [
                   {leads.map((l) => {
                     const st = statusById.get(l.status_id);
                     return (
-                      <tr data-row={JSON.stringify({ ...l, status: st?.name ?? '', source: LEAD_SOURCES[l.source] ?? l.source })} class="border-b border-navy/5 align-top hover:bg-mist/60">
+                      <tr data-row={JSON.stringify({ ...l, attribution: undefined, status: st?.name ?? '', source: LEAD_SOURCES[l.source] ?? l.source, found_via: l.attribution?.channel ?? '', landing: l.attribution?.landing ?? '' })} class="border-b border-navy/5 align-top hover:bg-mist/60">
                         <td class="p-4"><input type="checkbox" data-pick value={l.id} aria-label={`Select lead from ${l.name}`} class="size-4 accent-olive" /></td>
                         <td class="whitespace-nowrap p-4 text-slate">
                           <time data-local datetime={l.created_at}>{l.created_at.replace('T', ' ').slice(0, 16)} UTC</time>
-                          <span class="mt-1 block text-xs font-semibold text-slate/80">{LEAD_SOURCES[l.source] ?? l.source}</span>
+                          <span class="mt-1 block text-xs font-semibold text-slate/80">{LEAD_SOURCES[l.source] ?? l.source}{l.attribution?.channel && ` · ${l.attribution.channel}`}</span>
                         </td>
                         <td class="p-4">
                           <a href={`/admin/lead/?id=${l.id}`} class="font-semibold text-navy hover:text-olive hover:underline">{l.name}</a>

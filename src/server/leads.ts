@@ -3,6 +3,7 @@
 // local outbox table and are sent on the next successful contact, so nothing is lost.
 import { db } from './db';
 import { supabase, SupabaseError } from './supabase';
+import type { Attribution } from './attribution';
 
 export interface LeadStatus {
   id: number; slug: string; name: string; color: string; sort_order: number;
@@ -14,6 +15,8 @@ export interface Lead {
   service: string | null; country: string | null; budget: string | null; message: string; page: string | null;
   visitor_country: string | null; email_sent: boolean; status_id: number; status_changed_at: string | null;
   source: LeadSource; external_id: string | null;
+  /** How the lead found the site; absent on leads saved before migration 0005. */
+  attribution?: Attribution | null;
 }
 
 export const LEAD_SOURCES = { website: 'Website form', google_forms: 'Google Forms', manual: 'Manual entry' } as const;
@@ -34,9 +37,23 @@ type Table = 'leads' | 'applications';
 /** Where a new submission ended up: in Supabase, or queued locally until Supabase is back. */
 export type Saved = { table: Table; id: number } | { table: Table; outboxId: number };
 
+/**
+ * Insert a submission. If the database has no `attribution` column yet (migration 0005 not
+ * run), the row is saved without it, so a deploy never depends on the migration order.
+ */
+async function insertSubmission(table: Table, row: Record<string, unknown>): Promise<{ id: number }> {
+  try {
+    return await supabase.insert<{ id: number }>(table, row);
+  } catch (err) {
+    if (!(err instanceof SupabaseError && err.code === 'PGRST204' && 'attribution' in row)) throw err;
+    const { attribution: _dropped, ...rest } = row;
+    return supabase.insert<{ id: number }>(table, rest);
+  }
+}
+
 export async function saveSubmission(table: Table, row: Record<string, unknown>): Promise<Saved> {
   try {
-    const created = await supabase.insert<{ id: number }>(table, row);
+    const created = await insertSubmission(table, row);
     void flushOutbox();
     return { table, id: created.id };
   } catch (err) {
@@ -68,7 +85,7 @@ export async function flushOutbox(): Promise<number> {
     const rows = db.prepare('SELECT id, kind, payload, attempts FROM outbox ORDER BY id LIMIT 100').all() as unknown as OutboxRow[];
     for (const row of rows) {
       try {
-        await supabase.insert(row.kind, JSON.parse(row.payload));
+        await insertSubmission(row.kind, JSON.parse(row.payload));
         db.prepare('DELETE FROM outbox WHERE id = ?').run(row.id);
         sent++;
       } catch (err) {
@@ -204,6 +221,9 @@ export interface LeadStats {
   by_source: Record<string, number>;
   by_country: { label: string; n: number }[];
   by_service: { label: string; n: number }[];
+  /** Present once migration 0005 has run. */
+  by_channel?: { label: string; n: number }[];
+  by_landing?: { label: string; n: number }[];
   monthly: { month: string; n: number }[];
 }
 

@@ -4,6 +4,7 @@ import type { APIRoute } from 'astro';
 import { clientIp } from '../../server/auth';
 import { countryOf } from '../../server/analytics';
 import { markEmailSent, saveSubmission } from '../../server/leads';
+import { readAttribution } from '../../server/attribution';
 import { isDuplicate, recordSubmission, verifyTurnstile, waitMs } from '../../server/spam-guard';
 import { isEmail, line, notify, responder, text } from '../../server/forms';
 import { budgets, countryChoices, serviceChoices } from '../../data/form-options';
@@ -57,11 +58,14 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const fingerprint = [email, message];
   if (isDuplicate('contact', fingerprint)) return respond(true);
 
+  const attribution = readAttribution(form);
+
   // Save first: the lead is never lost even if email delivery fails. New leads get the
   // default status chosen in Settings.
   const saved = await saveSubmission('leads', {
     created_at: new Date().toISOString(), name, email, phone: phone || null, company: company || null, service, country,
     budget: budget || null, message, page: page || null, visitor_country: countryOf(request),
+    ...(attribution ? { attribution } : {}),
   });
   recordSubmission('contact', ip, fingerprint);
 
@@ -74,6 +78,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     `Country:  ${country}`,
     `Budget:   ${budget || '-'}`,
     `Page:     ${page || '-'}`,
+    `Found via: ${attribution ? `${attribution.channel}${attribution.landing ? `, landed on ${attribution.landing}` : ''}` : '-'}`,
     '',
     'Message:',
     message,

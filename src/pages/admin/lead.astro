@@ -85,6 +85,17 @@ const countryName = (code: string) => { try { return regionNames.of(code) ?? cod
             <div><dt class="text-slate">Budget</dt><dd class="font-semibold text-navy">{lead.budget ?? '–'}</dd></div>
             <div><dt class="text-slate">Country</dt><dd class="font-semibold text-navy">{lead.country ?? '–'}{lead.visitor_country && lead.visitor_country !== 'Unknown' && <span class="font-normal text-slate"> · visited from {countryName(lead.visitor_country)}</span>}</dd></div>
             <div><dt class="text-slate">Source</dt><dd class="font-semibold text-navy">{sourceLabel(lead.source)}{lead.page && <span class="font-normal text-slate"> · {lead.page}</span>}</dd></div>
+            {lead.attribution && (
+              <div class="sm:col-span-2 lg:col-span-3">
+                <dt class="text-slate">How they found you</dt>
+                <dd class="font-semibold text-navy">
+                  {lead.attribution.channel}
+                  {lead.attribution.referrer && <span class="font-normal text-slate"> · from {lead.attribution.referrer}</span>}
+                  {lead.attribution.landing && <span class="font-normal text-slate"> · first page {lead.attribution.landing}</span>}
+                  {lead.attribution.utm_campaign && <span class="font-normal text-slate"> · campaign {lead.attribution.utm_campaign}</span>}
+                </dd>
+              </div>
+            )}
           </dl>
 
           <h2 class="mt-8 text-lg font-bold">Original enquiry</h2>

@@ -16,8 +16,32 @@ function securityCheck(form: HTMLFormElement, before: HTMLElement) {
   return check;
 }
 
+// How this visit began: the first page, the site that sent the visitor and campaign tags.
+// Kept in this tab's sessionStorage and sent only if the visitor submits a form, so the
+// business can see which pages and channels bring enquiries.
+const FIRST_TOUCH = 'am_first_touch';
+function firstTouch(): Record<string, string> {
+  try {
+    const saved = sessionStorage.getItem(FIRST_TOUCH);
+    if (saved) return JSON.parse(saved) as Record<string, string>;
+    const q = new URLSearchParams(location.search);
+    let referrer = '';
+    try {
+      const host = document.referrer ? new URL(document.referrer).hostname : '';
+      if (host && host !== location.hostname) referrer = host;
+    } catch { /* unparseable referrer */ }
+    const touch: Record<string, string> = { landing: location.pathname, referrer };
+    for (const k of ['utm_source', 'utm_medium', 'utm_campaign']) touch[k] = (q.get(k) ?? '').slice(0, 80);
+    sessionStorage.setItem(FIRST_TOUCH, JSON.stringify(touch));
+    return touch;
+  } catch {
+    return {}; // storage blocked: the form still works, without attribution
+  }
+}
+
 export function initForms() {
   const failed = new URLSearchParams(location.search).has('error');
+  const touch = firstTouch();
 
   document.querySelectorAll<HTMLFormElement>('[data-ajax-form]').forEach((form) => {
     if (form.dataset.bound) return; // several components may call initForms on one page
@@ -76,6 +100,7 @@ export function initForms() {
         }
         const data = new FormData(form);
         data.set('page', location.pathname);
+        for (const [k, v] of Object.entries(touch)) if (v) data.set(k, v);
         const res = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
         const body = await res.json().catch(() => ({}));
         if (!res.ok || !body.ok) throw new Error(body.error || 'Something went wrong.');
