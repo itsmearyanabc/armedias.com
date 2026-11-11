@@ -4,10 +4,12 @@ description: 'Should you build a custom CRM or use Zoho, HubSpot or Salesforce? 
 category: crm
 published: 2026-11-01
 service: crm-development
-updated: 2026-11-09
+updated: 2026-11-12
 faqs:
   - q: 'Is a custom CRM better than Zoho, HubSpot or Salesforce?'
     a: 'Neither is always better. An off-the-shelf CRM suits a standard B2B pipeline and a small team. A custom CRM makes sense when your process is industry-specific, your team is growing fast, or WhatsApp and local integrations are core to how you sell.'
+  - q: 'Which CRM is best for custom objects?'
+    a: 'Salesforce is generally regarded as the most flexible. HubSpot offers custom objects on its Enterprise plans, Zoho CRM calls them custom modules, and Microsoft Dynamics 365 uses custom tables. Limits depend on the plan, so check current pricing.'
   - q: 'How long does a custom CRM take to build?'
     a: 'A custom CRM takes weeks to build, while an off-the-shelf CRM can be running within days. The exact timeline depends on the modules, integrations and data you need to bring across.'
   - q: 'Does a custom CRM have per-user fees?'
@@ -48,7 +50,20 @@ Most CRMs charge per user, per month, and the features growing teams need (autom
 
 ### Your process doesn't fit the template
 
-Real estate brokerages track properties, site visits and channel partners. Education businesses track counselling sessions, applications and fee instalments. Clinics track appointments and treatments. You can bend a generic CRM to fit, but every workaround adds friction, and frustrated teams stop entering data.
+Real estate brokerages track properties, site visits and channel partners. Education businesses track counselling sessions, applications and fee instalments. Clinics track appointments and treatments. Security companies track sites, guards, shifts, patrol reports and incidents alongside their contracts. You can bend a generic CRM to fit, but every workaround adds friction, and frustrated teams stop entering data.
+
+### Custom objects are limited by plan
+
+Every major CRM lets you add custom fields to contacts and deals. The harder test is **custom objects**: your own record types, such as properties, sites, policies or student applications, with their own fields and links to other records.
+
+| Platform | What it calls them | What to check |
+|---|---|---|
+| Salesforce | Custom objects | A core feature, generally regarded as the most flexible. The number allowed depends on your edition. |
+| HubSpot | Custom objects | Available on Enterprise plans. |
+| Zoho CRM | Custom modules | Availability and limits depend on the edition. |
+| Microsoft Dynamics 365 | Custom tables | Built on Dataverse, with capacity tied to your licence. |
+
+Plans and limits change, so check each vendor's current comparison page before you buy. If you need many record types with their own rules, screens and automations, compare the cost of the plan that unlocks them with the cost of a custom CRM, where records are modelled around your business from the start.
 
 ### Integration limits
 

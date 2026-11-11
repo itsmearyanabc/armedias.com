@@ -1,13 +1,15 @@
 ---
-title: 'Why Website Speed Matters: Core Web Vitals Explained'
+title: 'Core Web Vitals Explained: How to Fix LCP, INP and CLS'
 description: "What Google's Core Web Vitals (LCP, INP and CLS) measure, why they affect rankings and sales, and the practical fixes that make websites fast."
 category: web-apps
 published: 2026-10-18
 service: website-development
-updated: 2026-11-09
+updated: 2026-11-12
 faqs:
   - q: 'What are good Core Web Vitals scores?'
     a: 'Largest Contentful Paint of 2.5 seconds or less, Interaction to Next Paint of 200 milliseconds or less, and Cumulative Layout Shift of 0.1 or less, measured at the 75th percentile of real visits.'
+  - q: 'How do I fix a poor CLS score?'
+    a: 'Set width and height on images and videos, reserve space for ads and embeds, avoid inserting banners above existing content, preload fonts with font-display swap, and animate with transform instead of properties that move the layout.'
   - q: 'Does website speed affect Google rankings?'
     a: 'Yes. Page experience is one of the signals Google uses in ranking. It will not rescue thin content, but between similar pages the faster, more stable one has an edge.'
   - q: 'What makes a website slow?'
@@ -76,6 +78,30 @@ Google assesses these at the 75th percentile of real visits, so most of your vis
 - **Self-host and subset fonts**, and use `font-display: swap`.
 - **Use a CDN and caching** so files are served from close to your visitors.
 - **Audit third-party scripts** and remove anything that isn't earning its place.
+
+## How to fix a poor CLS score
+
+CLS (Cumulative Layout Shift) is usually the easiest Core Web Vital to fix, because every shift has a specific cause you can find and remove.
+
+### What causes layout shift
+
+- **Images and videos without dimensions.** The browser doesn't know how much room to leave, so the text below jumps when the file arrives.
+- **Ads, embeds and iframes** that load late and push content down.
+- **Content inserted above what's already on screen**, such as cookie notices, promo banners or "related posts" blocks.
+- **Web fonts** that swap in with a different size from the fallback font, re-wrapping the text.
+- **Animations that move the layout**, for example changing an element's height or top position.
+
+### How to fix each one
+
+1. **Set `width` and `height` on every image and video**, or give its container a CSS `aspect-ratio`. The browser then reserves the right space before the file loads.
+2. **Reserve space for ads and embeds** with a fixed or minimum height, so the slot is already there when the content arrives.
+3. **Don't push content down.** Show banners and notices as overlays, or leave room for them from the first paint.
+4. **Stabilise fonts.** Preload your main font, use `font-display: swap`, and choose a fallback font with similar proportions.
+5. **Animate with `transform` and `opacity`**, which don't move the surrounding layout.
+
+### How to find what is shifting
+
+PageSpeed Insights lists the elements responsible under its layout-shift audit. In Chrome DevTools, record a page load in the Performance panel to see each shift and the element that moved. Fix the largest shifts first and test on a phone-sized screen, where shifts tend to be worse.
 
 ## How to check your site
 

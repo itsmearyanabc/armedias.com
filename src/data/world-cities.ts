@@ -23,6 +23,8 @@ export interface WorldCity {
   needs: { t: string; d: string }[];
   industries: string[]; // industry names; linked when an industry page exists
   faqs: { q: string; a: string }[];
+  /** Longer, city-specific section on the work people there search for. `href` links the heading to a service page. */
+  guide?: { title: string; sections: { h: string; p: string; href?: string }[] };
 }
 
 const usHours = (city: string) =>
@@ -430,9 +432,9 @@ export const worldCities: WorldCity[] = [
     market: 'australia', slug: 'melbourne', name: 'Melbourne', region: 'Victoria', area: 'Melbourne and Greater Melbourne',
     tz: 'Australia/Melbourne', coords: [144.96, -37.81], competition: 'high',
     metaTitle: 'Custom Software Development in Melbourne | AR Medias',
-    metaDescription: 'Custom software development services, app and website development for Melbourne startups and small businesses. Fixed AUD quotes.',
+    metaDescription: 'Custom software development, custom CRM and internal business systems, apps and websites for Melbourne startups and small businesses. Fixed AUD quotes.',
     h1: 'Custom software development company in Melbourne',
-    lead: 'We provide custom software development, mobile apps and websites for Melbourne startups, small businesses and growing companies.',
+    lead: 'We provide custom software development, custom CRM and internal business systems, mobile apps and websites for Melbourne startups, small businesses and growing companies.',
     fits: ['Startups', 'Small businesses', 'Education providers', 'Hospitality and retail'],
     needs: [
       { t: 'Custom software development', d: 'Software built around your process: booking, operations, reporting or client portals.' },
@@ -447,16 +449,27 @@ export const worldCities: WorldCity[] = [
       { q: 'Do you work with businesses in Melbourne?', a: auHours('Melbourne') },
       { q: 'Do you work with startups?', a: 'Yes. We build MVPs and first product versions in milestones with demos, and hand over the full source code.' },
       { q: 'Can you build a course or training platform?', a: 'Yes. We build course platforms with video lessons, quizzes, certificates and payments.' },
+      { q: 'Do you build custom CRM systems for Melbourne businesses?', a: 'Yes. We build a CRM around your own sales stages, fields and follow-ups, connected to your email, website enquiry forms and Xero or MYOB, with no per-user licence fee.' },
+      { q: 'Can you replace our spreadsheets with one internal system?', a: 'Yes. We map what each spreadsheet does, build one web-based system with a login for each role, and import your existing data so nothing is retyped.' },
       { q: 'How much does custom software cost?', a: cost('AUD') },
     ],
+    guide: {
+      title: 'Custom software, CRM and internal systems for Melbourne teams.',
+      sections: [
+        { h: 'Custom business software', href: '/services/custom-software-development/', p: 'When spreadsheets and off-the-shelf apps stop fitting, we build one system around the way your business runs: bookings, job tracking, approvals and the reports you check each week. It runs in the browser, each role sees only what it needs, and the source code is yours.' },
+        { h: 'Custom CRM development', href: '/services/crm-development/', p: 'A CRM shaped around how you sell, with your own stages, fields, quotes and follow-up reminders. Enquiries from your website and inbox land in it automatically, and invoices can sync with Xero or MYOB. Because it is built for you, adding staff does not add a monthly licence.' },
+        { h: 'Internal systems and staff portals', p: 'Rosters, leave requests, document libraries, onboarding checklists and approval flows in one place, with dashboards that pull figures from the tools you already use. Staff open it on a phone or laptop and managers see what is waiting on them.' },
+        { h: 'Moving off an old system', p: 'Many projects start with software that has been outgrown. We import the existing records, run the new system beside the old one until the numbers match, and train the team before the switch, so day-to-day work carries on.' },
+      ],
+    },
   },
   {
     market: 'australia', slug: 'brisbane', name: 'Brisbane', region: 'Queensland', area: 'Brisbane and South East Queensland',
     tz: 'Australia/Brisbane', coords: [153.03, -27.47], competition: 'lower',
     metaTitle: 'Software Development Company in Brisbane | AR Medias',
-    metaDescription: 'Custom software, CRM, app and website development for Brisbane businesses, including NDIS providers. Fixed AUD quotes.',
+    metaDescription: 'Custom software, intranets, inventory systems, CRM and app development for Brisbane businesses, including NDIS providers. Fixed AUD quotes.',
     h1: 'Software development company in Brisbane',
-    lead: 'We build custom software, CRM systems, mobile apps and websites for Brisbane businesses, from NDIS and care providers to trades and e-commerce.',
+    lead: 'We build custom software, intranets, inventory systems, CRM systems, mobile apps and websites for Brisbane businesses, from NDIS and care providers to trades and e-commerce.',
     fits: ['NDIS and care providers', 'Trades and construction', 'E-commerce brands', 'Small businesses'],
     needs: [
       { t: 'Custom software development', d: 'Rostering, client records, job management and reporting tools built to your process.' },
@@ -471,16 +484,27 @@ export const worldCities: WorldCity[] = [
       { q: 'Do you work with businesses in Brisbane?', a: auHours('Brisbane') },
       { q: 'Do you build websites and software for NDIS providers?', a: 'Yes. We build accessible websites with referral forms and internal tools for client records and rostering, with access controls for sensitive information.' },
       { q: 'Can you build a CRM for us?', a: 'Yes. We build a CRM around how you handle enquiries and clients, or set up and integrate an existing one.' },
+      { q: 'Do you design intranets and staff portals?', a: 'Yes. We design and build intranets where staff find policies, forms, rosters and announcements in one place, with permissions by role and a layout that works on phones.' },
+      { q: 'Can you build an inventory management system?', a: 'Yes. We build inventory systems with barcode scanning, stock across several locations, reorder points and purchase orders, synced with Xero, MYOB or your online store.' },
       { q: 'How much does custom software cost?', a: cost('AUD') },
     ],
+    guide: {
+      title: 'Intranets, inventory systems and CRM for Brisbane businesses.',
+      sections: [
+        { h: 'Intranet design and staff portals', p: 'One place for policies, forms, rosters, announcements and training records, with search that finds the right document quickly. We design the structure with you first, set permissions by role, and make sure it reads well on the phones field staff carry.' },
+        { h: 'Inventory management systems', href: '/services/erp-development/', p: 'Stock tracked across warehouses, shops and vehicles, with barcode scanning, reorder points and purchase orders. Sales from Shopify and invoices in Xero or MYOB update the same figures, so the count on screen matches the shelf.' },
+        { h: 'Custom CRM development', href: '/services/crm-development/', p: 'A CRM for enquiries, referrals and clients, built around your intake steps instead of a generic sales pipeline. For care providers, client records sit behind access controls so only the right staff can open them.' },
+        { h: 'Custom-built or off-the-shelf?', href: '/services/custom-software-development/', p: 'If a ready-made product covers your process, we will say so and help set it up. Custom-built software earns its cost when your process is unusual, several tools need to act as one, or per-user fees keep rising as you hire.' },
+      ],
+    },
   },
   {
     market: 'australia', slug: 'adelaide', name: 'Adelaide', region: 'South Australia', area: 'Adelaide and the Adelaide Hills',
     tz: 'Australia/Adelaide', coords: [138.6, -34.93], competition: 'lower',
     metaTitle: 'Software Development Company in Adelaide | AR Medias',
-    metaDescription: 'Software, iOS and Android app, website and AI development for Adelaide businesses. Remote team, fixed AUD quotes.',
+    metaDescription: 'Software and app development for Adelaide startups and businesses: iPhone and Android apps, internal tools, websites and AI. Fixed AUD quotes.',
     h1: 'Software development company in Adelaide',
-    lead: 'We build software, iOS and Android apps, websites and AI features for Adelaide businesses, from wineries and manufacturers to startups and clinics.',
+    lead: 'We build software, iPhone and Android apps, internal tools, websites and AI features for Adelaide startups and businesses, from wineries and manufacturers to clinics.',
     fits: ['Wineries and food producers', 'Manufacturers', 'Startups', 'Clinics'],
     needs: [
       { t: 'Software development', d: 'Inventory, orders and operations software built to your process.' },
@@ -495,16 +519,27 @@ export const worldCities: WorldCity[] = [
       { q: 'Do you work with businesses in Adelaide?', a: auHours('Adelaide') },
       { q: 'Do you build iOS and Android apps?', a: 'Yes. We build both from one codebase with Flutter or React Native and publish them to the App Store and Google Play.' },
       { q: 'Can you build an online store with subscriptions?', a: 'Yes. We build stores with subscriptions or clubs, recurring payments and shipping rules.' },
+      { q: 'Do you build software and apps for Adelaide startups?', a: 'Yes. We scope the smallest version that can be tested with real users, build it in milestones with a demo at each one, and hand over the full source code.' },
+      { q: 'Do you design the app as well as build it?', a: 'Yes. We design the screens and flows first and share a clickable prototype, so you can try the app and change it before development starts.' },
       { q: 'How much does software development cost?', a: cost('AUD') },
     ],
+    guide: {
+      title: 'Software and apps for Adelaide startups and growing businesses.',
+      sections: [
+        { h: 'Startup software development', p: 'A first product should prove one thing well. We help you cut the idea down to the smallest version worth testing, build it in milestones with a demo at each, and keep the codebase clean enough to grow after launch. The source code is handed over to you.' },
+        { h: 'iPhone and Android app development', href: '/services/mobile-app-development/', p: 'We build for iPhone and Android from one codebase with Flutter or React Native, which keeps both apps in step and avoids paying for the same feature twice. We also handle the App Store and Google Play submissions.' },
+        { h: 'App design before development', href: '/services/ui-ux-design/', p: 'Design comes first. You get the screens and a clickable prototype to try on your own phone, and changes at that stage take hours instead of weeks. Development starts once the flow feels right.' },
+        { h: 'Internal tools for producers and manufacturers', p: 'Admin panels, order and dispatch tracking, stock and production dashboards, and wholesale ordering portals for trade customers. These tools replace the shared spreadsheet and the daily round of status emails.' },
+      ],
+    },
   },
   {
     market: 'australia', slug: 'perth', name: 'Perth', region: 'Western Australia', area: 'Perth and Western Australia',
     tz: 'Australia/Perth', coords: [115.86, -31.95], competition: 'lower',
     metaTitle: 'Software Development Company in Perth | AR Medias',
-    metaDescription: 'Custom software, app development and website services for Perth and WA businesses, including mining services. Fixed AUD quotes.',
+    metaDescription: 'Custom and bespoke software development, apps and websites for Perth and WA businesses, including mining services. Fixed AUD quotes.',
     h1: 'Software development company in Perth',
-    lead: 'We provide custom software, app development and website services for Perth and WA businesses, from mining services and construction to retail and startups.',
+    lead: 'We provide custom and bespoke software development, app development and website services for Perth and WA businesses, from mining services and construction to retail and startups.',
     fits: ['Mining and resources services', 'Construction and trades', 'Retail and e-commerce', 'Startups'],
     needs: [
       { t: 'Custom software development', d: 'Inspections, compliance records, rostering and reporting tools.' },
@@ -519,8 +554,19 @@ export const worldCities: WorldCity[] = [
       { q: 'Do you work with businesses in Perth?', a: `Yes. We work with Perth businesses remotely. Perth is only 2.5 hours ahead of New Delhi, so our working days overlap for most of the day. Quotes are fixed and in AUD.` },
       { q: 'Can you build apps that work offline on site?', a: 'Yes. We build field apps that save data on the device without signal and sync automatically when back in coverage.' },
       { q: 'Do you integrate with MYOB or Xero?', a: 'Yes. We sync invoices, payments and contacts between your software and MYOB or Xero.' },
+      { q: 'What is bespoke software?', a: 'Bespoke software is built to order for one business. It follows your process, terms and reports exactly, and you own it, instead of renting a general product and working around its gaps.' },
+      { q: 'Do you support the software after launch?', a: 'Yes. We offer maintenance plans covering updates, backups, monitoring and fixes, and we build new features as your needs change.' },
       { q: 'How much does custom software cost?', a: cost('AUD') },
     ],
+    guide: {
+      title: 'Bespoke software for Perth and WA businesses.',
+      sections: [
+        { h: 'Bespoke software development', href: '/services/custom-software-development/', p: 'Bespoke means built to order for one business. We start from how your work actually moves, from first enquiry to final invoice, and build software that follows it, using your own terms and the reports your managers already ask for.' },
+        { h: 'Custom business software', p: 'Job management, quoting, scheduling, asset registers and reporting in one web-based system. Office staff and crews work from the same records, so a job updated on site shows in the office straight away.' },
+        { h: 'Field and compliance tools', href: '/services/mobile-app-development/', p: 'Inspection checklists with photos and signatures, incident and hazard reports, and maintenance logs captured on a phone or tablet. Entries save without signal and sync later, and each record keeps a dated history you can export for an audit.' },
+        { h: 'Support after launch', href: '/services/maintenance-support/', p: 'Software needs looking after once it is live. We stay on for updates, backups, monitoring and fixes, and add features as the business changes, so you are not left looking for a new developer.' },
+      ],
+    },
   },
 
   // ---------------- UAE ----------------
