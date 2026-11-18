@@ -7,6 +7,7 @@ import { site, pillars } from '../../../data/site';
 import { industries } from '../../../data/industries';
 import { process as steps } from '../../../data/process';
 import { indiaCities, type IndiaCity } from '../../../data/cities';
+import { indiaCityGuides } from '../../../data/india-city-guides';
 import { delhiWorkingStyle, remoteWorkingStyle } from '../../../data/working-style';
 
 export function getStaticPaths() {
@@ -14,6 +15,7 @@ export function getStaticPaths() {
 }
 
 const { c } = Astro.props as { c: IndiaCity };
+const guide = indiaCityGuides[c.slug];
 const url = `${site.url}/locations/india/${c.slug}/`;
 const services = pillars.flatMap((p) => p.items);
 const industrySlug = Object.fromEntries(industries.map((i) => [i.name, i.slug]));
@@ -106,6 +108,28 @@ const schema = [
       </ul>
     </div>
   </section>
+
+  <!-- CITY GUIDE: the work businesses in this city search for, in more detail -->
+  {guide && (
+    <section class="pb-24 lg:pb-28">
+      <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+        <div>
+          <p class="eyebrow" data-reveal="fade">In detail</p>
+          <h2 class="mt-4 text-4xl font-bold sm:text-5xl">{guide.title}</h2>
+        </div>
+        <div class="divide-y divide-navy/10 border-y border-navy/10">
+          {guide.sections.map((g) => (
+            <div class="py-6">
+              <h3 class="font-display text-xl font-semibold">
+                {g.href ? <a href={g.href} class="hover:text-olive">{g.h} <span aria-hidden="true" class="text-olive">→</span></a> : g.h}
+              </h3>
+              <p class="mt-3 max-w-2xl leading-relaxed text-slate">{g.p}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 
   <!-- ALL SERVICES -->
   <section class="bg-mist/60 py-20">
