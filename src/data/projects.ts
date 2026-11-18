@@ -25,7 +25,7 @@
 //     logo: acmeLogo,
 //   },
 import type { ImageMetadata } from 'astro';
-import type { CaseScene } from '../components/CaseVisual.astro';
+import type { CaseScene } from './case-scenes';
 
 export interface Project {
   slug: string;

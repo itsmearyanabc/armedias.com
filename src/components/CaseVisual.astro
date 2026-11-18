@@ -2,7 +2,7 @@
 // Small interactive scene for a case study. Pure HTML/SVG + CSS (transform and opacity
 // only), no libraries. Animations run only while the scene is on screen, stop for visitors
 // who prefer reduced motion, and every interaction also works by keyboard.
-export type CaseScene = 'punch' | 'chat' | 'queue' | 'recycle' | 'luxury' | 'flow' | 'passport' | 'hex' | 'certificate';
+import type { CaseScene } from '../data/case-scenes';
 
 interface Props { scene: CaseScene; label: string; compact?: boolean }
 const { scene, label, compact = false } = Astro.props;
@@ -230,6 +230,10 @@ const { scene, label, compact = false } = Astro.props;
   .cv-board :global(.cv-card small) { display: block; color: var(--color-slate); }
   .cv-board :global(.cv-card--urgent) { box-shadow: inset 3px 0 0 #e5484d; }
   .cv-board [data-col='done'] :global(.cv-card) { background: #e8f2d6; }
+  @media (max-width: 30rem) {
+    .cv-col { min-height: 7rem; padding: 0.45rem; }
+    .cv-board :global(.cv-card small) { display: none; }
+  }
   .cv-btn--light2 { width: auto; justify-self: center; padding-inline: 1.2rem; background: var(--color-olive); }
 
   /* ---------- recycle: bespoke business website ---------- */
