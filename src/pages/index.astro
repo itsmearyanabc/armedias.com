@@ -15,7 +15,7 @@ import BirdMascot from '../components/BirdMascot.astro';
 import TechSprite from '../components/TechSprite.astro';
 import PostCard from '../components/PostCard.astro';
 import { getPosts } from '../lib/blog';
-import { site, pillars, markets, tech } from '../data/site';
+import { site, pillars, markets, tech, marketCount, marketCountWord } from '../data/site';
 import { process as steps } from '../data/process';
 
 const title = 'AR Medias | Software, App, CRM/ERP & AI Automation Company';
@@ -244,10 +244,10 @@ const faqSchema = {
       <div class="grid items-center gap-10 lg:grid-cols-2">
         <div>
           <p class="eyebrow" data-reveal="fade">Where we work</p>
-          <h2 id="markets-heading" class="mt-4 text-4xl font-bold sm:text-5xl">Built in New Delhi. Shipped to <Scribble>7 countries.</Scribble></h2>
+          <h2 id="markets-heading" class="mt-4 text-4xl font-bold sm:text-5xl">Built in New Delhi. Shipped to <Scribble>{marketCount} countries.</Scribble></h2>
           <p class="mt-5 text-lg text-slate" data-reveal="up">We schedule calls in your working hours and handle data according to your local privacy rules.</p>
         </div>
-        <div class="mx-auto w-full max-w-md" data-reveal="up"><Illustration name="globe" title="Globe showing routes from New Delhi to eight countries" /></div>
+        <div class="mx-auto w-full max-w-md" data-reveal="up"><Illustration name="globe" title={`Globe showing routes from New Delhi to ${marketCountWord} countries`} /></div>
       </div>
       <ul class="mt-14 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4" data-reveal="stagger">
         {markets.map((m) => (
@@ -333,7 +333,7 @@ const faqSchema = {
 
   <!-- CTA -->
   <section class="container-x pb-24">
-    <div class="cta relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-navy via-[#1f3d2a] to-olive px-8 pb-16 pt-32 text-center text-white sm:px-16 lg:pb-24 lg:pt-36" data-reveal="up">
+    <div data-markets={marketCount} class="cta relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-navy via-[#1f3d2a] to-olive px-8 pb-16 pt-32 text-center text-white sm:px-16 lg:pb-24 lg:pt-36" data-reveal="up">
       <RouteBackdrop />
       <div aria-hidden="true" class="blob pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-ember/35 blur-3xl"></div>
       <div aria-hidden="true" class="blob pointer-events-none absolute -bottom-24 -left-16 size-72 rounded-full bg-olive-300/20 blur-3xl"></div>
@@ -420,7 +420,7 @@ const faqSchema = {
     const word = box?.querySelector<HTMLElement>('[data-perch]');
     if (box && bird && word) {
       const say = bird.querySelector<HTMLElement>('[data-say]')!;
-      const lines = ["Hi, I'm Ari! 👋", "Let's build it!", 'Tap "Book a free call" 👇', 'We reply within 24h!', 'Fixed quote, no surprises', '7 countries and counting 🌍'];
+      const lines = ["Hi, I'm Ari! 👋", "Let's build it!", 'Tap "Book a free call" 👇', 'We reply within 24h!', 'Fixed quote, no surprises', `${box.dataset.markets} countries and counting 🌍`];
       let line = 0;
       let landed = false;
       let sayTimer: ReturnType<typeof setTimeout> | undefined;

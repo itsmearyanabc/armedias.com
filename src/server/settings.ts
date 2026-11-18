@@ -54,6 +54,14 @@ export function countEvent(name: string) {
     ON CONFLICT(day, name) DO UPDATE SET count = count + 1`).run(new Date().toISOString().slice(0, 10), name);
 }
 
+/** Counts for every event whose name starts with `prefix`, since a day, highest first. */
+export function eventsByPrefix(prefix: string, sinceDay: string, limit = 10): { name: string; n: number }[] {
+  // Exact prefix match (no LIKE, whose _ and % wildcards would match too much)
+  return db.prepare(`SELECT substr(name, ?) AS name, SUM(count) AS n FROM event_counts
+    WHERE substr(name, 1, ?) = ? AND day >= ? GROUP BY name ORDER BY n DESC, name LIMIT ?`)
+    .all(prefix.length + 1, prefix.length, prefix, sinceDay, limit) as unknown as { name: string; n: number }[];
+}
+
 export function eventTotal(name: string, sinceDay: string): number {
   return (db.prepare('SELECT COALESCE(SUM(count), 0) AS n FROM event_counts WHERE name = ? AND day >= ?').get(name, sinceDay) as { n: number }).n;
 }

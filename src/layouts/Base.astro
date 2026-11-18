@@ -41,7 +41,11 @@ const organization = {
   taxID: site.gstin,
   founder: { '@type': 'Person', '@id': `${site.url}/about/aryan-yadav/#person`, name: site.founder.name, sameAs: site.founder.linkedin },
   slogan: site.tagline,
-  description: site.tagline,
+  description: `${site.name} is an IT services company in New Delhi, India, founded in 2024 by ${site.founder.name}. It builds websites, mobile apps, custom software, CRM and ERP systems and AI automation for businesses in ${markets.map((m) => m.schemaName).join(', ')}.`,
+  // Search results for the name also show unrelated companies with similar names
+  disambiguatingDescription: `${site.name} (armedias.com) is a software and IT services company headquartered in Kirti Nagar, New Delhi. The "AR" is part of the brand name and does not refer to augmented reality.`,
+  foundingLocation: { '@type': 'Place', name: 'New Delhi, India' },
+  knowsLanguage: ['English', 'Hindi'],
   knowsAbout: ['Website development', 'Mobile app development', 'E-commerce development', 'UI/UX design', 'CRM development', 'ERP development', 'Custom software development', 'AI automation', 'WhatsApp automation'],
   contactPoint: {
     '@type': 'ContactPoint',

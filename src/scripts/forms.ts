@@ -80,6 +80,15 @@ export function initForms() {
         el.setAttribute('aria-invalid', String(!ok));
         if (!ok && !firstInvalid) firstInvalid = el;
       });
+      // Forms like the contact form need at least one of several fields (email or phone)
+      const oneOf = (form.dataset.oneOf ?? '').split(',').filter(Boolean)
+        .map((n) => form.elements.namedItem(n) as HTMLInputElement | null).filter((el): el is HTMLInputElement => !!el);
+      if (!firstInvalid && oneOf.length && oneOf.every((el) => !el.value.trim())) {
+        oneOf.forEach((el) => el.setAttribute('aria-invalid', 'true'));
+        oneOf[0].focus();
+        gsap.fromTo(form, { x: -8 }, { x: 0, duration: 0.5, ease: 'elastic.out(1, 0.3)' });
+        return showError('Please leave an email or a phone/WhatsApp number so we can reply.');
+      }
       if (firstInvalid) {
         (firstInvalid as HTMLElement).focus();
         gsap.fromTo(form, { x: -8 }, { x: 0, duration: 0.5, ease: 'elastic.out(1, 0.3)' });

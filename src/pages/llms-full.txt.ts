@@ -9,13 +9,19 @@ import { indiaCities } from '../data/cities';
 import { worldCities } from '../data/world-cities';
 import { russiaCities } from '../data/russia-cities';
 import { dedicated } from '../data/dedicated';
+import { indiaCityGuides } from '../data/india-city-guides';
+import { cityGuides } from '../data/world-city-guides';
+import { getPosts } from '../lib/blog';
 
 const url = (path: string) => new URL(path, site.url).href;
 const list = (items: string[]) => items.map((i) => `- ${i}`).join('\n');
 const faqs = (items: { q: string; a: string }[]) => items.map((f) => `Q: ${f.q}\nA: ${f.a}`).join('\n\n');
+type Guide = { title: string; sections: { h: string; p: string }[] } | undefined;
+const guide = (g: Guide) => (g ? `${g.title}\n${list(g.sections.map((x) => `${x.h}: ${x.p}`))}` : '');
 
-export function GET() {
+export async function GET() {
   const a = site.address;
+  const posts = await getPosts();
   const body = [
     `# ${site.name}`,
     `> ${site.name} is an IT services company founded on 1 January 2024 by ${site.founder.name} in New Delhi, India. ${site.tagline}`,
@@ -65,6 +71,7 @@ export function GET() {
       `URL: ${url(`/locations/delhi/${d.slug}/`)}`,
       d.lead,
       `What we build:\n${list(d.builds.map((b) => `${b.t}: ${b.d}`))}`,
+      guide(d.guide),
       faqs(d.faqs),
     ].join('\n\n')),
     '## Hire dedicated developers',
@@ -79,6 +86,7 @@ export function GET() {
       `URL: ${url(`/locations/india/${c.slug}/`)}`,
       `Serving ${c.area}. ${c.lead}`,
       `What businesses there ask for:\n${list(c.needs.map((n) => `${n.t}: ${n.d}`))}`,
+      guide(indiaCityGuides[c.slug]),
       faqs(c.faqs),
     ].join('\n\n')),
     '## Cities in other countries',
@@ -87,6 +95,7 @@ export function GET() {
       `URL: ${url(`/locations/${c.market}/${c.slug}/`)}`,
       `Serving ${c.area}, remotely from New Delhi. ${c.lead}`,
       `What businesses there ask for:\n${list(c.needs.map((n) => `${n.t}: ${n.d}`))}`,
+      guide(c.guide ?? cityGuides[`${c.market}/${c.slug}`]),
       faqs(c.faqs),
     ].join('\n\n')),
     '## Cities in Russia (pages in Russian)',
@@ -95,7 +104,14 @@ export function GET() {
       `URL: ${url(`/locations/russia/${c.slug}/`)}`,
       `${c.nameEn}. ${c.lead}`,
     ].join('\n\n')),
-  ].join('\n\n');
+    '## Guides and articles',
+    ...posts.map((p) => [
+      `### ${p.data.title}`,
+      `URL: ${url(`/blog/${p.id}/`)}`,
+      `By ${site.founder.name}, updated ${(p.data.updated ?? p.data.published).toISOString().slice(0, 10)}. ${p.data.description}`,
+      faqs(p.data.faqs),
+    ].filter(Boolean).join('\n\n')),
+  ].filter(Boolean).join('\n\n');
 
   return new Response(`${body}\n`, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 }

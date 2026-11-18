@@ -2,6 +2,8 @@
 // Each page answers a "<service> company in Delhi" search with Delhi-specific copy;
 // the full service details stay on /services/<service>/, which each page links to.
 
+import { otherMarketsWord } from './site';
+
 export interface DelhiService {
   slug: string;
   service: string; // slug in services.ts
@@ -205,7 +207,7 @@ export const delhiServices: DelhiService[] = [
       { q: 'What can be automated on WhatsApp?', a: 'Welcome replies, FAQs, catalogues, order and delivery updates, appointment reminders, payment reminders and lead follow-ups. We use the official WhatsApp Business API so your number stays safe.' },
       { q: 'Will an AI chatbot give wrong answers to customers?', a: 'We train the chatbot only on your approved information, set clear limits on what it answers, and hand over to a person when it is unsure.' },
       { q: 'How much does WhatsApp automation cost?', a: 'It depends on the flows and integrations you need. We send a fixed quote in INR after a free call. WhatsApp message charges from Meta are separate and paid directly by you.' },
-      { q: 'Do you work with businesses outside Delhi?', a: 'Yes. We work across India and in six other countries. Delhi NCR clients can also meet us in person at our Kirti Nagar office.' },
+      { q: 'Do you work with businesses outside Delhi?', a: `Yes. We work across India and in ${otherMarketsWord} other countries. Delhi NCR clients can also meet us in person at our Kirti Nagar office.` },
     ],
   },
 ];

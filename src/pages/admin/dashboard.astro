@@ -11,7 +11,7 @@ import {
 } from '../../server/leads';
 import { getConfig as googleFormsConfig, LEAD_FIELDS, syncHistory } from '../../server/google-forms';
 import { googleFormsScript } from '../../server/google-forms-script';
-import { eventTotal, getSocials, getWhatsApp, socialNetworks, whatsAppUrl } from '../../server/settings';
+import { eventsByPrefix, eventTotal, getSocials, getWhatsApp, socialNetworks, whatsAppUrl } from '../../server/settings';
 
 export const prerender = false;
 
@@ -100,6 +100,7 @@ const lastSync = gformsLog.find((r) => !['connected', 'disconnected', 'key repla
 const whatsapp = getWhatsApp();
 const socials = getSocials();
 const waClicks = eventTotal('whatsapp_click', since);
+const waByPage = eventsByPrefix('whatsapp_page:', since);
 
 const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 const countryName = (code: string) => (code.length === 2 ? regionNames.of(code) ?? code : code);
@@ -218,6 +219,16 @@ const cards = [
                   <span class="w-12 text-right font-semibold tabular-nums text-navy">{p.views}</span>
                 </li>
               ))}
+            </ol>
+          )}
+        </div>
+
+        <!-- WhatsApp clicks by page -->
+        <div class="rounded-3xl bg-white p-6 ring-1 ring-navy/5">
+          <h2 class="text-lg font-bold">WhatsApp clicks by page</h2>
+          {waByPage.length === 0 ? <p class="mt-4 text-slate">No WhatsApp clicks with a known page yet.</p> : (
+            <ol class="mt-4 divide-y divide-navy/5 text-sm">
+              {waByPage.map((w) => <li class="flex justify-between gap-3 py-2"><a href={w.name} target="_blank" rel="noopener" class="truncate text-navy hover:text-olive">{w.name}</a><span class="font-semibold tabular-nums">{w.n}</span></li>)}
             </ol>
           )}
         </div>

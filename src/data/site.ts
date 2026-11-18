@@ -60,6 +60,13 @@ export const markets = [
   { slug: 'russia', needs: ["Russian-language interfaces in Cyrillic", "Yandex-ready SEO and Yandex Metrica", "Telegram bots and Mini Apps", "Data storage planned around the 152-FZ localization rule"], integrations: ["Telegram Bot API", "Telegram Mini Apps", "Yandex Maps", "Yandex Metrica", "Bitrix24", "amoCRM", "1C", "VK"], faq: {"q": "Can you build Russian-language sites that rank on Yandex?", "a": "Yes. We build Russian-language interfaces in Cyrillic, set up Yandex Webmaster and Metrica, and plan data storage around Russia's personal data localization rule."}, area: 'Moscow, Saint Petersburg and across Russia', intro: 'Only 2.5 hours ahead of Moscow, so most of your working day is ours too. We build Russian and English websites, Telegram bots and Mini Apps, and CRM integrations with Bitrix24 and amoCRM, with data storage planned around 152-FZ.', country: 'Russia', schemaName: 'Russia', city: 'Moscow', code: 'RU', tz: 'Europe/Moscow', coords: [37.62, 55.76] as [number, number], cities: [{ name: 'Moscow', tz: 'Europe/Moscow' }, { name: 'Saint Petersburg', tz: 'Europe/Moscow' }, { name: 'Kazan', tz: 'Europe/Moscow' }, { name: 'Yekaterinburg', tz: 'Asia/Yekaterinburg' }, { name: 'Novosibirsk', tz: 'Asia/Novosibirsk' }], currency: 'USD', privacyLaw: 'Federal Law No. 152-FZ on Personal Data' },
 ];
 
+/** How many countries we serve, in words for prose ("eight") and in other forms. Derived from markets. */
+const numberWords = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+export const marketCount = markets.length;
+export const marketCountWord = numberWords[marketCount] ?? String(marketCount);
+export const otherMarketsWord = numberWords[marketCount - 1] ?? String(marketCount - 1);
+
+
 // Service names and links come from services.ts, which owns each service page.
 const pillarDefs = [
   { key: 'build', title: 'Build', lead: 'Websites, web apps and mobile apps that load fast and convert.' },

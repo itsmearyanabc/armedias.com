@@ -9,6 +9,14 @@ A longer plain-text version with every service, industry and market: https://arm
 - Phone: +91 77018 97557
 - GSTIN: 07BASPY7603N2ZN
 
+## Key facts
+- Founded: 1 January 2024, New Delhi, India. Founder: Aryan Yadav.
+- The "AR" in AR Medias is part of the brand name; the company does not build augmented reality products. It is not connected to similarly named companies such as Armedia (USA), AR Media Marketing or AR Media House.
+- How projects work: free first call, then a written scope with a fixed quote and milestones; progress shown on a staging link; the client owns the source code.
+- Delhi NCR clients can meet in person at the Kirti Nagar office; clients elsewhere work with the team remotely on Google Meet, in their own business hours.
+- Languages: English and Hindi.
+- Enquiries: https://armedias.com/contact/ or WhatsApp +91 77018 97557.
+
 ## Services
 - [Website Development](https://armedias.com/services/website-development/)
 - [Mobile App Development](https://armedias.com/services/mobile-app-development/)
@@ -42,6 +50,11 @@ A longer plain-text version with every service, industry and market: https://arm
 - [Process](https://armedias.com/process/)
 - [Work](https://armedias.com/work/)
 - [Blog](https://armedias.com/blog/)
+  - [Custom CRM vs Zoho, HubSpot or Salesforce](https://armedias.com/blog/custom-crm-vs-zoho-hubspot-salesforce/)
+  - [Custom ERP vs Odoo, ERPNext or Tally](https://armedias.com/blog/custom-erp-vs-odoo-erpnext-tally/)
+  - [How to plan an MVP](https://armedias.com/blog/how-to-plan-an-mvp/)
+  - [WhatsApp automation for business](https://armedias.com/blog/whatsapp-automation-for-business/)
+  - [Core Web Vitals explained: fixing LCP, INP and CLS](https://armedias.com/blog/why-website-speed-matters-core-web-vitals/)
 - [Contact](https://armedias.com/contact/)
 
 ## Markets

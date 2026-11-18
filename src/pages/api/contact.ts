@@ -40,7 +40,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const page = line(form, 'page', 200);
 
   if (!name || !service || !country || !message) return respond(false, 'Please fill in all required fields.', 422);
-  if (!isEmail(email)) return respond(false, 'Please enter a valid email address.', 422);
+  // An email or a phone/WhatsApp number is enough; many visitors prefer one or the other
+  if (!email && !phone) return respond(false, 'Please leave an email or a phone/WhatsApp number so we can reply.', 422);
+  if (email && !isEmail(email)) return respond(false, 'Please enter a valid email address.', 422);
   if (phone && !/^[+\d\s().-]{5,30}$/.test(phone)) return respond(false, 'Please enter a valid phone number.', 422);
   // Only the choices the form offers (bots posting arbitrary values are turned away)
   if ((picked !== 'Other' && !serviceChoices.includes(picked)) || !countryChoices.includes(country) || (budget && !budgets.includes(budget))) {
@@ -55,7 +57,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (!check.ok) return respond(false, 'The security check did not pass. Please try again.', 403);
 
   // The same enquiry sent twice (double click, retry) is accepted once
-  const fingerprint = [email, message];
+  const fingerprint = [email || phone, message];
   if (isDuplicate('contact', fingerprint)) return respond(true);
 
   const attribution = readAttribution(form);
@@ -71,7 +73,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   const sent = await notify(`New enquiry: ${service} (${country}) from ${name}`, [
     `Name:     ${name}`,
-    `Email:    ${email}`,
+    `Email:    ${email || '-'}`,
     `Phone:    ${phone || '-'}`,
     `Company:  ${company || '-'}`,
     `Service:  ${service}`,
@@ -85,7 +87,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     '',
     '---',
     `Sent from armedias.com on ${new Date().toISOString()}`,
-  ].join('\n'), { name, address: email });
+  ].join('\n'), email ? { name, address: email } : undefined);
   if (sent) await markEmailSent(saved);
 
   return respond(true);

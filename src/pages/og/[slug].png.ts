@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { getPosts } from '../../lib/blog';
 import { categories } from '../../content.config';
 import { ogSlug, staticOgPages, type OgCard } from '../../lib/og';
+import { marketCount } from '../../data/site';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -51,7 +52,7 @@ export const GET: APIRoute = async ({ props }) => {
   <text x="206" y="118" font-family="Helvetica, Arial, sans-serif" font-size="30" font-weight="700" letter-spacing="6" fill="#ffffff"><tspan fill="#a9c46c">AR</tspan> MEDIAS</text>
   <text x="72" y="${top - size * 0.95}" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="5" fill="#ffb36b">${esc(label.toUpperCase())}</text>
   ${lines.map((l, i) => `<text x="72" y="${top + i * size * 1.12}" font-family="Helvetica, Arial, sans-serif" font-size="${size}" font-weight="700" fill="#ffffff">${esc(l)}</text>`).join('')}
-  <text x="72" y="572" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#ffffff" fill-opacity=".6">armedias.com · New Delhi · Serving 7 countries</text>
+  <text x="72" y="572" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#ffffff" fill-opacity=".6">armedias.com · New Delhi · Serving ${marketCount} countries</text>
 </svg>`;
   const png = await sharp(Buffer.from(svg)).png({ compressionLevel: 9 }).toBuffer();
   return new Response(new Uint8Array(png), { headers: { 'Content-Type': 'image/png' } });

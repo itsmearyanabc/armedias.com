@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
 import PostCover from '../../components/PostCover.astro';
 import FounderAvatar from '../../components/FounderAvatar.astro';
-import { site } from '../../data/site';
+import { site, marketCountWord } from '../../data/site';
 import { serviceBySlug } from '../../data/services';
 import { categories } from '../../content.config';
 import { getPosts, readingMinutes, formatDate, type Post } from '../../lib/blog';
@@ -137,7 +137,7 @@ const schema = [
           <span>
             <span class="block text-sm text-slate">Written by</span>
             <span class="mt-1 block font-display text-xl font-bold text-navy">{site.founder.name}</span>
-            <span class="mt-2 block text-slate">Founder of AR Medias. Helping businesses in eight countries build software, apps and automation since 2024.</span>
+            <span class="mt-2 block text-slate">Founder of AR Medias. Helping businesses in {marketCountWord} countries build software, apps and automation since 2024.</span>
           </span>
         </a>
         {service && (

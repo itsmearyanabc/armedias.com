@@ -3,7 +3,7 @@ import Base from '../../../layouts/Base.astro';
 import Skyline from '../../../components/skylines/Skyline.astro';
 import WorkingStyle from '../../../components/WorkingStyle.astro';
 import ProjectCta from '../../../components/ProjectCta.astro';
-import { site, maps } from '../../../data/site';
+import { site, maps, otherMarketsWord } from '../../../data/site';
 import { serviceBySlug } from '../../../data/services';
 import { delhiServices, delhiAreas } from '../../../data/delhi';
 import { cityPageFor } from '../../../data/cities';
@@ -15,7 +15,7 @@ const description = 'IT and software company in Kirti Nagar, New Delhi. Websites
 const faqs = [
   { q: 'Where is your office in Delhi?', a: `Our office is at ${site.address.street}, ${site.address.locality} ${site.address.postalCode}. You are welcome to visit; call or WhatsApp us first so we can set a time.` },
   { q: 'Do you meet clients in person?', a: 'Yes. We hold offline meetings at our office or at yours anywhere in Delhi NCR, and use Google Meet for quick calls and regular project update meetings.' },
-  { q: 'Which areas do you serve?', a: `We work with businesses across ${delhiAreas.join(', ')} and the rest of Delhi NCR, as well as across India and in six other countries.` },
+  { q: 'Which areas do you serve?', a: `We work with businesses across ${delhiAreas.join(', ')} and the rest of Delhi NCR, as well as across India and in ${otherMarketsWord} other countries.` },
   { q: 'How quickly do you respond?', a: 'We reply within one business day and follow up after every meeting with clear next steps.' },
 ];
 

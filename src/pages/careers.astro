@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Illustration from '../components/illustrations/Illustration.astro';
 import FeatureCard from '../components/FeatureCard.astro';
-import { site } from '../data/site';
+import { site, marketCountWord } from '../data/site';
 
 const title = 'Careers at AR Medias | Developer & Designer Jobs, Delhi';
 const description = 'Join AR Medias in New Delhi or remotely. We hire web and mobile developers, UI/UX designers, AI automation engineers and business developers.';
@@ -17,7 +17,7 @@ const roles = [
 ];
 
 const perks = [
-  { icon: 'rocket' as const, t: 'Real client projects', d: 'Ship work used by businesses in eight countries.' },
+  { icon: 'rocket' as const, t: 'Real client projects', d: `Ship work used by businesses in ${marketCountWord} countries.` },
   { icon: 'stack' as const, t: 'Learn the whole stack', d: 'Web, mobile, CRM, ERP and AI, all in one team.' },
   { icon: 'mentor' as const, t: 'Direct mentorship', d: 'Work closely with the founder on every project.' },
   { icon: 'home' as const, t: 'Flexible working', d: 'Office in Kirti Nagar, New Delhi, with remote options for the right role.' },

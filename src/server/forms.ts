@@ -43,7 +43,7 @@ export function responder(request: Request, failPath: string) {
 }
 
 /** Email the site owner. Returns false (and logs) when SMTP is missing or fails. */
-export async function notify(subject: string, body: string, replyTo: { name: string; address: string }): Promise<boolean> {
+export async function notify(subject: string, body: string, replyTo?: { name: string; address: string }): Promise<boolean> {
   if (!env('SMTP_HOST')) return false;
   try {
     await transport.sendMail({

@@ -9,9 +9,9 @@ const { title = 'Get a free quote' } = Astro.props;
 ---
 
 <div class="relative">
-  <form data-ajax-form action="/api/contact/" method="post" class="relative rounded-[2rem] bg-white p-7 shadow-2xl shadow-navy/10 ring-1 ring-navy/5 sm:p-10" novalidate>
+  <form data-ajax-form data-one-of="email,phone" action="/api/contact/" method="post" class="relative rounded-[2rem] bg-white p-7 shadow-2xl shadow-navy/10 ring-1 ring-navy/5 sm:p-10" novalidate>
     <h2 class="text-2xl font-bold sm:text-3xl" data-no-split>{title}</h2>
-    <p class="mt-2 text-slate">Fields marked * are required.</p>
+    <p class="mt-2 text-slate">Fields marked * are required. Leave an email or a phone/WhatsApp number, whichever you prefer.</p>
 
     <div class="mt-8 grid gap-5 sm:grid-cols-2">
       <label class="field">
@@ -19,8 +19,8 @@ const { title = 'Get a free quote' } = Astro.props;
         <input name="name" required autocomplete="name" maxlength="100" />
       </label>
       <label class="field">
-        <span>Work email *</span>
-        <input name="email" type="email" required autocomplete="email" maxlength="150" />
+        <span>Email</span>
+        <input name="email" type="email" autocomplete="email" maxlength="150" />
       </label>
       <label class="field">
         <span>Phone / WhatsApp</span>

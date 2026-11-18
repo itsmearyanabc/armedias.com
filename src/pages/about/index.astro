@@ -3,10 +3,10 @@ import Base from '../../layouts/Base.astro';
 import FounderAvatar from '../../components/FounderAvatar.astro';
 import Illustration from '../../components/illustrations/Illustration.astro';
 import FeatureCard from '../../components/FeatureCard.astro';
-import { site, markets, pillars } from '../../data/site';
+import { site, markets, pillars, marketCountWord } from '../../data/site';
 
 const title = 'About AR Medias | IT Company in New Delhi Since 2024';
-const description = `Founder-led IT company in New Delhi since 2024. ${site.projectsDelivered}+ projects in web, apps, CRM/ERP and AI automation for clients in eight countries.`;
+const description = `Founder-led IT company in New Delhi since 2024. ${site.projectsDelivered}+ projects in web, apps, CRM/ERP and AI automation for clients in ${marketCountWord} countries.`;
 
 const values = [
   { icon: 'target' as const, t: 'Outcomes over output', d: 'We measure success by leads, sales and hours saved, not by the number of screens shipped.' },
@@ -19,6 +19,18 @@ const timeline = [
   { y: '2024', t: 'AR Medias is founded', d: `${site.founder.name} starts AR Medias in New Delhi on 1 January 2024 to build websites and software for growing businesses.` },
   { y: 'Growth', t: 'From websites to systems', d: 'Client needs grow from websites into mobile apps, custom CRMs, ERPs and AI-powered automation.' },
   { y: 'Today', t: `${site.projectsDelivered}+ projects, ${markets.length} countries`, d: `Serving clients in ${markets.map((m) => m.country).join(', ')} from our office in Kirti Nagar, New Delhi.` },
+];
+
+const glance = [
+  { t: 'Company', d: `${site.name}, an IT services and software development company` },
+  { t: 'Founded', d: `1 January 2024 in New Delhi, India, by ${site.founder.name}` },
+  { t: 'Office', d: `${site.address.street}, ${site.address.locality} ${site.address.postalCode}, India` },
+  { t: 'What we build', d: pillars.flatMap((p) => p.items).map((s) => s.name).join(', ') },
+  { t: 'Markets', d: `${markets.map((m) => m.country).join(', ')}. Delhi NCR clients can meet us in person; elsewhere we work remotely on Google Meet.` },
+  { t: 'How projects work', d: 'A free first call, then a written scope with a fixed quote and milestones. You see progress on a staging link and own the source code at handover.' },
+  { t: 'Languages', d: 'English and Hindi' },
+  { t: 'GSTIN', d: site.gstin },
+  { t: 'Contact', d: `${site.email} · ${site.phone} (call or WhatsApp)` },
 ];
 
 const schema = [
@@ -79,7 +91,7 @@ const schema = [
     <div class="container-x grid gap-14 lg:grid-cols-[1fr_1.4fr]">
       <div class="lg:sticky lg:top-28 lg:self-start">
         <p class="eyebrow" data-reveal="fade">Our story</p>
-        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Started in New Delhi. Trusted across eight countries.</h2>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Started in New Delhi. Trusted across {marketCountWord} countries.</h2>
         <p class="mt-4 max-w-sm leading-relaxed text-slate">You may also see our name written as ARMedias, AR Media or ARMedia. It's the same company.</p>
         <div class="mt-8 max-w-sm" data-reveal="up"><Illustration name="launch" title="A rocket launching from a laptop" /></div>
       </div>
@@ -94,6 +106,25 @@ const schema = [
           </li>
         ))}
       </ol>
+    </div>
+  </section>
+
+  <!-- AT A GLANCE: plain facts in one place, for visitors and for search and AI engines -->
+  <section class="pb-24 lg:pb-28" aria-labelledby="glance-heading">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+      <div>
+        <p class="eyebrow" data-reveal="fade">Facts</p>
+        <h2 id="glance-heading" class="mt-4 text-4xl font-bold sm:text-5xl">AR Medias at a glance.</h2>
+        <p class="mt-4 max-w-sm leading-relaxed text-slate">The "AR" is part of our name. We are a software and IT services company, not an augmented reality studio.</p>
+      </div>
+      <dl class="divide-y divide-navy/10 border-y border-navy/10">
+        {glance.map((g) => (
+          <div class="grid gap-1 py-4 sm:grid-cols-[11rem_1fr] sm:gap-6">
+            <dt class="font-display font-semibold text-navy">{g.t}</dt>
+            <dd class="leading-relaxed text-slate">{g.d}</dd>
+          </div>
+        ))}
+      </dl>
     </div>
   </section>
 
