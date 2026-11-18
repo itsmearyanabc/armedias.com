@@ -1,0 +1,525 @@
+---
+// Small interactive scene for a case study. Pure HTML/SVG + CSS (transform and opacity
+// only), no libraries. Animations run only while the scene is on screen, stop for visitors
+// who prefer reduced motion, and every interaction also works by keyboard.
+export type CaseScene = 'punch' | 'chat' | 'queue' | 'recycle' | 'luxury' | 'flow' | 'passport' | 'hex' | 'certificate';
+
+interface Props { scene: CaseScene; label: string; compact?: boolean }
+const { scene, label, compact = false } = Astro.props;
+---
+
+<div class:list={['cv', `cv--${scene}`, { 'cv--compact': compact }]} data-case-visual role="group" aria-label={label}>
+  {scene === 'punch' && (
+    <div class="cv-stage">
+      <div class="cv-phone">
+        <p class="cv-small">Shift starts 09:30</p>
+        <div class="cv-cam" aria-hidden="true">
+          <span class="cv-face"></span>
+          <span class="cv-scan"></span>
+        </div>
+        <p class="cv-gps" aria-hidden="true"><span class="cv-pin"></span>Inside the office radius</p>
+        <button type="button" class="cv-btn" data-punch aria-pressed="false">
+          <span class="cv-btn-in">Punch in</span><span class="cv-btn-done">Punched in · 09:24 ✓</span>
+        </button>
+      </div>
+      <ul class="cv-ledger" aria-hidden="true">
+        <li><span>Camera check</span><b>Matched</b></li>
+        <li><span>Location</span><b>Verified</b></li>
+        <li><span>Payroll</span><b class="cv-ledger-last">Frozen record</b></li>
+      </ul>
+    </div>
+  )}
+  {scene === 'chat' && (
+    <div class="cv-chat">
+      <p class="cv-chat-head"><span class="cv-dot" aria-hidden="true"></span>Legal assistant · WhatsApp</p>
+      <div class="cv-thread" aria-live="polite">
+        <p class="cv-msg cv-msg--me" data-q>IPC 420 ka BNS section kya hai?</p>
+        <div class="cv-msg cv-msg--bot">
+          <span class="cv-typing" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="cv-answer" data-a>IPC 420 (cheating) maps to <b>BNS section 318</b>.</span>
+          <span class="cv-cite" data-c>✓ Citation checked against the database</span>
+        </div>
+      </div>
+      <button type="button" class="cv-btn cv-btn--light" data-ask>Ask another question</button>
+    </div>
+  )}
+  {scene === 'queue' && (
+    <div class="cv-board">
+      <div class="cv-cols" aria-hidden="true">
+        {[['Pending', 'pending'], ['Processing', 'processing'], ['Completed', 'done']].map(([t, k]) => (
+          <div class="cv-col"><p class="cv-col-h">{t} <b data-qcount={k}></b></p><ul data-col={k}></ul></div>
+        ))}
+      </div>
+      <button type="button" class="cv-btn cv-btn--light2" data-advance>Move the next order along</button>
+    </div>
+  )}
+  {scene === 'recycle' && (
+    <div class="cv-browser">
+      <p class="cv-bar" aria-hidden="true"><i></i><i></i><i></i><span>Glass recycling · since 1996</span></p>
+      <div class="cv-page">
+        <p class="cv-page-h">From recovered glass to usable cullet.</p>
+        <ol class="cv-steps" data-steps>
+          <li class="is-on"><span>01</span>Collection</li>
+          <li><span>02</span>Sorting</li>
+          <li><span>03</span>Processing</li>
+          <li><span>04</span>Supply</li>
+        </ol>
+        <p class="cv-step-note" data-note aria-live="polite">Glass is sourced from industrial and post-consumer streams.</p>
+      </div>
+      <button type="button" class="cv-btn cv-btn--amber" data-step>Next step</button>
+    </div>
+  )}
+  {scene === 'luxury' && (
+    <div class="cv-lux">
+      <p class="cv-lux-mark" aria-hidden="true">E S T A T E S</p>
+      <p class="cv-lux-sub">Estates · Developments · Private Wealth</p>
+      <div class="cv-lux-pillars">
+        {[['Estates', 'Luxury real estate acquisition, development and positioning.'], ['Developments', 'Creating distinctive spaces with long-term value.'], ['Private Wealth', 'Strategic capital allocation and private investment opportunities.']].map(([t, d]) => (
+          <button type="button" class="cv-pillar"><span class="cv-pillar-t">{t}</span><span class="cv-pillar-d">{d}</span><span class="cv-pillar-a" aria-hidden="true">→</span></button>
+        ))}
+      </div>
+      <p class="cv-small cv-lux-hint">Hover or tap a pillar</p>
+    </div>
+  )}
+  {scene === 'flow' && (
+    <div class="cv-flow" data-path="form">
+      <div class="cv-flow-tabs" role="group" aria-label="Choose a channel">
+        <button type="button" class="cv-tab" data-route="form" aria-pressed="true">Website form</button>
+        <button type="button" class="cv-tab" data-route="insta" aria-pressed="false">Instagram DM</button>
+      </div>
+      <ol class="cv-nodes" data-nodes>
+        <li data-n="form-0 insta-0"><b data-label-0>Form submitted</b></li>
+        <li data-n="form-1 insta-1"><b data-label-1>Lead saved</b></li>
+        <li data-n="form-2 insta-2"><b data-label-2>WhatsApp greeting sent</b></li>
+      </ol>
+      <p class="cv-small cv-flow-note" data-flow-note aria-live="polite">Approved template, sent within seconds. Your team takes the conversation from there.</p>
+    </div>
+  )}
+  {scene === 'passport' && (
+    <div class="cv-pass" data-state="idle">
+      <div class="cv-pass-card">
+        <svg class="cv-qr" viewBox="0 0 21 21" aria-hidden="true"><path fill="currentColor" d="M0 0h7v7H0zM2 2v3h3V2zM14 0h7v7h-7zm2 2v3h3V2zM0 14h7v7H0zm2 2v3h3v-3zM9 0h2v2H9zm2 2h2v3h-2zM8 4h2v2H8zm1 4h3v2H9zm4 0h2v3h-2zm3 0h2v2h-2zm2 3h3v2h-3zM8 11h2v3H8zm3 2h2v2h-2zm3 1h3v2h-3zm-5 2h3v2H9zm6 2h2v3h-2zm3 0h3v3h-3zM11 18h2v3h-2z"/></svg>
+        <p class="cv-pass-name">Batch passport</p>
+        <p class="cv-small">Scan to check where this product has been</p>
+      </div>
+      <ol class="cv-events" aria-live="polite">
+        <li><b>Made</b><code>a3f9…</code></li>
+        <li><b>Shipped</b><code>7c21…</code></li>
+        <li><b>Received</b><code>e04b…</code></li>
+      </ol>
+      <p class="cv-verdict" data-verdict aria-live="polite"></p>
+      <div class="cv-pass-actions">
+        <button type="button" class="cv-btn cv-btn--auto" data-scan="ok">Scan the QR</button>
+        <button type="button" class="cv-btn cv-btn--ghost" data-scan="clone">Try a cloned QR</button>
+      </div>
+    </div>
+  )}
+  {scene === 'hex' && (
+    <div class="cv-hexwrap">
+      <svg class="cv-hexmap" viewBox="-42 -46 84 92" data-hexmap>
+          <polygon class="cv-hex" points="-24.0,-20.8 -30.0,-10.4 -42.0,-10.4 -48.0,-20.8 -42.0,-31.2 -30.0,-31.2" tabindex="0" role="button" aria-label="Hex 1" />
+          <polygon class="cv-hex" points="-24.0,0.0 -30.0,10.4 -42.0,10.4 -48.0,0.0 -42.0,-10.4 -30.0,-10.4" tabindex="0" role="button" aria-label="Hex 2" />
+          <polygon class="cv-hex" points="-24.0,20.8 -30.0,31.2 -42.0,31.2 -48.0,20.8 -42.0,10.4 -30.0,10.4" tabindex="0" role="button" aria-label="Hex 3" />
+          <polygon class="cv-hex" points="-6.0,-31.2 -12.0,-20.8 -24.0,-20.8 -30.0,-31.2 -24.0,-41.6 -12.0,-41.6" tabindex="0" role="button" aria-label="Hex 4" />
+          <polygon class="cv-hex" points="-6.0,-10.4 -12.0,0.0 -24.0,0.0 -30.0,-10.4 -24.0,-20.8 -12.0,-20.8" tabindex="0" role="button" aria-label="Hex 5" />
+          <polygon class="cv-hex" points="-6.0,10.4 -12.0,20.8 -24.0,20.8 -30.0,10.4 -24.0,0.0 -12.0,0.0" tabindex="0" role="button" aria-label="Hex 6" />
+          <polygon class="cv-hex" points="-6.0,31.2 -12.0,41.6 -24.0,41.6 -30.0,31.2 -24.0,20.8 -12.0,20.8" tabindex="0" role="button" aria-label="Hex 7" />
+          <polygon class="cv-hex" points="12.0,-41.6 6.0,-31.2 -6.0,-31.2 -12.0,-41.6 -6.0,-52.0 6.0,-52.0" tabindex="0" role="button" aria-label="Hex 8" />
+          <polygon class="cv-hex" points="12.0,-20.8 6.0,-10.4 -6.0,-10.4 -12.0,-20.8 -6.0,-31.2 6.0,-31.2" tabindex="0" role="button" aria-label="Hex 9" />
+          <polygon class="cv-hex" points="12.0,0.0 6.0,10.4 -6.0,10.4 -12.0,0.0 -6.0,-10.4 6.0,-10.4" tabindex="0" role="button" aria-label="Hex 10" />
+          <polygon class="cv-hex" points="12.0,20.8 6.0,31.2 -6.0,31.2 -12.0,20.8 -6.0,10.4 6.0,10.4" tabindex="0" role="button" aria-label="Hex 11" />
+          <polygon class="cv-hex" points="12.0,41.6 6.0,52.0 -6.0,52.0 -12.0,41.6 -6.0,31.2 6.0,31.2" tabindex="0" role="button" aria-label="Hex 12" />
+          <polygon class="cv-hex" points="30.0,-31.2 24.0,-20.8 12.0,-20.8 6.0,-31.2 12.0,-41.6 24.0,-41.6" tabindex="0" role="button" aria-label="Hex 13" />
+          <polygon class="cv-hex" points="30.0,-10.4 24.0,0.0 12.0,0.0 6.0,-10.4 12.0,-20.8 24.0,-20.8" tabindex="0" role="button" aria-label="Hex 14" />
+          <polygon class="cv-hex" points="30.0,10.4 24.0,20.8 12.0,20.8 6.0,10.4 12.0,0.0 24.0,0.0" tabindex="0" role="button" aria-label="Hex 15" />
+          <polygon class="cv-hex" points="30.0,31.2 24.0,41.6 12.0,41.6 6.0,31.2 12.0,20.8 24.0,20.8" tabindex="0" role="button" aria-label="Hex 16" />
+          <polygon class="cv-hex" points="48.0,-20.8 42.0,-10.4 30.0,-10.4 24.0,-20.8 30.0,-31.2 42.0,-31.2" tabindex="0" role="button" aria-label="Hex 17" />
+          <polygon class="cv-hex" points="48.0,0.0 42.0,10.4 30.0,10.4 24.0,0.0 30.0,-10.4 42.0,-10.4" tabindex="0" role="button" aria-label="Hex 18" />
+          <polygon class="cv-hex" points="48.0,20.8 42.0,31.2 30.0,31.2 24.0,20.8 30.0,10.4 42.0,10.4" tabindex="0" role="button" aria-label="Hex 19" />
+        <circle class="cv-runner" r="2.6" aria-hidden="true" />
+      </svg>
+      <div class="cv-hexstats">
+        <p><b data-hexcount>3</b> hexes captured</p>
+        <p><b data-xp>30</b> XP</p>
+        <p class="cv-small">Tap hexes to run through them</p>
+      </div>
+    </div>
+  )}
+  {scene === 'certificate' && (
+    <div class="cv-cert" data-cert="idle">
+      <div class="cv-cert-card">
+        <p class="cv-small">Internship certificate</p>
+        <p class="cv-cert-code" data-cert-code>ARM-INT-26-000154</p>
+        <div class="cv-meter" aria-hidden="true"><span data-meter></span></div>
+        <p class="cv-cert-score" data-cert-score aria-live="polite">Authenticity score: –</p>
+        <ul class="cv-checks" aria-hidden="true">
+          <li>Record exists <i>30</i></li><li>Issued by AR Medias <i>20</i></li><li>Code format valid <i>15</i></li><li>QR target matches <i>15</i></li><li>Certificate active <i>20</i></li>
+        </ul>
+      </div>
+      <div class="cv-pass-actions">
+        <button type="button" class="cv-btn cv-btn--auto" data-verify="real">Verify certificate</button>
+        <button type="button" class="cv-btn cv-btn--ghost" data-verify="fake">Try a fake code</button>
+      </div>
+    </div>
+  )}
+</div>
+
+<style>
+  .cv { position: relative; display: grid; place-items: center; width: 100%; height: 100%; min-height: 15rem; padding: 1.5rem;
+    background: radial-gradient(120% 90% at 85% 0%, rgb(169 196 108 / 0.35), transparent 60%), var(--color-navy); color: #fff; overflow: hidden; }
+  .cv--compact { min-height: 0; }
+  @media (min-width: 40rem) { .cv:not(.cv--compact) .cv-stage { transform: scale(1.35); } }
+  .cv-stage { display: flex; align-items: center; gap: 1.25rem; }
+  .cv-small { font-size: 0.7rem; opacity: 0.7; }
+
+  /* ---------- punch: attendance with camera + GPS ---------- */
+  .cv-phone { width: 11rem; border-radius: 1.6rem; background: #fff; color: var(--color-navy); padding: 1rem 0.9rem 0.9rem;
+    box-shadow: 0 20px 50px -20px rgb(0 0 0 / 0.6); text-align: center; }
+  .cv-cam { position: relative; margin: 0.6rem auto 0.5rem; width: 5.2rem; height: 5.2rem; border-radius: 50%;
+    background: var(--color-mist); overflow: hidden; border: 3px solid var(--color-olive); }
+  .cv-face { position: absolute; left: 50%; top: 22%; width: 2.1rem; height: 2.1rem; margin-left: -1.05rem; border-radius: 50%; background: #c9d4b5; }
+  .cv-face::after { content: ''; position: absolute; left: 50%; top: 2.3rem; width: 3.4rem; height: 2.6rem; margin-left: -1.7rem; border-radius: 50% 50% 0 0; background: #c9d4b5; }
+  .cv-scan { position: absolute; inset: 0 0 auto; height: 2px; background: var(--color-olive); box-shadow: 0 0 10px var(--color-olive); transform: translateY(0); }
+  .cv-gps { display: flex; align-items: center; justify-content: center; gap: 0.35rem; font-size: 0.68rem; font-weight: 600; color: var(--color-slate); }
+  .cv-pin { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--color-olive); box-shadow: 0 0 0 0 rgb(85 107 47 / 0.6); }
+  .cv-btn { margin-top: 0.7rem; width: 100%; border-radius: 999px; background: var(--color-navy); color: #fff; padding: 0.55rem 0.5rem;
+    font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: background-color 0.3s; }
+  .cv-btn:focus-visible { outline: 3px solid var(--color-olive); outline-offset: 2px; }
+  .cv-btn-done { display: none; }
+  .cv-btn[aria-pressed='true'] { background: var(--color-olive); }
+  .cv-btn[aria-pressed='true'] .cv-btn-in { display: none; }
+  .cv-btn[aria-pressed='true'] .cv-btn-done { display: inline; }
+  .cv-ledger { display: grid; gap: 0.5rem; font-size: 0.75rem; }
+  .cv-ledger li { display: flex; justify-content: space-between; gap: 0.75rem; min-width: 10rem; border-radius: 0.8rem;
+    background: rgb(255 255 255 / 0.08); padding: 0.55rem 0.75rem; opacity: 0.35; transform: translateX(8px); transition: opacity 0.4s, transform 0.4s; }
+  .cv-ledger b { color: #c5dc8f; }
+  [data-done] .cv-ledger li { opacity: 1; transform: none; }
+  [data-done] .cv-ledger li:nth-child(2) { transition-delay: 0.15s; }
+  [data-done] .cv-ledger li:nth-child(3) { transition-delay: 0.3s; }
+  @media (max-width: 30rem) { .cv-ledger { display: none; } }
+
+  /* ---------- chat: legal assistant on WhatsApp ---------- */
+  .cv-chat { width: min(19rem, 100%); border-radius: 1.4rem; background: #efeae2; color: #1c2b1e; padding: 0.8rem; box-shadow: 0 20px 50px -20px rgb(0 0 0 / 0.6); }
+  .cv-chat-head { display: flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 700; color: #075e54; padding: 0 0.2rem 0.5rem; }
+  .cv-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #25d366; }
+  .cv-thread { display: grid; gap: 0.45rem; min-height: 7.5rem; align-content: start; }
+  .cv-msg { max-width: 88%; border-radius: 0.8rem; padding: 0.5rem 0.65rem; font-size: 0.78rem; line-height: 1.35; box-shadow: 0 1px 1px rgb(0 0 0 / 0.08); }
+  .cv-msg--me { justify-self: end; background: #d9fdd3; }
+  .cv-msg--bot { justify-self: start; display: grid; gap: 0.3rem; background: #fff; }
+  .cv-cite { font-size: 0.66rem; font-weight: 700; color: #3b7a2a; }
+  .cv-typing { display: none; gap: 0.2rem; }
+  .cv-typing i { width: 0.35rem; height: 0.35rem; border-radius: 50%; background: #9aa59a; }
+  [data-thinking] .cv-typing { display: inline-flex; }
+  [data-thinking] .cv-answer, [data-thinking] .cv-cite { display: none; }
+  .is-live[data-thinking] .cv-typing i { animation: cv-dot 0.9s ease-in-out infinite; }
+  .cv-typing i:nth-child(2) { animation-delay: 0.15s !important; }
+  .cv-typing i:nth-child(3) { animation-delay: 0.3s !important; }
+  @keyframes cv-dot { 50% { transform: translateY(-3px); opacity: 0.5; } }
+  .cv-answer, .cv-cite { animation: cv-in 0.35s ease-out; }
+  @keyframes cv-in { from { opacity: 0; transform: translateY(4px); } }
+  .cv-btn--light { background: #075e54; }
+
+  /* ---------- queue: IVR broadcast order board ---------- */
+  .cv-board { width: min(26rem, 100%); display: grid; gap: 0.8rem; }
+  .cv-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+  .cv-col { border-radius: 1rem; background: rgb(255 255 255 / 0.07); padding: 0.55rem; min-height: 9.5rem; }
+  .cv-col-h { display: flex; justify-content: space-between; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8; margin-bottom: 0.45rem; }
+  .cv-col-h b { color: #c5dc8f; }
+  .cv-col ul { display: grid; gap: 0.35rem; }
+  .cv-board :global(.cv-card) { border-radius: 0.6rem; background: #fff; color: var(--color-navy); padding: 0.4rem 0.5rem; font-size: 0.66rem; line-height: 1.3; animation: cv-in 0.35s ease-out; }
+  .cv-board :global(.cv-card small) { display: block; color: var(--color-slate); }
+  .cv-board :global(.cv-card--urgent) { box-shadow: inset 3px 0 0 #e5484d; }
+  .cv-board [data-col='done'] :global(.cv-card) { background: #e8f2d6; }
+  .cv-btn--light2 { width: auto; justify-self: center; padding-inline: 1.2rem; background: var(--color-olive); }
+
+  /* ---------- recycle: bespoke business website ---------- */
+  .cv-browser { width: min(24rem, 100%); display: grid; gap: 0.7rem; }
+  .cv-bar { display: flex; align-items: center; gap: 0.3rem; border-radius: 0.8rem 0.8rem 0 0; background: #e9e6dc; padding: 0.45rem 0.6rem; font-size: 0.62rem; color: #4b5a4f; margin-bottom: -0.7rem; }
+  .cv-bar i { width: 0.45rem; height: 0.45rem; border-radius: 50%; background: #c9c3b3; }
+  .cv-bar span { margin-left: 0.4rem; }
+  .cv-page { background: #f7f7f2; color: #173c2c; padding: 1rem; border-radius: 0 0 0.8rem 0.8rem; }
+  .cv-page-h { font-family: var(--font-display, inherit); font-size: 1rem; font-weight: 700; line-height: 1.2; border-left: 3px solid #c99a3d; padding-left: 0.55rem; }
+  .cv-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.3rem; margin-top: 0.8rem; }
+  .cv-steps li { border-top: 2px solid #d9d6cb; padding-top: 0.35rem; font-size: 0.66rem; font-weight: 700; color: #7b857d; transition: color 0.3s, border-color 0.3s; }
+  .cv-steps li span { display: block; font-size: 0.6rem; color: #c99a3d; }
+  .cv-steps li.is-on { border-color: #173c2c; color: #173c2c; }
+  .cv-step-note { margin-top: 0.6rem; min-height: 2.2em; font-size: 0.72rem; color: #4b5a4f; animation: cv-in 0.35s ease-out; }
+  .cv-btn--amber { width: auto; justify-self: center; padding-inline: 1.2rem; background: #c99a3d; color: #173c2c; }
+
+  /* ---------- luxury: monochrome real estate and private wealth site ---------- */
+  .cv--luxury { background: #050505; }
+  .cv-lux { width: min(26rem, 100%); text-align: center; }
+  .cv-lux-mark { font-size: 1.15rem; font-weight: 300; letter-spacing: 0.55em; }
+  .cv-lux-sub { margin-top: 0.35rem; font-size: 0.62rem; letter-spacing: 0.12em; color: #8a8a8a; }
+  .cv-lux-pillars { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 1.1rem; border-top: 1px solid #252525; }
+  .cv-pillar { position: relative; display: grid; gap: 0.35rem; align-content: start; min-height: 7rem; padding: 0.8rem 0.6rem; text-align: left;
+    color: #f7f7f5; border-right: 1px solid #252525; overflow: hidden; cursor: pointer; isolation: isolate; }
+  .cv-pillar:last-child { border-right: 0; }
+  .cv-pillar::before { content: ''; position: absolute; inset: 0; z-index: -1; background: #f7f7f5; transform: scaleY(0); transform-origin: bottom;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .cv-pillar-t { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; }
+  .cv-pillar-d { font-size: 0.62rem; color: #8a8a8a; font-style: italic; }
+  .cv-pillar-a { margin-top: auto; font-size: 0.8rem; opacity: 0; transform: translateX(-4px); transition: opacity 0.5s, transform 0.5s; }
+  .cv-pillar:hover, .cv-pillar:focus-visible, .cv-pillar.is-on { color: #050505; outline: none; }
+  .cv-pillar:hover::before, .cv-pillar:focus-visible::before, .cv-pillar.is-on::before { transform: scaleY(1); }
+  .cv-pillar:hover .cv-pillar-a, .cv-pillar:focus-visible .cv-pillar-a, .cv-pillar.is-on .cv-pillar-a { opacity: 1; transform: none; }
+  .cv-pillar:hover .cv-pillar-d, .cv-pillar:focus-visible .cv-pillar-d, .cv-pillar.is-on .cv-pillar-d { color: #505050; }
+  .cv-lux-hint { margin-top: 0.8rem; color: #8a8a8a; }
+
+  /* ---------- flow: AI customer automation ---------- */
+  .cv-flow { width: min(24rem, 100%); display: grid; gap: 0.9rem; }
+  .cv-flow-tabs { display: flex; justify-content: center; gap: 0.4rem; }
+  .cv-tab { border-radius: 999px; border: 1px solid rgb(255 255 255 / 0.25); padding: 0.4rem 0.85rem; font-size: 0.72rem; font-weight: 700; color: #fff; cursor: pointer; }
+  .cv-tab[aria-pressed='true'] { background: #fff; color: var(--color-navy); }
+  .cv-tab:focus-visible { outline: 3px solid var(--color-olive); outline-offset: 2px; }
+  .cv-nodes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; position: relative; }
+  .cv-nodes li { position: relative; display: grid; place-items: center; min-height: 4.2rem; border-radius: 1rem; padding: 0.5rem; text-align: center;
+    background: rgb(255 255 255 / 0.08); font-size: 0.7rem; opacity: 0.4; transition: opacity 0.4s, background-color 0.4s; }
+  .cv-nodes li:not(:last-child)::after { content: '→'; position: absolute; right: -0.55rem; top: 50%; transform: translate(50%, -50%); opacity: 0.6; }
+  .cv-nodes li.is-on { opacity: 1; background: rgb(169 196 108 / 0.25); }
+  .cv-flow-note { text-align: center; min-height: 2.4em; }
+
+  /* ---------- passport: blockchain-anchored product identity ---------- */
+  .cv-pass { width: min(25rem, 100%); display: grid; gap: 0.7rem; justify-items: center; }
+  .cv-pass-card { display: grid; justify-items: center; gap: 0.25rem; border-radius: 1rem; background: #fff; color: var(--color-navy); padding: 0.8rem 1.2rem; }
+  .cv-qr { width: 3.6rem; height: 3.6rem; }
+  .cv-pass-name { font-size: 0.8rem; font-weight: 700; }
+  .cv-pass-card .cv-small { color: var(--color-slate); opacity: 1; }
+  .cv-events { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; width: 100%; }
+  .cv-events li { display: grid; gap: 0.15rem; border-radius: 0.7rem; background: rgb(255 255 255 / 0.08); padding: 0.45rem; font-size: 0.68rem; text-align: center;
+    opacity: 0.3; transform: translateY(6px); transition: opacity 0.4s, transform 0.4s; }
+  .cv-events code { font-size: 0.6rem; color: #c5dc8f; }
+  .cv-events li:nth-child(2) { transition-delay: 0.15s; }
+  .cv-events li:nth-child(3) { transition-delay: 0.3s; }
+  [data-state='ok'] .cv-events li, [data-state='clone'] .cv-events li { opacity: 1; transform: none; }
+  [data-state='clone'] .cv-events li:nth-child(3) { background: rgb(229 72 77 / 0.25); }
+  [data-state='clone'] .cv-events li:nth-child(3) code { color: #ff9b9e; }
+  .cv-verdict { min-height: 1.4em; font-size: 0.8rem; font-weight: 700; text-align: center; }
+  [data-state='ok'] .cv-verdict { color: #c5dc8f; }
+  [data-state='clone'] .cv-verdict { color: #ff9b9e; }
+  .cv-pass-actions { display: flex; gap: 0.5rem; }
+  .cv-btn--auto { width: auto; margin: 0; padding-inline: 1rem; background: var(--color-olive); }
+  .cv-btn--ghost { width: auto; margin: 0; padding-inline: 1rem; background: transparent; border: 1px solid rgb(255 255 255 / 0.35); }
+
+  /* ---------- hex: location-based territory game ---------- */
+  .cv-hexwrap { display: flex; align-items: center; gap: 1.2rem; }
+  .cv-hexmap { width: 12rem; height: auto; overflow: visible; }
+  .cv-hex { fill: rgb(255 255 255 / 0.06); stroke: rgb(255 255 255 / 0.25); stroke-width: 0.6; cursor: pointer; transition: fill 0.35s, transform 0.35s; transform-box: fill-box; transform-origin: center; }
+  .cv-hex:hover { fill: rgb(255 255 255 / 0.16); }
+  .cv-hex:focus-visible { outline: none; stroke: #fff; stroke-width: 1.2; }
+  .cv-hex.is-mine { fill: #a9c46c; fill-opacity: 0.85; stroke: #dbeab3; }
+  .cv-hex.is-mine:active { transform: scale(0.92); }
+  .cv-runner { fill: #ff7a1a; }
+  .cv-hexstats { display: grid; gap: 0.35rem; font-size: 0.78rem; }
+  .cv-hexstats b { font-size: 1.3rem; color: #c5dc8f; font-variant-numeric: tabular-nums; }
+  .is-live .cv-runner { animation: cv-run 6s linear infinite; }
+  @keyframes cv-run {
+    0% { transform: translate(-18px, -10px); } 25% { transform: translate(0, -21px); } 50% { transform: translate(18px, -10px); }
+    75% { transform: translate(18px, 10px); } 100% { transform: translate(-18px, -10px); }
+  }
+
+  /* ---------- certificate: verification portal ---------- */
+  .cv-cert { width: min(22rem, 100%); display: grid; gap: 0.8rem; justify-items: center; }
+  .cv-cert-card { width: 100%; border-radius: 1rem; background: #fff; color: var(--color-navy); padding: 0.9rem 1rem; box-shadow: 0 20px 50px -20px rgb(0 0 0 / 0.6); }
+  .cv-cert-card .cv-small { color: var(--color-slate); opacity: 1; }
+  .cv-cert-code { font-family: ui-monospace, monospace; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.04em; margin-top: 0.15rem; }
+  .cv-meter { height: 0.45rem; border-radius: 999px; background: var(--color-mist); margin-top: 0.6rem; overflow: hidden; }
+  .cv-meter span { display: block; height: 100%; width: 100%; border-radius: inherit; background: var(--color-olive); transform: scaleX(0); transform-origin: left; transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
+  [data-cert='real'] .cv-meter span { transform: scaleX(1); }
+  .cv-cert-score { margin-top: 0.4rem; font-size: 0.75rem; font-weight: 700; }
+  [data-cert='fake'] .cv-cert-score { color: #c2373c; }
+  .cv-checks { display: grid; gap: 0.2rem; margin-top: 0.5rem; font-size: 0.66rem; color: var(--color-slate); }
+  .cv-checks li { display: flex; justify-content: space-between; opacity: 0.35; transition: opacity 0.3s; }
+  .cv-checks li::before { content: '✓'; margin-right: 0.35rem; color: var(--color-olive); font-weight: 700; }
+  .cv-checks i { font-style: normal; margin-left: auto; }
+  [data-cert='real'] .cv-checks li { opacity: 1; }
+  [data-cert='real'] .cv-checks li:nth-child(2) { transition-delay: 0.12s; }
+  [data-cert='real'] .cv-checks li:nth-child(3) { transition-delay: 0.24s; }
+  [data-cert='real'] .cv-checks li:nth-child(4) { transition-delay: 0.36s; }
+  [data-cert='real'] .cv-checks li:nth-child(5) { transition-delay: 0.48s; }
+  [data-cert='fake'] .cv-checks li::before { content: '–'; color: #c2373c; }
+
+  .is-live .cv-scan { animation: cv-scan 2.2s ease-in-out infinite alternate; }
+  .is-live .cv-pin { animation: cv-ping 1.8s ease-out infinite; }
+  @keyframes cv-scan { to { transform: translateY(5rem); } }
+  @keyframes cv-ping { to { box-shadow: 0 0 0 0.6rem rgb(85 107 47 / 0); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cv *, .cv *::before, .cv *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<script>
+  // Run each scene's animation only while it is visible, and wire up its interaction.
+  const scenes = document.querySelectorAll<HTMLElement>('[data-case-visual]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => e.target.classList.toggle('is-live', e.isIntersecting));
+  }, { rootMargin: '50px' });
+  scenes.forEach((el) => {
+    io.observe(el);
+    el.querySelector<HTMLButtonElement>('[data-punch]')?.addEventListener('click', (ev) => {
+      ev.preventDefault(); // the scene may sit inside a card link
+      const btn = ev.currentTarget as HTMLButtonElement;
+      const on = btn.getAttribute('aria-pressed') !== 'true';
+      btn.setAttribute('aria-pressed', String(on));
+      el.toggleAttribute('data-done', on);
+    });
+
+    // IVR order board: each press moves one order to the next stage, then the board resets
+    const board = el.querySelector<HTMLElement>('.cv-board');
+    if (board) {
+      const start = (): Record<string, [string, string, boolean][]> => ({
+        pending: [['Voice broadcast · 5,000 calls', 'Festival offer', true], ['Voice broadcast · 1,200 calls', 'Payment reminder', false], ['Wallet top-up', 'Awaiting approval', false]],
+        processing: [['Voice broadcast · 800 calls', 'Event invite', false]],
+        done: [],
+      });
+      let state = start();
+      const render = () => {
+        for (const k of ['pending', 'processing', 'done']) {
+          const ul = board.querySelector<HTMLElement>(`[data-col="${k}"]`)!;
+          ul.replaceChildren(...state[k].map(([t, d, urgent]) => {
+            const li = document.createElement('li');
+            li.className = `cv-card${urgent ? ' cv-card--urgent' : ''}`;
+            li.textContent = t;
+            const small = document.createElement('small');
+            small.textContent = urgent ? `${d} · urgent` : d;
+            li.append(small);
+            return li;
+          }));
+          board.querySelector(`[data-qcount="${k}"]`)!.textContent = String(state[k].length);
+        }
+      };
+      render();
+      el.querySelector<HTMLButtonElement>('[data-advance]')!.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        if (state.processing.length) state.done.unshift(state.processing.shift()!);
+        else if (state.pending.length) state.processing.push(state.pending.shift()!);
+        else state = start();
+        if (!state.processing.length && state.pending.length) state.processing.push(state.pending.shift()!);
+        render();
+      });
+    }
+
+    // Recycling website: step through the process section
+    const steps = el.querySelectorAll<HTMLElement>('[data-steps] li');
+    if (steps.length) {
+      const notes = [
+        'Glass is sourced from industrial and post-consumer streams.',
+        'Material is separated by type and colour.',
+        'Recovered glass is prepared into usable cullet.',
+        'Processed cullet is supplied for reuse in glass manufacturing.',
+      ];
+      let at = 0;
+      el.querySelector<HTMLButtonElement>('[data-step]')!.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        at = (at + 1) % steps.length;
+        steps.forEach((s, i) => s.classList.toggle('is-on', i <= at));
+        const note = el.querySelector<HTMLElement>('[data-note]')!;
+        note.textContent = notes[at];
+        note.style.animation = 'none'; void note.offsetWidth; note.style.animation = '';
+      });
+    }
+
+    // Luxury site: a tap focuses a pillar, so touch screens see the same inversion as hover
+    const pillars = el.querySelectorAll<HTMLButtonElement>('.cv-pillar');
+    pillars.forEach((b) => b.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      pillars.forEach((x) => { x.classList.toggle('is-on', x === b); x.setAttribute('aria-pressed', String(x === b)); });
+    }));
+
+    // Automation flow: light the steps of the chosen channel one after another
+    const flow = el.querySelector<HTMLElement>('.cv-flow');
+    if (flow) {
+      const routes: Record<string, { labels: string[]; note: string }> = {
+        form: { labels: ['Form submitted', 'Lead saved', 'WhatsApp greeting sent'], note: 'Approved template, sent within seconds. Your team takes the conversation from there.' },
+        insta: { labels: ['DM received', 'AI reads the question', 'AI replies'], note: 'The AI handles the whole Instagram conversation on its own.' },
+      };
+      const nodes = [...flow.querySelectorAll<HTMLElement>('[data-nodes] li')];
+      let timers: ReturnType<typeof setTimeout>[] = [];
+      const play = (route: string) => {
+        timers.forEach(clearTimeout); timers = [];
+        const r = routes[route];
+        nodes.forEach((n, i) => { n.classList.remove('is-on'); n.querySelector('b')!.textContent = r.labels[i]; });
+        flow.querySelector('[data-flow-note]')!.textContent = r.note;
+        const step = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 450;
+        nodes.forEach((n, i) => timers.push(setTimeout(() => n.classList.add('is-on'), step * i)));
+      };
+      flow.querySelectorAll<HTMLButtonElement>('[data-route]').forEach((b) => b.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        flow.querySelectorAll('[data-route]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        play(b.dataset.route!);
+      }));
+      play('form');
+    }
+
+    // Product passport: verify a genuine scan, or show how a cloned QR is caught
+    const pass = el.querySelector<HTMLElement>('.cv-pass');
+    if (pass) {
+      const verdicts: Record<string, string> = {
+        ok: '✓ Every event matches its proof on the blockchain',
+        clone: '⚠ Cloned QR detected: this scan does not match the custody chain',
+      };
+      pass.querySelectorAll<HTMLButtonElement>('[data-scan]').forEach((b) => b.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        pass.dataset.state = 'idle';
+        pass.querySelector('[data-verdict]')!.textContent = '';
+        setTimeout(() => {
+          pass.dataset.state = b.dataset.scan!;
+          pass.querySelector('[data-verdict]')!.textContent = verdicts[b.dataset.scan!];
+        }, 80);
+      }));
+    }
+
+    // Territory game: tapping a hex captures it, like running through it
+    const hexes = [...el.querySelectorAll<SVGPolygonElement>('.cv-hex')];
+    if (hexes.length) {
+      [9, 4, 13].forEach((i) => hexes[i]?.classList.add('is-mine'));
+      const tally = () => {
+        const n = hexes.filter((h) => h.classList.contains('is-mine')).length;
+        el.querySelector('[data-hexcount]')!.textContent = String(n);
+        el.querySelector('[data-xp]')!.textContent = String(n * 10);
+      };
+      const capture = (h: SVGPolygonElement) => { h.classList.toggle('is-mine'); tally(); };
+      hexes.forEach((h) => {
+        h.addEventListener('click', (ev) => { ev.preventDefault(); capture(h); });
+        h.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); capture(h); } });
+      });
+      tally();
+    }
+
+    // Certificate portal: a real code scores 100; a made-up code is not found at all
+    const cert = el.querySelector<HTMLElement>('.cv-cert');
+    if (cert) {
+      cert.querySelectorAll<HTMLButtonElement>('[data-verify]').forEach((b) => b.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        const real = b.dataset.verify === 'real';
+        cert.dataset.cert = 'idle';
+        cert.querySelector('[data-cert-code]')!.textContent = real ? 'ARM-INT-26-000154' : 'ARM-INT-26-999999';
+        cert.querySelector('[data-cert-score]')!.textContent = 'Checking…';
+        setTimeout(() => {
+          cert.dataset.cert = real ? 'real' : 'fake';
+          cert.querySelector('[data-cert-score]')!.textContent = real ? 'Authenticity score: 100 / 100' : 'Certificate not found in the register';
+        }, 80);
+      }));
+    }
+
+    // Legal assistant: cycle through example questions, with a short "typing" pause
+    const qa = [
+      ['IPC 420 ka BNS section kya hai?', 'IPC 420 (cheating) maps to <b>BNS section 318</b>.', '✓ Citation checked against the database'],
+      ['Case status batao, CNR number bhej raha hoon', 'Case status is fetched from eCourts by CNR, with the next hearing date.', '✓ Live lookup, not guessed'],
+      ['Is there a judgment on this point?', 'Only judgments found in the library are cited. Anything unverifiable is marked <b>[unverified]</b>.', '✓ No invented citations'],
+    ];
+    let i = 0;
+    el.querySelector<HTMLButtonElement>('[data-ask]')?.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      i = (i + 1) % qa.length;
+      el.querySelector('[data-q]')!.textContent = qa[i][0];
+      el.setAttribute('data-thinking', '');
+      setTimeout(() => {
+        el.querySelector('[data-a]')!.innerHTML = qa[i][1];
+        el.querySelector('[data-c]')!.textContent = qa[i][2];
+        el.removeAttribute('data-thinking');
+      }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 900);
+    });
+  });
+</script>
