@@ -35,7 +35,7 @@ const Short = guide.short[0].toUpperCase() + guide.short.slice(1);
 <section id="prices" class="scroll-mt-24 py-24" data-cost-tabs>
   <div class="container-x">
     <div class="max-w-3xl">
-      <p class="eyebrow" data-reveal="fade">By country</p>
+      <p class="eyebrow text-ember-700!" data-reveal="fade">By country</p>
       <h2 class="mt-4 text-4xl font-bold sm:text-5xl">What shapes the cost where you are.</h2>
       <p class="mt-5 text-lg text-slate" data-reveal="up">Pick your country to see what projects there usually include. Published market ranges are one click away, and every AR Medias project gets a fixed quote after a free call.</p>
     </div>
@@ -70,9 +70,9 @@ const Short = guide.short[0].toUpperCase() + guide.short.slice(1);
                   <p class="max-w-3xl text-lg leading-relaxed text-slate">{m.intro}</p>
                   {!m.notes && (
                     <>
-                      <p class="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-olive">What projects in {mi.country} often include</p>
+                      <p class="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-ember-700">What projects in {mi.country} often include</p>
                       <ul class="mt-3 flex flex-wrap gap-2">
-                        {mi.needs.map((n) => <li class="rounded-full bg-mist px-3 py-1.5 text-sm text-navy ring-1 ring-navy/8">{n}</li>)}
+                        {mi.needs.map((n) => <li class="flex items-center gap-2 rounded-full bg-ember/10 px-3 py-1.5 text-sm text-navy ring-1 ring-ember/25"><span aria-hidden="true" class="grid size-4 place-items-center rounded-full bg-ember text-[9px] font-bold">✓</span>{n}</li>)}
                       </ul>
                     </>
                   )}
@@ -89,8 +89,8 @@ const Short = guide.short[0].toUpperCase() + guide.short.slice(1);
                 </ul>
               )}
 
-              <div class="mt-8 flex flex-col gap-4 rounded-2xl border-2 border-dashed border-olive/30 p-6 sm:flex-row sm:items-center sm:justify-between">
-                <p class="text-navy"><span class="font-display text-lg font-bold">Have a budget in mind?</span> Tell us what you have to spend. We'll suggest what fits it.</p>
+              <div class="mt-8 flex flex-col gap-4 rounded-2xl bg-gradient-to-r from-ember/15 via-sun/20 to-ember/10 p-6 ring-1 ring-ember/30 sm:flex-row sm:items-center sm:justify-between">
+                <p class="text-navy"><span class="font-display text-lg font-bold">💬 Have a budget in mind?</span> Tell us what you have to spend. We'll suggest what fits it.</p>
                 <a href={`${site.whatsapp}?text=${encodeURIComponent(askText(mi.country))}`} target="_blank" rel="noopener nofollow" class="btn-ember shrink-0" data-wa>Share my budget on WhatsApp</a>
               </div>
 
@@ -167,7 +167,7 @@ const Short = guide.short[0].toUpperCase() + guide.short.slice(1);
   .cost-fill { background: linear-gradient(90deg, var(--color-olive), var(--color-ember)); transform-origin: left; transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
   .cost-fill--open { background: linear-gradient(90deg, var(--color-olive), var(--color-ember) 70%, rgb(255 122 26 / 0)); }
   .cost-ranges:not([open]) .cost-fill { transform: scaleX(0); }
-  .cost-tab[aria-selected='true'] { background: var(--color-navy); color: #fff; }
+  .cost-tab[aria-selected='true'] { background: var(--color-ember); color: var(--color-navy); box-shadow: 0 10px 25px -10px rgb(255 122 26 / 0.6); }
   .cost-tab[aria-selected='false'] { background: #fff; color: var(--color-navy); }
   .cost-tab[aria-selected='false']:hover { background: var(--color-mist); }
   @media (prefers-reduced-motion: reduce) { .cost-fill { transition: none; } }

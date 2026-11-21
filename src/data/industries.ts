@@ -10,6 +10,8 @@ export interface Industry {
   metaTitle: string;
   metaDescription: string;
   headline: string; // big hero line; the page's H1 is the industry name
+  /** Short part of the headline (1-2 words) drawn with the orange underline. */
+  accent?: string;
   lead: string;
   challenges: { t: string; d: string }[];
   builds: { t: string; d: string }[];
@@ -26,6 +28,7 @@ export const industries: Industry[] = [
     metaTitle: 'Real Estate CRM, Websites & Lead Automation | AR Medias',
     metaDescription: 'Real estate CRM, property websites, WhatsApp lead automation and portal integrations for brokerages and builders in India, UAE and worldwide.',
     headline: 'Software that turns property enquiries into site visits.',
+    accent: 'site visits',
     lead: 'CRMs, property websites and WhatsApp automation for brokerages, builders and property managers, so no lead from a portal, ad or call is ever missed.',
     challenges: [
       { t: 'Leads from everywhere', d: 'Enquiries arrive from property portals, Facebook ads, WhatsApp, calls and walk-ins, and get lost between agents.' },
@@ -54,6 +57,7 @@ export const industries: Industry[] = [
     metaTitle: 'Healthcare Software & Clinic Management | AR Medias',
     metaDescription: 'Clinic and hospital management software, appointment booking, patient apps and WhatsApp reminders built with privacy and security in mind.',
     headline: 'Less admin for your clinic, smoother care for patients.',
+    accent: 'smoother care',
     lead: 'Appointment booking, clinic management systems, patient apps and automated reminders for clinics, hospitals, labs and healthcare startups.',
     challenges: [
       { t: 'Phone-only bookings', d: 'Reception spends the day answering calls, and patients can\'t book outside opening hours.' },
@@ -82,6 +86,7 @@ export const industries: Industry[] = [
     metaTitle: 'Education CRM, Admissions & LMS Development | AR Medias',
     metaDescription: 'Admissions CRMs, school and coaching management systems, learning platforms and student apps for schools, coaching institutes, universities and edtech.',
     headline: 'From enquiry to enrolment, all in one system.',
+    accent: 'one system',
     lead: 'Admission CRMs, fee and attendance systems, learning platforms and apps for schools, coaching institutes, universities and edtech startups.',
     challenges: [
       { t: 'Admission leads slip away', d: 'Enquiries from ads, fairs and websites are followed up by hand during the busiest season.' },
@@ -110,6 +115,7 @@ export const industries: Industry[] = [
     metaTitle: 'Retail & E-commerce Software, Shopify & POS | AR Medias',
     metaDescription: 'Online stores, Shopify development, inventory and POS integration, order automation and loyalty apps for retailers, D2C brands and distributors.',
     headline: 'Sell more online and in store, with less manual work.',
+    accent: 'Sell more',
     lead: 'Online stores, inventory and order systems, POS integrations and customer apps for retailers, D2C brands, wholesalers and distributors.',
     challenges: [
       { t: 'Stock out of sync', d: 'Online store, shop counter and warehouse show different stock levels.' },
@@ -138,6 +144,7 @@ export const industries: Industry[] = [
     metaTitle: 'Software Development Partner for SaaS Firms | AR Medias',
     metaDescription: 'An extra engineering team for software companies: SaaS products, features, integrations, internal tools and AI automation in your time zone.',
     headline: 'An extra engineering team for software companies.',
+    accent: 'engineering team',
     lead: 'We help software and SaaS companies ship faster: building products and features, integrations, internal tools and automations alongside your own team.',
     challenges: [
       { t: 'Roadmap bigger than the team', d: 'Product ideas wait months because engineers are busy maintaining what already exists.' },
@@ -166,6 +173,7 @@ export const industries: Industry[] = [
     metaTitle: 'Engineering for AI & ML Companies | AR Medias',
     metaDescription: 'Product engineering for AI and ML companies: AI SaaS apps, model APIs, data pipelines, labelling tools, dashboards and MLOps, built with your team.',
     headline: 'The product team behind your AI.',
+    accent: 'your AI',
     lead: 'Your models are only as useful as the product around them. We build the apps, APIs, data pipelines and dashboards that put AI and ML into customers\' hands.',
     challenges: [
       { t: 'Great model, rough product', d: 'Research prototypes need a polished interface, accounts, billing and onboarding to sell.' },
@@ -194,6 +202,7 @@ export const industries: Industry[] = [
     metaTitle: 'Blockchain & Web3 Development Partner | AR Medias',
     metaDescription: 'Engineering for blockchain and Web3 teams: smart contracts, dApps, wallets, indexers, dashboards and secure backends, fully tested and documented.',
     headline: 'Build Web3 products people can actually use.',
+    accent: 'actually use',
     lead: 'From smart contracts to the apps and dashboards around them, we help Web3 teams ship secure, well-tested products with a user experience that feels familiar.',
     challenges: [
       { t: 'Security first', d: 'Bugs in smart contracts can be irreversible, so every line needs testing and review.' },
@@ -223,6 +232,7 @@ export const industries: Industry[] = [
     metaTitle: 'Software for Cybersecurity Companies | AR Medias',
     metaDescription: 'Engineering for cybersecurity firms and MSSPs: client portals, security dashboards, alert automation, reporting and compliance tools, built securely.',
     headline: 'Software for teams that keep others secure.',
+    accent: 'secure',
     lead: 'Security firms and managed service providers need portals, dashboards and automation that are as secure as the service they sell. We build them with you.',
     challenges: [
       { t: 'Alert overload', d: 'Analysts drown in alerts from many tools with no single view.' },
@@ -251,7 +261,8 @@ export const industries: Industry[] = [
     metaTitle: 'Manufacturing ERP & Production Software | AR Medias',
     metaDescription: 'Custom manufacturing ERP: production planning, inventory, batches, quality checks, dealer orders and Tally-ready accounts for factories and makers.',
     headline: 'One system from raw material to dispatch.',
-    lead: 'Custom ERP, production tracking and dealer ordering for factories, workshops and contract manufacturers, so stock, orders and output are always visible in one place.',
+    accent: 'dispatch',
+    lead: 'Know what is in stock, what is on the line and what ships today, right from your phone. We build custom ERP, production tracking and dealer ordering for factories, workshops and contract manufacturers.',
     challenges: [
       { t: 'Stock you cannot see', d: 'Raw material, work in progress and finished goods are counted in registers and spreadsheets, so shortages show up only when a line stops.' },
       { t: 'Orders tracked by phone', d: 'Dealers and buyers call or WhatsApp for status, and nobody can say quickly what is in production or ready to dispatch.' },

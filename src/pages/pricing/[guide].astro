@@ -9,6 +9,7 @@ import ProjectCta from '../../components/ProjectCta.astro';
 import FeatureCard from '../../components/FeatureCard.astro';
 import MarketMap from '../../components/MarketMap.astro';
 import Illustration from '../../components/illustrations/Illustration.astro';
+import Scribble from '../../components/Scribble.astro';
 import { site, markets } from '../../data/site';
 import { services } from '../../data/services';
 import { costGuides, type CostGuide } from '../../data/cost-guides';
@@ -74,9 +75,9 @@ const schema = [
     </div>
     <div class="container-x grid items-center gap-12 lg:grid-cols-[1.25fr_1fr]">
       <div>
-        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero><a href="/" class="hover:text-olive">Home</a> / <a href="/pricing/" class="hover:text-olive">Pricing</a> / <span>{service.name} cost</span></nav>
-        <p class="eyebrow mt-6" data-hero>Cost guide 2026 · {countries.length} countries</p>
-        <h1 class="mt-4 text-5xl font-bold leading-[1.03] sm:text-6xl" data-hero>{guide.h1} <span class="text-olive">{guide.h1Accent}</span></h1>
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero><a href="/" class="hover:text-ember-600">Home</a> / <a href="/pricing/" class="hover:text-ember-600">Pricing</a> / <span>{service.name} cost</span></nav>
+        <p class="eyebrow mt-6 text-ember-700!" data-hero><span class="size-2 animate-pulse rounded-full bg-ember"></span>Cost guide 2026 · {countries.length} countries</p>
+        <h1 class="mt-4 text-5xl font-bold leading-[1.03] sm:text-6xl" data-hero>{guide.h1} <span class="text-ember-600"><Scribble>{guide.h1Accent}</Scribble></span></h1>
         <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>{guide.lead}</p>
         <div class="mt-9 flex flex-wrap gap-3" data-hero>
           <a href="#planner" class="btn-ember" data-magnetic>Plan my budget</a>
@@ -84,7 +85,7 @@ const schema = [
         </div>
         <ul class="mt-8 flex flex-wrap gap-2" data-hero aria-label="Jump to a country">
           {countries.map((c) => (
-            <li><a href={`#${c.slug}`} class="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1.5 text-xs font-semibold text-navy ring-1 ring-navy/10 transition-colors hover:bg-navy hover:text-white"><Flag code={c.code} />{c.country}</a></li>
+            <li><a href={`#${c.slug}`} class="inline-flex items-center gap-1.5 rounded-full bg-ember/10 px-3 py-1.5 text-xs font-semibold text-navy ring-1 ring-ember/25 transition-colors hover:bg-ember hover:text-navy"><Flag code={c.code} />{c.country}</a></li>
           ))}
         </ul>
         <p class="mt-6 text-sm text-slate" data-hero>Checked {guide.checked} · Every figure links to its source · By {site.founder.name}, founder of {site.name}</p>
@@ -114,12 +115,12 @@ const schema = [
       <ul class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4" data-reveal="stagger">
         {glance.map(({ m, c }) => (
           <li>
-            <a href={`#${m.slug}`} data-tilt class="group block h-full rounded-3xl border border-navy/10 bg-white p-4 transition-colors hover:border-olive hover:bg-olive hover:text-white sm:p-6">
+            <a href={`#${m.slug}`} data-tilt class="group relative block h-full overflow-hidden rounded-3xl border border-navy/10 bg-white p-4 transition-colors hover:border-ember hover:bg-ember hover:text-navy sm:p-6"><span aria-hidden="true" class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-ember to-sun"></span>
               <MarketMap coords={c.coords} class="mb-3 sm:mb-4" />
-              <p class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-olive group-hover:text-white/80 sm:text-sm"><Flag code={c.code} />{m.currency ?? c.code}</p>
+              <p class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ember-700 group-hover:text-navy sm:text-sm"><Flag code={c.code} />{m.currency ?? c.code}</p>
               <p class="mt-1 font-display text-xl font-bold sm:mt-2 sm:text-2xl">{c.country}</p>
-              <p class="mt-2 text-xs text-slate group-hover:text-white/80 sm:text-sm">{c.city}</p>
-              <p class="mt-1 font-display text-sm font-bold text-navy group-hover:text-white sm:text-base">What shapes the cost <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">→</span></p>
+              <p class="mt-2 text-xs text-slate group-hover:text-navy/80 sm:text-sm">{c.city}</p>
+              <p class="mt-1 font-display text-sm font-bold text-ember-700 group-hover:text-navy sm:text-base">What shapes the cost <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">→</span></p>
             </a>
           </li>
         ))}
@@ -129,13 +130,21 @@ const schema = [
 
   <CostCountryTabs {guide} />
 
+  <!-- NUDGE TO THE PLANNER -->
+  <section aria-label="Plan your budget" class="bg-gradient-to-r from-ember to-sun py-10 text-navy">
+    <div class="container-x flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
+      <p class="font-display text-2xl font-bold sm:text-3xl">Not sure what fits your budget? It takes one minute.</p>
+      <a href="#planner" class="inline-flex shrink-0 items-center gap-2 rounded-full bg-navy px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5">Plan my budget <span aria-hidden="true">↓</span></a>
+    </div>
+  </section>
+
   <CostPlanner {guide} />
 
   <!-- WHAT DRIVES THE COST -->
   <section class="py-24">
     <div class="container-x">
       <div class="max-w-2xl">
-        <p class="eyebrow" data-reveal="fade">What drives the price</p>
+        <p class="eyebrow text-ember-700!" data-reveal="fade">What drives the price</p>
         <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Six things that move a quote.</h2>
         <p class="mt-5 text-lg text-slate" data-reveal="up">The same in every country. Knowing them helps you compare quotes for the same scope.</p>
       </div>
@@ -175,7 +184,7 @@ const schema = [
   <section class="py-24">
     <div class="container-x">
       <div class="max-w-2xl">
-        <p class="eyebrow" data-reveal="fade">From any country</p>
+        <p class="eyebrow text-ember-700!" data-reveal="fade">From any country</p>
         <h2 class="mt-4 text-4xl font-bold sm:text-5xl">How a project with us is priced.</h2>
       </div>
       <ul class="mt-12 grid gap-5 md:grid-cols-3" data-reveal="stagger">
@@ -187,7 +196,7 @@ const schema = [
       </ul>
       <ul class="mt-10 flex flex-wrap gap-2" aria-label="Country pages">
         {countries.map((c) => (
-          <li><a href={`/locations/${c.slug}/`} class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-navy ring-1 ring-navy/10 transition-colors hover:bg-olive hover:text-white"><Flag code={c.code} />Working with clients in {c.country} →</a></li>
+          <li><a href={`/locations/${c.slug}/`} class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-navy ring-1 ring-navy/10 transition-colors hover:bg-ember hover:text-navy"><Flag code={c.code} />Working with clients in {c.country} →</a></li>
         ))}
       </ul>
     </div>
@@ -197,16 +206,16 @@ const schema = [
   <section class="bg-mist/60 py-24">
     <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
       <div>
-        <p class="eyebrow" data-reveal="fade">FAQ</p>
+        <p class="eyebrow text-ember-700!" data-reveal="fade">FAQ</p>
         <h2 class="mt-4 text-4xl font-bold sm:text-5xl">{service.name} cost questions.</h2>
-        <a href={`/services/${service.slug}/`} class="mt-8 inline-block font-semibold text-olive hover:text-navy">About our {service.name.toLowerCase()} →</a>
+        <a href={`/services/${service.slug}/`} class="mt-8 inline-block font-semibold text-ember-700 hover:text-navy">About our {service.name.toLowerCase()} →</a>
       </div>
       <div class="divide-y divide-navy/10 border-y border-navy/10">
         {guide.faqs.map((f) => (
           <details class="group py-6">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-xl font-semibold">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-xl font-semibold group-open:text-ember-700">
               {f.q}
-              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-white transition-transform duration-300 group-open:rotate-45 group-open:bg-olive group-open:text-white">+</span>
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-ember/12 text-ember-700 transition-transform duration-300 group-open:rotate-45 group-open:bg-ember group-open:text-navy">+</span>
             </summary>
             <p class="mt-4 max-w-2xl leading-relaxed text-slate">{f.a}</p>
           </details>

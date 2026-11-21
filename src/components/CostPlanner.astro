@@ -28,7 +28,7 @@ const first = guide.markets[0];
   <script type="application/json" data-planner-json set:html={JSON.stringify(data)} />
   <div class="container-x">
     <div class="max-w-3xl">
-      <p class="eyebrow" data-reveal="fade">Budget planner</p>
+      <p class="eyebrow text-ember-700!" data-reveal="fade">Budget planner</p>
       <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Plan your {guide.short} in a minute.</h2>
       <p class="mt-5 text-lg text-slate" data-reveal="up">Choose what you need, add your budget and send the plan to us on WhatsApp. We'll reply, set up a free call and suggest what fits.</p>
     </div>
@@ -36,7 +36,7 @@ const first = guide.markets[0];
     <div class="mt-12 grid gap-8 lg:grid-cols-[1.35fr_1fr]">
       <form class="space-y-8 rounded-[2rem] bg-white p-6 ring-1 ring-navy/8 sm:p-9" data-planner-form>
         <fieldset>
-          <legend class="font-display text-lg font-bold"><span class="mr-2 text-ember">01</span>Where is your business?</legend>
+          <legend class="font-display text-lg font-bold"><span class="mr-2 text-ember-600">01</span>Where is your business?</legend>
           <div class="mt-4 flex flex-wrap gap-2">
             {guide.markets.map((m, i) => (
               <label class="cursor-pointer">
@@ -50,7 +50,7 @@ const first = guide.markets[0];
         </fieldset>
 
         <fieldset>
-          <legend class="font-display text-lg font-bold"><span class="mr-2 text-ember">02</span>What do you need?</legend>
+          <legend class="font-display text-lg font-bold"><span class="mr-2 text-ember-600">02</span>What do you need?</legend>
           <div class="mt-4 grid gap-3 sm:grid-cols-2">
             {guide.planner.types.map((t, i) => (
               <label class="cursor-pointer">
@@ -65,7 +65,7 @@ const first = guide.markets[0];
         </fieldset>
 
         <fieldset>
-          <legend class="font-display text-lg font-bold"><span class="mr-2 text-ember">03</span>Must-haves</legend>
+          <legend class="font-display text-lg font-bold"><span class="mr-2 text-ember-600">03</span>Must-haves</legend>
           <div class="mt-4 flex flex-wrap gap-2">
             {guide.planner.features.map((f) => (
               <label class="cursor-pointer">
@@ -79,7 +79,7 @@ const first = guide.markets[0];
         </fieldset>
 
         <div>
-          <label for="planner-budget" class="font-display text-lg font-bold"><span class="mr-2 text-ember">04</span>Your budget <span class="text-sm font-normal text-slate">(optional)</span></label>
+          <label for="planner-budget" class="font-display text-lg font-bold"><span class="mr-2 text-ember-600">04</span>Your budget <span class="text-sm font-normal text-slate">(optional)</span></label>
           <div class="mt-4 flex items-stretch overflow-hidden rounded-2xl ring-1 ring-navy/12 focus-within:ring-2 focus-within:ring-olive">
             <span class="grid place-items-center bg-navy px-4 text-sm font-semibold text-white" data-budget-currency>{first.currency ?? 'Budget'}</span>
             <input id="planner-budget" name="budget" inputmode="numeric" autocomplete="off" placeholder="Any amount you have in mind" class="w-full bg-white px-4 py-3.5 text-navy outline-none" data-budget />
