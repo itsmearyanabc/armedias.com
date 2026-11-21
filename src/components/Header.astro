@@ -9,7 +9,7 @@ const path = Astro.url.pathname;
 <header data-header class="fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,transform] duration-300">
   <div class="container-x flex h-18 items-center justify-between gap-6">
     <a href="/" class="flex items-center gap-2.5" aria-label="AR Medias home">
-      <Image src={logo} alt="" width={56} height={42} loading="eager" class="h-9 w-auto" />
+      <Image src={logo} alt="" width={56} height={42} densities={[2, 3]} loading="eager" class="h-9 w-auto" />
       <span class="whitespace-nowrap font-display text-lg font-bold tracking-[0.18em]"><span class="text-olive">AR</span> <span class="text-navy">MEDIAS</span></span>
     </a>
 
