@@ -55,7 +55,8 @@ export interface Project {
 }
 
 // Case studies of products built by AR Medias, written from each project's own source and
-// documentation. Client businesses are described, not named, until they approve being shown.
+// documentation. Clients are named only after Aryan confirmed them (Xpack, Rian Cullet, TREZUH,
+// 22 Nov 2026); the rest are described, not named.
 export const projects: Project[] = [
   {
     slug: 'attendance-payroll-saas',
@@ -121,7 +122,7 @@ export const projects: Project[] = [
   {
     slug: 'ivr-broadcast-order-portal',
     metaDescription: 'Case study: customer and admin portals for an IVR broadcast business, with campaign orders, a prepaid wallet, an urgent queue and activity logs.',
-    client: '',
+    client: 'Xpack',
     business: 'IVR and voice broadcast service provider',
     country: 'India',
     year: 2026,
@@ -153,7 +154,7 @@ export const projects: Project[] = [
   {
     slug: 'glass-recycling-company-website',
     metaDescription: 'Case study: a bespoke WordPress theme for a Delhi glass recycling company, hand-built with no page builder and about 20 KB of JavaScript.',
-    client: '',
+    client: 'Rian Cullet',
     business: 'Glass cullet recycling company, Delhi (since 1996)',
     country: 'India',
     year: 2026,
@@ -178,13 +179,14 @@ export const projects: Project[] = [
       'A missing photo shows a labelled placeholder, never a broken image',
       'A shareable staging copy that is hidden from search engines',
     ],
+    url: 'https://riancullets.com/',
     tech: ['WordPress', 'PHP', 'CSS', 'JavaScript', 'Docker', 'Render'],
     scene: 'recycle',
   },
   {
     slug: 'luxury-real-estate-website',
     metaDescription: 'Case study: a monochrome, fast single-page website for a real estate and private wealth firm, built on typography, space and restrained motion.',
-    client: '',
+    client: 'TREZUH',
     business: 'Real estate, developments and private wealth firm',
     country: 'India',
     year: 2026,
