@@ -6,7 +6,7 @@ import Flag from './Flag.astro';
 import Skyline from './skylines/Skyline.astro';
 import { markets, site } from '../data/site';
 import type { CostGuide, CostTier, MarketCost } from '../data/cost-guides';
-import { priceText } from '../lib/cost-format';
+import { priceText, withArticle } from '../lib/cost-format';
 
 interface Props { guide: CostGuide }
 const { guide } = Astro.props;
@@ -28,7 +28,7 @@ const scale = (m: MarketCost) => {
   };
 };
 const currencyName = (code: string) => new Intl.DisplayNames('en', { type: 'currency' }).of(code) ?? code;
-const askText = (country: string) => `Hi AR Medias, I'm in ${country} and I'm planning a ${guide.short}. My budget is: `;
+const askText = (country: string) => `Hi AR Medias, I'm in ${country} and I'm planning ${withArticle(guide.short)}. My budget is: `;
 const Short = guide.short[0].toUpperCase() + guide.short.slice(1);
 ---
 

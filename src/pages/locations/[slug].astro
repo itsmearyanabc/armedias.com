@@ -10,6 +10,7 @@ import { delhiWorkingStyle, remoteWorkingStyle } from '../../data/working-style'
 import WorkingStyle from '../../components/WorkingStyle.astro';
 import { marketGuides } from '../../data/market-guides';
 import { costGuides } from '../../data/cost-guides';
+import { withArticle } from '../../lib/cost-format';
 
 export function getStaticPaths() {
   return markets.map((m) => ({ params: { slug: m.slug }, props: { m } }));
@@ -196,7 +197,7 @@ const schema = [
             <span aria-hidden="true" class="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-ember/25 blur-3xl"></span>
             <span class="relative">
               <span class="block text-xs font-semibold uppercase tracking-[0.2em] text-ember-300">Cost guide 2026</span>
-              <span class="mt-2 block font-display text-2xl font-bold sm:text-3xl">What a {g.short} costs in {m.country}</span>
+              <span class="mt-2 block font-display text-2xl font-bold sm:text-3xl">What {withArticle(g.short)} costs in {m.country}</span>
               <span class="mt-2 block max-w-xl text-white/70">What shapes the cost in {m.country}, and a planner that sends your plan and budget to us on WhatsApp.</span>
             </span>
             <span class="btn-ember relative shrink-0">Plan my website <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span></span>

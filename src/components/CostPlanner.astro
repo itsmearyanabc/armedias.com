@@ -158,7 +158,7 @@ const first = guide.markets[0];
       $('[data-meter-label]').textContent = LEVELS[level];
 
       const lines = [
-        `Hi AR Medias, I'm planning a ${data.short}.`,
+        `Hi AR Medias, I'm planning ${/^[aeiou]/i.test(data.short) ? 'an' : 'a'} ${data.short}.`,
         `Country: ${market.country}`,
         `Type: ${type.label}`,
         `Must-haves: ${featureLabels.length ? featureLabels.join(', ') : 'not sure yet'}`,

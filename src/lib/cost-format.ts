@@ -11,3 +11,8 @@ export function priceText(t: CostTier, m: MarketCost): string {
   if (t.max === undefined) return `From ${money(t.min, m)}${per}`;
   return `${money(t.min, m)} – ${money(t.max, m)}${t.plus ? '+' : ''}${per}`;
 }
+
+/** "a website", "an online store", "an ERP", "an AI chatbot". */
+export function withArticle(noun: string): string {
+  return `${/^[aeiou]/i.test(noun) ? 'an' : 'a'} ${noun}`;
+}
