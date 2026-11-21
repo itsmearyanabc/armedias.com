@@ -208,7 +208,7 @@ const faqSchema = {
         <a href="/industries/" class="btn-ghost">All industries</a>
       </div>
       <ul class="mt-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4" data-reveal="stagger">
-        {industries.map((ind) => (
+        {industries.slice(0, 8).map((ind) => (
           <li>
             <a href={`/industries/${ind.slug}/`} data-tilt class="group flex h-full flex-col justify-between gap-4 rounded-3xl bg-mist p-4 transition-colors duration-300 hover:bg-navy sm:gap-6 sm:p-6">
               <span class="grid size-14 place-items-center rounded-2xl bg-white p-2.5 shadow-sm sm:size-20 sm:p-3 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">

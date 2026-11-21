@@ -53,6 +53,13 @@ const { slug, class: className } = Astro.props;
       <path class="shackle" d="M26 28v-5a6 6 0 0 1 12 0v5" fill="none" stroke="#ffc93c" stroke-width="3.5" />
       <rect class="scanline" x="12" y="10" width="40" height="3" rx="1.5" fill="#ff7a1a" />
     </>}
+    {slug === 'manufacturing' && <>
+      <path d="M6 56V30l14 8v-8l14 8v-8l14 8V14h10v42z" fill="#13213a" />
+      <rect class="win" x="12" y="44" width="8" height="6" rx="1.5" fill="#ffc93c" />
+      <rect class="win w2" x="26" y="44" width="8" height="6" rx="1.5" fill="#ffc93c" />
+      <rect x="40" y="44" width="8" height="12" rx="1.5" fill="#a9c46c" />
+      <g class="link" fill="#ff7a1a"><circle cx="53" cy="9" r="5" /><circle cx="53" cy="9" r="2" fill="#13213a" /></g>
+    </>}
   </svg>
 </span>
 

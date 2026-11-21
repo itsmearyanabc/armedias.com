@@ -244,6 +244,33 @@ export const industries: Industry[] = [
       { q: 'Do you sign NDAs?', a: 'Always, before any details are shared.' },
     ],
   },
+  {
+    slug: 'manufacturing',
+    name: 'Manufacturing',
+    scene: 'erp-development',
+    metaTitle: 'Manufacturing ERP & Production Software | AR Medias',
+    metaDescription: 'Custom manufacturing ERP: production planning, inventory, batches, quality checks, dealer orders and Tally-ready accounts for factories and makers.',
+    headline: 'One system from raw material to dispatch.',
+    lead: 'Custom ERP, production tracking and dealer ordering for factories, workshops and contract manufacturers, so stock, orders and output are always visible in one place.',
+    challenges: [
+      { t: 'Stock you cannot see', d: 'Raw material, work in progress and finished goods are counted in registers and spreadsheets, so shortages show up only when a line stops.' },
+      { t: 'Orders tracked by phone', d: 'Dealers and buyers call or WhatsApp for status, and nobody can say quickly what is in production or ready to dispatch.' },
+      { t: 'No batch history', d: 'When a complaint comes in, finding which batch, material and machine produced the item takes hours.' },
+      { t: 'Accounts kept separately', d: 'Production, purchase and sales data is retyped into the accounting software, which wastes time and creates mistakes.' },
+    ],
+    builds: [
+      { t: 'Manufacturing ERP', d: 'Bills of materials, purchase, inventory across stores, production orders and dispatch in one system built around how your factory works.' },
+      { t: 'Production and batch tracking', d: 'Job cards, stage-wise progress, batch and lot numbers, quality checks and scrap recorded on the shop floor from a phone or tablet.' },
+      { t: 'Dealer and B2B ordering portal', d: 'Dealers place orders, see stock, prices and dispatch status, and download invoices without calling your office.' },
+      { t: 'Reports and alerts', d: 'Reorder alerts, pending orders, output per shift and stock value, with exports your accountant can use.' },
+    ],
+    tools: ['Tally and accounting exports', 'Barcode and QR labels', 'WhatsApp Business API', 'E-invoicing and e-way bill data', 'Android tablets on the shop floor'],
+    services: ['erp-development', 'custom-software-development', 'mobile-app-development'],
+    faqs: [
+      { q: 'Why build a custom ERP instead of buying one?', a: 'Ready-made ERPs work well when your process matches theirs. When it does not, teams fall back to spreadsheets. A custom ERP follows your own production stages, units and approvals, and you own the code.' },
+      { q: 'Can it work with Tally?', a: 'Yes. We can export vouchers in a format Tally imports, or sync through Tally\'s supported data connections, so accounts stay in the software your accountant already uses.' },
+      { q: 'Can supervisors use it on the shop floor?', a: 'Yes. Screens for job cards, stock movement and quality checks are designed for phones and tablets, with large buttons and barcode scanning.' },
+      { q: 'Can we start small?', a: 'Yes. Many factories start with inventory and production tracking, then add dealer ordering, quality and accounts once the first part is in daily use.' },
+    ],
+  },
 ];
-
-export const industryBySlug = Object.fromEntries(industries.map((i) => [i.slug, i]));
