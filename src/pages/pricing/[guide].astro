@@ -156,11 +156,11 @@ const schema = [
         <a href={`${site.whatsapp}?text=${budgetAsk}`} target="_blank" rel="noopener nofollow" class="btn-ember mt-9" data-wa data-magnetic>Tell us your budget</a>
       </div>
       <ol class="grid gap-4 sm:grid-cols-3" data-reveal="stagger">
-        {[
+        {(guide.startSmall ?? [
           { t: 'Pages that sell', d: 'Launch with the pages customers need to contact you: home, services and contact.' },
           { t: 'A proven layout', d: 'A tested template, styled to your brand, costs less than a design from scratch.' },
           { t: 'Add features later', d: 'Payments, bookings or a blog can come in the next phase, when the site is earning.' },
-        ].map((s, i) => (
+        ]).map((s, i) => (
           <li class="rounded-3xl bg-white/6 p-6 ring-1 ring-white/10">
             <span class="grid size-10 place-items-center rounded-full bg-ember font-display font-bold text-navy">{i + 1}</span>
             <h3 class="mt-5 text-lg font-bold text-white">{s.t}</h3>

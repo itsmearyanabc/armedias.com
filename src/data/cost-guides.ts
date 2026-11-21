@@ -4,7 +4,8 @@
 // invite visitors to share their budget instead of quoting ours.
 
 /** Which kind of project a row describes; the planner matches the visitor's choice to it. */
-export type TierKey = 'diy' | 'landing' | 'basic' | 'business' | 'pro' | 'integrated' | 'store' | 'custom';
+export type TierKey = 'diy' | 'landing' | 'basic' | 'business' | 'pro' | 'integrated' | 'store' | 'custom'
+  | 'mvp' | 'simple' | 'medium' | 'complex' | 'enterprise';
 
 export interface CostTier {
   key: TierKey;
@@ -61,6 +62,8 @@ export interface CostGuide {
     features: PlannerOption[];
   };
   factors: { t: string; d: string; icon: IconName }[];
+  /** "Start smart, then grow" steps; the website wording is used when omitted. */
+  startSmall?: { t: string; d: string }[];
   faqs: { q: string; a: string }[];
 }
 
@@ -287,6 +290,206 @@ export const costGuides: CostGuide[] = [
       { q: 'Can I get a website on a small budget?', a: 'Yes. Starting with fewer pages, a proven template and the features you need first keeps the first version affordable, and you can add more later. Tell us your budget and we will suggest what fits it.' },
       { q: 'Why do website quotes vary so much?', a: 'Quotes differ in who does the work, how much is custom, and what is included: design rounds, content, SEO, testing and support. Compare quotes for the same written scope.' },
       { q: 'Are these AR Medias prices?', a: 'No. They are market figures from the published guides listed on this page. Every AR Medias project gets a fixed quote after a free call, based on your scope and budget.' },
+    ],
+  },
+  {
+    slug: 'app-development-cost',
+    service: 'mobile-app-development',
+    short: 'mobile app',
+    metaTitle: 'App Development Cost 2026: India, USA, UAE & More | AR Medias',
+    metaDescription: 'Mobile app development costs in 2026 across India, the USA, UAE, Canada, Australia, Japan, China and Russia, from published guides. Share your budget.',
+    h1: 'How much does an app cost',
+    h1Accent: 'in 2026?',
+    lead: 'What shapes the cost of a mobile app in eight countries, from a first MVP to a large platform. Whatever your budget, there is a sensible first version: tell us what you have and we will plan what fits.',
+    quickAnswer: 'It depends on the features, the platforms and who builds it. Most apps start as a small first version with the few features users need most. Tell us your budget and we will plan that version, then grow it.',
+    checked: '22 November 2026',
+    markets: [
+      {
+        slug: 'india',
+        locale: 'en-IN',
+        currency: 'INR',
+        intro: 'India has app teams at every size and price, so a focused first version is within reach of most small businesses and startups.',
+        tiers: [
+          { key: 'simple', label: 'Basic app', detail: 'Login, a few core screens, simple backend', min: 760000, max: 1900000, source: 0 },
+          { key: 'medium', label: 'Mid-complexity app', detail: 'Payments, integrations, admin panel', min: 1900000, max: 5700000, source: 0 },
+          { key: 'complex', label: 'Complex or enterprise app', detail: 'Real-time features, AI, large user base', min: 5700000, max: 14300000, plus: true, source: 0 },
+        ],
+        ongoing: [
+          { label: 'Maintenance', value: '15–25% of the build cost a year', source: 0 },
+          { label: 'Apple Developer Program', value: '$99 a year', source: 1 },
+          { label: 'Google Play registration', value: '$25 once', source: 1 },
+        ],
+        timeline: { text: 'Basic apps take 1–3 months; mid-complexity apps 3–7 months.', source: 0 },
+        highlight: { text: 'A second 2026 guide says an MVP with 3–5 core features can be built for ₹3–5 lakh.', source: 1 },
+        sources: [
+          { publisher: 'SolGuruz', title: 'How Much Does App Development Cost in India in 2026?', url: 'https://solguruz.com/blog/app-development-cost-in-india/', date: '17 Aug 2026' },
+          { publisher: 'Zartek', title: 'App Development Cost in India 2026: Detailed Breakdown by Type and Complexity', url: 'https://www.zartek.in/app-development-cost-in-india-2026/', date: '2026' },
+        ],
+      },
+      {
+        slug: 'usa',
+        locale: 'en-US',
+        currency: 'USD',
+        intro: 'US app builds are among the most expensive in this guide, which is why many American founders build their first version with a team abroad.',
+        tiers: [
+          { key: 'simple', label: 'Simple app', detail: 'Traditional development', min: 5000, max: 50000, source: 0 },
+          { key: 'medium', label: 'Medium-complexity app', detail: 'Traditional development', min: 50000, max: 120000, source: 0 },
+          { key: 'complex', label: 'Complex app', detail: 'Traditional development', min: 120000, max: 300000, plus: true, source: 0 },
+          { key: 'enterprise', label: 'Enterprise or advanced app', detail: 'Agency build', min: 300000, max: 400000, plus: true, source: 1 },
+        ],
+        ongoing: [
+          { label: 'Maintenance', value: '15–20% of the build cost a year', source: 1 },
+        ],
+        timeline: { text: 'Simple apps and MVPs take 2–4 months.', source: 1 },
+        sources: [
+          { publisher: 'Bubble', title: 'How Much Does It Cost to Create an App in 2026?', url: 'https://bubble.io/blog/how-much-does-it-cost-to-create-an-app/', date: '17 Aug 2026' },
+          { publisher: 'Designveloper', title: 'How Much Does It Cost to Build an App? 2026 Breakdown', url: 'https://www.designveloper.com/blog/how-much-does-it-cost-to-make-an-app/', date: '23 Apr 2026' },
+        ],
+      },
+      {
+        slug: 'uae',
+        locale: 'en-AE',
+        currency: 'AED',
+        intro: 'UAE apps are often bilingual English and Arabic, and larger agencies in Dubai charge well above the ranges below.',
+        tiers: [
+          { key: 'simple', label: 'Simple app', detail: 'Core screens and a basic backend', min: 25000, max: 80000, source: 0 },
+          { key: 'medium', label: 'Moderate app', detail: 'More features and integrations', min: 40000, max: 80000, plus: true, source: 0 },
+          { key: 'complex', label: 'Complex app', detail: 'Advanced features and integrations', min: 80600, max: 200000, plus: true, source: 0 },
+          { key: 'enterprise', label: 'Enterprise platform', detail: 'Large organisations', min: 1100000, max: 1800000, plus: true, source: 0 },
+        ],
+        ongoing: [],
+        timeline: { text: 'Simple apps take 2–3 months; moderate apps 3–5 months.', source: 0 },
+        sources: [
+          { publisher: 'Netguru', title: 'Mobile App Development Cost In Dubai, UAE for 2026', url: 'https://www.netguru.com/blog/mobile-development-cost-dubai-uae', date: '5 Dec 2025' },
+        ],
+      },
+      {
+        slug: 'canada',
+        locale: 'en-CA',
+        currency: 'CAD',
+        intro: 'In Canada the biggest difference in price is who builds the app: a freelancer, a small studio or a large agency.',
+        tiers: [
+          { key: 'simple', label: 'Freelancer build', detail: 'Custom business app', min: 15000, max: 50000, source: 0 },
+          { key: 'medium', label: 'Small studio build', detail: 'Custom business app', min: 25000, max: 100000, source: 0 },
+          { key: 'complex', label: 'Large agency build', detail: 'Custom business app', min: 75000, max: 250000, plus: true, source: 0 },
+        ],
+        ongoing: [
+          { label: 'Hosting', value: 'Often under $200 a month at small-business scale', source: 0 },
+        ],
+        timeline: { text: 'Most builds ship in 6 to 12 weeks.', source: 0 },
+        sources: [
+          { publisher: 'Clear', title: 'How Much Does a Custom App Cost in Canada? (2026 Guide)', url: 'https://getclear.ca/guides/custom-app-cost-canada', date: 'Jul 2026' },
+        ],
+      },
+      {
+        slug: 'australia',
+        locale: 'en-AU',
+        currency: 'AUD',
+        intro: 'Australian agencies price most small apps as an MVP first, then grow them; enterprise and regulated builds cost far more.',
+        tiers: [
+          { key: 'mvp', label: 'Simple app or MVP', detail: 'Focused first version', min: 15000, max: 40000, source: 0 },
+          { key: 'medium', label: 'Mid-range business app', detail: 'Integrations and admin tools', min: 40000, max: 150000, source: 0 },
+          { key: 'complex', label: 'Complex or enterprise app', detail: 'Large or regulated platforms', min: 150000, max: 500000, plus: true, source: 0 },
+        ],
+        ongoing: [
+          { label: 'Maintenance', value: 'Around 15–20% of the build cost a year', source: 0 },
+        ],
+        timeline: { text: 'A simple app or MVP takes 4–8 weeks; a mid-range app 8–16 weeks.', source: 0 },
+        sources: [
+          { publisher: 'Expeed Technology', title: 'How Much Does It Cost to Build an App in Australia? (2026 Prices)', url: 'https://expeed.com.au/articles/app-development-cost-australia', date: '9 Aug 2026' },
+        ],
+      },
+      {
+        slug: 'japan',
+        locale: 'ja-JP',
+        currency: 'JPY',
+        intro: 'Japanese app projects come with detailed specifications and careful testing, and the type of app changes the price more than anything else.',
+        tiers: [
+          { key: 'simple', label: 'Business app', detail: '業務アプリ', min: 500000, max: 8000000, plus: true, source: 0 },
+          { key: 'medium', label: 'Matching app', detail: 'マッチングアプリ', min: 2000000, max: 8000000, plus: true, source: 0 },
+          { key: 'store', label: 'E-commerce app', detail: 'ECアプリ', min: 3000000, max: 10000000, plus: true, source: 0 },
+          { key: 'complex', label: 'Game app', detail: 'ゲームアプリ', min: 5000000, max: 20000000, plus: true, source: 0 },
+        ],
+        ongoing: [
+          { label: 'Maintenance', value: 'About 15% of the development cost a year', source: 0 },
+          { label: 'Apple Developer Program', value: '$99 a year', source: 0 },
+        ],
+        timeline: { text: 'App projects take 4–6 months on average.', source: 0 },
+        highlight: { text: 'On PRONIアイミツ, app projects averaged about ¥4.2 million, with a median of ¥2.9 million (January 2019 to November 2025).', source: 0 },
+        sources: [
+          { publisher: 'PRONIアイミツ', title: 'アプリ開発の費用はいくら？実際の取引データを根拠とした料金相場を公開', url: 'https://imitsu.jp/cost/app-developer/', date: '16 Jun 2026' },
+        ],
+      },
+      {
+        slug: 'china',
+        locale: 'zh-CN',
+        intro: 'We could not find a reliable, current public price list for app projects in mainland China, so we show what drives the cost instead of guessing.',
+        tiers: [],
+        ongoing: [],
+        notes: [
+          'Google Play is not available in mainland China, so Android apps are published on Chinese stores such as Huawei AppGallery, Xiaomi and Tencent MyApp.',
+          'Apps offered in mainland China need a government app filing, so plan time for it.',
+          'Many brands also build a WeChat Mini Program, which users open without installing an app.',
+          'Payments usually mean WeChat Pay and Alipay, and Google services such as Maps and Firebase need Chinese alternatives.',
+        ],
+        sources: [],
+      },
+      {
+        slug: 'russia',
+        locale: 'ru-RU',
+        currency: 'RUB',
+        intro: 'Russian studios estimate apps from a written brief (техническое задание), and many apps are now also published in RuStore.',
+        tiers: [
+          { key: 'mvp', label: 'MVP or simple app', detail: 'Studio rate about 3,900 ₽ an hour', min: 2100000, max: 4400000, source: 0 },
+          { key: 'medium', label: 'Medium-complexity app', detail: 'Studio build', min: 4000000, max: 12000000, source: 0 },
+          { key: 'complex', label: 'Complex system', detail: 'Studio build', min: 15000000, source: 0 },
+        ],
+        ongoing: [
+          { label: 'Support with new features', value: 'About 50% of the build cost in year one, 25% or less after', source: 0 },
+        ],
+        timeline: { text: 'Simple apps take 3–4 months; medium apps 4–6 months.', source: 0 },
+        sources: [
+          { publisher: 'Purrweb', title: 'Сколько стоит разработка мобильного приложения', url: 'https://www.purrweb.com/ru/blog/skolko-stoit-razrabotka-prilozheniya/', date: '20 Oct 2026' },
+        ],
+      },
+    ],
+    planner: {
+      types: [
+        { id: 'mvp', label: 'First version (MVP)', detail: 'The few features users need most', tiers: ['mvp', 'simple'] },
+        { id: 'business', label: 'Business app', detail: 'Orders, bookings or a customer portal', tiers: ['simple', 'medium'] },
+        { id: 'store', label: 'Shopping or delivery app', detail: 'Catalogue, cart, payments, tracking', tiers: ['store', 'medium', 'complex'] },
+        { id: 'platform', label: 'Marketplace or platform', detail: 'Two sides, real-time, admin tools', tiers: ['complex', 'enterprise'] },
+      ],
+      features: [
+        { id: 'both', label: 'iPhone and Android' },
+        { id: 'login', label: 'Logins and profiles' },
+        { id: 'payments', label: 'In-app payments' },
+        { id: 'admin', label: 'Admin panel' },
+        { id: 'notifications', label: 'Push notifications' },
+        { id: 'maps', label: 'Maps or live location' },
+        { id: 'chat', label: 'Chat or WhatsApp' },
+        { id: 'ai', label: 'AI features' },
+      ],
+    },
+    factors: [
+      { icon: 'stack', t: 'Platforms', d: 'One cross-platform app for iPhone and Android usually costs less than two separate native apps.' },
+      { icon: 'bolt', t: 'Features', d: 'Payments, live location, chat and AI each add design, build and testing work.' },
+      { icon: 'layers', t: 'Backend and admin', d: 'Most apps need a server, a database and an admin panel, which is often a large share of the work.' },
+      { icon: 'founder', t: 'Who builds it', d: 'A freelancer, a small studio or a large agency can quote very different prices for a similar app.' },
+      { icon: 'rocket', t: 'Start with an MVP', d: 'Launching the few features users need most first keeps the first budget small and shows what to build next.' },
+      { icon: 'clock', t: 'After launch', d: 'Store fees, hosting, updates for new phone versions and fixes are ongoing costs to plan for.' },
+    ],
+    startSmall: [
+      { t: 'The core features', d: 'Launch with the few screens users need to get value: sign-up, the main task and contact.' },
+      { t: 'One codebase', d: 'A single cross-platform app for iPhone and Android costs less than two native apps.' },
+      { t: 'Add features later', d: 'Payments, chat or AI can come in the next version, once real users show what they want.' },
+    ],
+    faqs: [
+      { q: 'How much does a simple app cost?', a: 'Published 2026 guides put a simple app at roughly ₹7.6–19 lakh in India and $5,000–$50,000 in the USA. A focused first version can cost less. Tell us your budget and we will plan what fits.' },
+      { q: 'Is it cheaper to build one app for iPhone and Android?', a: 'Usually yes. A cross-platform framework such as Flutter or React Native shares one codebase between both stores, which saves build and maintenance time.' },
+      { q: 'What does an app cost after launch?', a: 'Plan for store fees, hosting and maintenance. Guides in this page put yearly maintenance at about 15–25% of the build cost.' },
+      { q: 'How long does it take to build an app?', a: 'A focused first version often takes 1–3 months; bigger apps take 3–7 months or more, depending on features.' },
+      { q: 'Do you share your own prices here?', a: 'No. These are published market figures. Every AR Medias project gets a fixed quote after a free call, based on your scope and budget.' },
     ],
   },
 ];

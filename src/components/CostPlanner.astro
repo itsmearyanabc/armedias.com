@@ -12,6 +12,7 @@ const { guide } = Astro.props;
 const info = (slug: string) => markets.find((x) => x.slug === slug)!;
 const data = {
   whatsapp: site.whatsapp,
+  short: guide.short,
   markets: guide.markets.map((m) => ({
     slug: m.slug,
     country: info(m.slug).country,
@@ -28,7 +29,7 @@ const first = guide.markets[0];
   <div class="container-x">
     <div class="max-w-3xl">
       <p class="eyebrow" data-reveal="fade">Budget planner</p>
-      <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Plan your website in a minute.</h2>
+      <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Plan your {guide.short} in a minute.</h2>
       <p class="mt-5 text-lg text-slate" data-reveal="up">Choose what you need, add your budget and send the plan to us on WhatsApp. We'll reply, set up a free call and suggest what fits.</p>
     </div>
 
@@ -91,7 +92,7 @@ const first = guide.markets[0];
         <div class="relative overflow-hidden rounded-[2rem] bg-navy p-8 text-white shadow-2xl shadow-navy/25">
           <div aria-hidden="true" class="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-ember/25 blur-3xl"></div>
           <p class="relative text-xs font-semibold uppercase tracking-[0.2em] text-ember-300">Your plan</p>
-          <p class="relative mt-3 font-display text-2xl font-bold" data-out-title>Business website in {info(first.slug).country}</p>
+          <p class="relative mt-3 font-display text-2xl font-bold" data-out-title>{guide.short === 'website' ? 'Business website' : guide.planner.types[0].label} in {info(first.slug).country}</p>
 
           <p class="relative mt-2 text-sm text-white/70" data-out-summary>Must-haves: none picked yet</p>
 
@@ -120,7 +121,7 @@ const first = guide.markets[0];
 
 <script>
   interface Market { slug: string; country: string; currency: string | null }
-  interface Data { whatsapp: string; markets: Market[]; types: { id: string; label: string }[]; features: { id: string; label: string }[] }
+  interface Data { whatsapp: string; short: string; markets: Market[]; types: { id: string; label: string }[]; features: { id: string; label: string }[] }
 
   document.querySelectorAll<HTMLElement>('[data-planner]').forEach((root) => {
     const data = JSON.parse(root.querySelector('[data-planner-json]')!.textContent!) as Data;
@@ -157,7 +158,7 @@ const first = guide.markets[0];
       $('[data-meter-label]').textContent = LEVELS[level];
 
       const lines = [
-        "Hi AR Medias, I'm planning a website.",
+        `Hi AR Medias, I'm planning a ${data.short}.`,
         `Country: ${market.country}`,
         `Type: ${type.label}`,
         `Must-haves: ${featureLabels.length ? featureLabels.join(', ') : 'not sure yet'}`,
