@@ -9,6 +9,7 @@ import { delhiServices } from '../../data/delhi';
 import RelatedGuides from '../../components/RelatedGuides.astro';
 import { costGuides } from '../../data/cost-guides';
 import { withArticle } from '../../lib/cost-format';
+import { projects } from '../../data/projects';
 
 export function getStaticPaths() {
   return services.map((s) => ({ params: { slug: s.slug }, props: { s } }));
@@ -19,6 +20,8 @@ const related = s.related.map((slug) => serviceBySlug[slug]);
 const url = `${site.url}/services/${s.slug}/`;
 const forIndustries = industries.filter((i) => i.services.includes(s.slug));
 const delhi = delhiServices.find((d) => d.service === s.slug);
+// Case studies for this service: proof for visitors and links that help these pages get crawled
+const work = projects.filter((p) => p.services.includes(s.slug)).slice(0, 4);
 
 // Orbit visual: split the stack into an inner and outer ring
 const orbitTech = s.tech.map((t) => t.replace('WhatsApp Business API', 'WhatsApp API'));
@@ -211,6 +214,33 @@ const schema = [
       </div>
     </div>
   </section>
+
+  {work.length > 0 && (
+    <section class="border-t border-navy/8 py-20" aria-labelledby="work-heading">
+      <div class="container-x">
+        <div class="flex flex-wrap items-end justify-between gap-6">
+          <div class="max-w-2xl">
+            <p class="eyebrow text-ember-700!" data-reveal="fade">Recent work</p>
+            <h2 id="work-heading" class="mt-4 text-3xl font-bold sm:text-4xl">{s.name} we have built.</h2>
+          </div>
+          <a href="/work/" class="btn-ghost">All case studies</a>
+        </div>
+        <ul class="mt-10 grid gap-5 md:grid-cols-2" data-reveal="stagger">
+          {work.map((p) => (
+            <li>
+              <a href={`/work/${p.slug}/`} data-tilt class="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-white p-7 ring-1 ring-navy/8 transition-shadow hover:shadow-xl hover:shadow-ember/10">
+                <span aria-hidden="true" class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-ember to-sun"></span>
+                <span class="text-sm font-semibold text-ember-700">{p.client || p.business}</span>
+                <span class="mt-2 font-display text-xl font-bold group-hover:text-ember-600">{p.title}</span>
+                <span class="mt-2 flex-1 text-slate">{p.summary}</span>
+                <span class="mt-5 font-semibold text-navy">Read the case study <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">→</span></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
 
   <RelatedGuides service={s.slug} />
 

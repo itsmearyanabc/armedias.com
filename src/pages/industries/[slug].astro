@@ -5,6 +5,9 @@ import Scribble from '../../components/Scribble.astro';
 import { site, markets } from '../../data/site';
 import { serviceBySlug } from '../../data/services';
 import { industries, type Industry } from '../../data/industries';
+import { costGuides } from '../../data/cost-guides';
+import { withArticle } from '../../lib/cost-format';
+import { projects } from '../../data/projects';
 
 export function getStaticPaths() {
   return industries.map((i) => ({ params: { slug: i.slug }, props: { ind: i } }));
@@ -15,6 +18,8 @@ const url = `${site.url}/industries/${ind.slug}/`;
 const related = ind.services.map((s) => serviceBySlug[s]);
 const others = industries.filter((i) => i.slug !== ind.slug);
 const lower = ind.name.toLowerCase();
+const guides = costGuides.filter((g) => ind.services.includes(g.service));
+const work = projects.filter((p) => p.services.some((x) => ind.services.includes(x))).slice(0, 3);
 // The headline with its accent phrase split out, so it can be drawn with the orange underline
 const hasAccent = !!ind.accent && ind.headline.includes(ind.accent);
 const [before, after] = hasAccent ? ind.headline.split(ind.accent!) : [ind.headline, ''];
@@ -170,6 +175,23 @@ const schema = [
           </li>
         ))}
       </ul>
+      {work.length > 0 && (
+        <div class="mt-12">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-ember-700">Related work</p>
+          <ul class="mt-4 grid gap-3 md:grid-cols-3">
+            {work.map((p) => (
+              <li><a href={`/work/${p.slug}/`} class="group flex h-full flex-col rounded-2xl bg-white p-5 ring-1 ring-navy/8 transition-shadow hover:shadow-lg hover:shadow-ember/10"><span class="text-xs font-semibold text-ember-700">{p.client || p.business}</span><span class="mt-1 font-display font-bold group-hover:text-ember-600">{p.title} <span aria-hidden="true">→</span></span></a></li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {guides.length > 0 && (
+        <ul class="mt-8 flex flex-wrap gap-3">
+          {guides.map((g) => (
+            <li><a href={`/pricing/${g.slug}/`} class="inline-flex items-center gap-2 rounded-full bg-ember/10 px-5 py-2.5 text-sm font-semibold text-navy ring-1 ring-ember/25 transition-colors hover:bg-ember">What does {withArticle(g.short)} cost? <span aria-hidden="true">→</span></a></li>
+          ))}
+        </ul>
+      )}
     </div>
   </section>
 
