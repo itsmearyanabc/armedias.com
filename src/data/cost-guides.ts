@@ -284,9 +284,9 @@ export const costGuides: CostGuide[] = [
       { icon: 'receipt', t: 'Running costs', d: 'Domain, hosting, maintenance and SEO continue after launch, so budget for them from day one.' },
     ],
     faqs: [
-      { q: 'How much does a website cost in India?', a: 'Published 2026 guides put a simple 1–5 page site at about ₹5,000 to ₹50,000, a small business site at ₹10,000 to ₹80,000 and an agency-built online store from about ₹1,50,000. Builder plans cost ₹2,000 to ₹6,000 a year.' },
-      { q: 'How much does a website cost in the USA?', a: 'A small business site costs about $2,000 to $7,600 from a freelancer and $5,000 to $15,000 from a full-service agency, according to 2026 guides. Custom web applications run from about $15,000 to $150,000 or more.' },
-      { q: 'How much does a website cost in Dubai?', a: 'Dubai guides list basic business websites at AED 3,500 to 8,000, corporate sites at AED 12,000 to 55,000 and e-commerce sites from AED 15,000.' },
+      { q: 'How much does a website cost in India?', a: 'It depends on what the site needs to do, and India has a sensible option for almost every budget, from a simple site that gets you found to a full online store. Tell us your budget on WhatsApp and we will plan a site that fits it, then grow it with your business. The published market ranges for each country are on this page, under “Show published market ranges”.' },
+      { q: 'How much does a website cost in the USA?', a: 'It depends mostly on who builds it and what it needs to do. Many US businesses keep costs predictable by starting with the pages that bring enquiries and adding features later. Share your budget and we will plan what fits, with a fixed quote. The published market ranges for each country are on this page, under “Show published market ranges”.' },
+      { q: 'How much does a website cost in Dubai?', a: 'It depends on the pages, the languages and the features you need. A clear first version in English, with Arabic added when you are ready, keeps the first budget comfortable. Tell us your budget and we will plan the site that fits it. The published market ranges for each country are on this page, under “Show published market ranges”.' },
       { q: 'Can I get a website on a small budget?', a: 'Yes. Starting with fewer pages, a proven template and the features you need first keeps the first version affordable, and you can add more later. Tell us your budget and we will suggest what fits it.' },
       { q: 'Why do website quotes vary so much?', a: 'Quotes differ in who does the work, how much is custom, and what is included: design rounds, content, SEO, testing and support. Compare quotes for the same written scope.' },
       { q: 'Are these AR Medias prices?', a: 'No. They are market figures from the published guides listed on this page. Every AR Medias project gets a fixed quote after a free call, based on your scope and budget.' },
@@ -485,7 +485,7 @@ export const costGuides: CostGuide[] = [
       { t: 'Add features later', d: 'Payments, chat or AI can come in the next version, once real users show what they want.' },
     ],
     faqs: [
-      { q: 'How much does a simple app cost?', a: 'Published 2026 guides put a simple app at roughly ₹7.6–19 lakh in India and $5,000–$50,000 in the USA. A focused first version can cost less. Tell us your budget and we will plan what fits.' },
+      { q: 'How much does a simple app cost?', a: 'Less than most people expect when you start with a focused first version: the few features your users need most, on one codebase for iPhone and Android. Tell us your budget and we will plan the version that fits it, then grow the app with real users. The published market ranges for each country are on this page, under “Show published market ranges”.' },
       { q: 'Is it cheaper to build one app for iPhone and Android?', a: 'Usually yes. A cross-platform framework such as Flutter or React Native shares one codebase between both stores, which saves build and maintenance time.' },
       { q: 'What does an app cost after launch?', a: 'Plan for store fees, hosting and maintenance. Guides in this page put yearly maintenance at about 15–25% of the build cost.' },
       { q: 'How long does it take to build an app?', a: 'A focused first version often takes 1–3 months; bigger apps take 3–7 months or more, depending on features.' },
@@ -664,7 +664,7 @@ export const costGuides: CostGuide[] = [
       { t: 'Add features later', d: 'Loyalty, B2B pricing or ERP sync can follow once the store is selling.' },
     ],
     faqs: [
-      { q: 'How much does a small online store cost?', a: 'Published 2026 guides put template-built stores at roughly ₹15,000–₹50,000 in India and small business stores at $2,000–$10,000 in the USA, plus monthly platform costs. Tell us your budget and we will plan what fits.' },
+      { q: 'How much does a small online store cost?', a: 'A small store can start on a hosted platform with your best-selling products, so the first step stays modest and you only pay for more as sales grow. Tell us your budget and we will plan the store that fits it. The published market ranges for each country are on this page, under “Show published market ranges”.' },
       { q: 'Shopify, WooCommerce or custom?', a: 'Shopify is quickest to launch, WooCommerce gives more control on your own hosting, and a custom build suits complex catalogues, B2B pricing or deep ERP links.' },
       { q: 'What are the monthly costs of an online store?', a: 'Platform plan, apps, hosting, payment gateway fees and maintenance. This page lists the published figures for each country.' },
       { q: 'Do you share your own prices here?', a: 'No. These are published market figures. Every AR Medias project gets a fixed quote after a free call, based on your scope and budget.' },
@@ -762,7 +762,7 @@ export const costGuides: CostGuide[] = [
       { t: 'Add modules later', d: 'Quotes, tickets or inventory can follow once the team uses the CRM every day.' },
     ],
     faqs: [
-      { q: 'How much does a custom CRM cost?', a: 'Published 2026 guides put a basic custom CRM at roughly ₹3–8 lakh in India, $25,000–$50,000 in the USA and AED 15,000–40,000 in the UAE. Tell us your budget and we will plan what fits.' },
+      { q: 'How much does a custom CRM cost?', a: 'It depends on your users, modules and integrations. Most businesses start with the part that brings in revenue, a lead pipeline with follow-ups, and add the rest once the team uses it daily. Tell us your budget and we will plan that first version. The published market ranges for each country are on this page, under “Show published market ranges”.' },
       { q: 'Is a custom CRM cheaper than Zoho, HubSpot or Salesforce?', a: 'Often over a few years for larger teams, because a custom CRM has no per-user fee. For a small team with a standard process, a ready-made CRM can be the better start.' },
       { q: 'What does a CRM cost to run each year?', a: 'Hosting, maintenance and improvements. Guides on this page put yearly maintenance at about 15–20% of the build cost.' },
       { q: 'Do you share your own prices here?', a: 'No. These are published market figures. Every AR Medias project gets a fixed quote after a free call, based on your scope and budget.' },
@@ -865,7 +865,7 @@ export const costGuides: CostGuide[] = [
       { t: 'Add phases later', d: 'Production, HR or dealer portals can follow once the first module is in daily use.' },
     ],
     faqs: [
-      { q: 'How much does a custom ERP cost?', a: 'Published 2026 guides put a starter custom ERP at $40,000–$100,000 in the USA and a small-business ERP at AED 36,000–92,000 in the UAE. Indian businesses often compare this with Tally, Zoho One or SAP Business One. Tell us your budget and we will plan what fits.' },
+      { q: 'How much does a custom ERP cost?', a: 'It depends on the modules, users and locations. Building in phases, starting with the module where mistakes cost you most, keeps the first budget and the risk small. Tell us your budget and we will plan the first phase that fits. The published market ranges for each country are on this page, under “Show published market ranges”.' },
       { q: 'Custom ERP or Odoo, ERPNext or Tally?', a: 'Ready-made systems are quicker to start when your process matches theirs. A custom ERP suits a process they cannot follow without workarounds, and you own the code.' },
       { q: 'Can we build an ERP in phases?', a: 'Yes. Most ERPs start with one or two modules and grow, which keeps the first budget and the risk small.' },
       { q: 'Do you share your own prices here?', a: 'No. These are published market figures. Every AR Medias project gets a fixed quote after a free call, based on your scope and budget.' },
@@ -961,7 +961,7 @@ export const costGuides: CostGuide[] = [
       { t: 'Add AI later', d: 'Free-text AI answers, bookings and CRM actions can follow once the basics work.' },
     ],
     faqs: [
-      { q: 'How much does an AI chatbot cost?', a: 'Published 2026 guides put a rule-based bot at roughly ₹35,000–₹1,25,000 in India and $3,000–$15,000 in the USA, and AI chatbots higher. Running costs come on top. Tell us your budget and we will plan what fits.' },
+      { q: 'How much does an AI chatbot cost?', a: 'A bot that answers your top questions well can start small, and you can add AI answers, bookings and CRM links later. Plan for monthly running costs too, which grow with conversations. Tell us your budget and we will plan the bot that fits. The published market ranges for each country are on this page, under “Show published market ranges”.' },
       { q: 'What does WhatsApp automation cost each month?', a: 'Meta charges per message by category and country, the provider charges a platform fee, and AI replies add model costs. This page lists the published figures.' },
       { q: 'Can the bot answer from our own documents?', a: 'Yes. A retrieval-based (RAG) chatbot searches your documents and website before answering, which keeps answers specific to your business.' },
       { q: 'Do you share your own prices here?', a: 'No. These are published market figures. Every AR Medias project gets a fixed quote after a free call, based on your scope and budget.' },
