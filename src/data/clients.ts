@@ -18,6 +18,8 @@ import timezone from '../assets/clients/timezone.png';
 import toothsi from '../assets/clients/toothsi.png';
 import trezuh from '../assets/clients/trezuh.png';
 import safarnex from '../assets/clients/safarnex.png';
+import religiogram from '../assets/clients/religiogram.png';
+import vault from '../assets/clients/vault.png';
 import vijaySales from '../assets/clients/vijay-sales.png';
 import dubaiBurqa from '../assets/clients/dubai-burqa.png';
 import manipal from '../assets/clients/online-manipal.png';
@@ -37,6 +39,7 @@ export const clients: Client[] = [
   { name: 'toothsi', logo: toothsi },
   { name: 'Online Manipal', logo: manipal },
   { name: 'Safarnex', logo: safarnex },
+  { name: 'Vault', logo: vault },
   { name: 'TREZUH', logo: trezuh },
   { name: 'PackLive', logo: packlive },
   { name: 'Raj Real Estate', logo: raj },
@@ -45,5 +48,6 @@ export const clients: Client[] = [
   { name: 'Digi Paradise Studio', logo: digiParadise },
   { name: 'Goldmine Sanger', logo: goldmine },
   { name: 'RAK LED', logo: rak },
+  { name: 'Religiogram', logo: religiogram },
   { name: 'Global Peace Overseas', logo: globalPeace },
 ];
