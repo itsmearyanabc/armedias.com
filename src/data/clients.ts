@@ -17,7 +17,7 @@ import rian from '../assets/clients/rian-cullet.png';
 import timezone from '../assets/clients/timezone.png';
 import toothsi from '../assets/clients/toothsi.png';
 import trezuh from '../assets/clients/trezuh.png';
-import vault from '../assets/clients/vault-kirti-nagar.png';
+import safarnex from '../assets/clients/safarnex.png';
 import vijaySales from '../assets/clients/vijay-sales.png';
 import dubaiBurqa from '../assets/clients/dubai-burqa.png';
 import manipal from '../assets/clients/online-manipal.png';
@@ -36,7 +36,7 @@ export const clients: Client[] = [
   { name: 'Timezone', logo: timezone },
   { name: 'toothsi', logo: toothsi },
   { name: 'Online Manipal', logo: manipal },
-  { name: 'Vault Kirti Nagar', logo: vault },
+  { name: 'Safarnex', logo: safarnex },
   { name: 'TREZUH', logo: trezuh },
   { name: 'PackLive', logo: packlive },
   { name: 'Raj Real Estate', logo: raj },
