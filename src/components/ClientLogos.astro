@@ -9,7 +9,7 @@
 import { getImage } from 'astro:assets';
 import { clients } from '../data/clients';
 
-const SLOTS = 6; // CSS shows 3 on phones, 4 on tablets, 6 on desktop
+const SLOTS = 8; // CSS shows 3 on phones, 4-5 on tablets, 7 on laptops, 8 on wide screens
 const SIZE = 96;
 const logos = await Promise.all(clients.map(async (c) => {
   const img = await getImage({ src: c.logo, width: SIZE * 2, height: SIZE * 2, format: 'webp', quality: 82 });
@@ -126,11 +126,13 @@ const first = logos.slice(0, SLOTS);
 </script>
 
 <style>
-  .lw-row { display: flex; justify-content: center; gap: clamp(1.25rem, 4vw, 3.25rem); }
+  .lw-row { display: flex; justify-content: space-evenly; gap: clamp(1rem, 3vw, 2.5rem); }
   .lw-slot { position: relative; display: grid; justify-items: center; cursor: default; -webkit-tap-highlight-color: transparent; }
   .lw-slot:nth-child(n + 4) { display: none; }
   @media (min-width: 40rem) { .lw-slot:nth-child(4) { display: grid; } }
-  @media (min-width: 64rem) { .lw-slot:nth-child(n + 5) { display: grid; } }
+  @media (min-width: 48rem) { .lw-slot:nth-child(5) { display: grid; } }
+  @media (min-width: 64rem) { .lw-slot:nth-child(n + 6):nth-child(-n + 7) { display: grid; } }
+  @media (min-width: 80rem) { .lw-slot:nth-child(8) { display: grid; } }
 
   /* The round window the logos slide through */
   .lw-window {

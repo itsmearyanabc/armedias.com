@@ -19,6 +19,11 @@ import toothsi from '../assets/clients/toothsi.png';
 import trezuh from '../assets/clients/trezuh.png';
 import vault from '../assets/clients/vault-kirti-nagar.png';
 import vijaySales from '../assets/clients/vijay-sales.png';
+import dubaiBurqa from '../assets/clients/dubai-burqa.png';
+import manipal from '../assets/clients/online-manipal.png';
+import packlive from '../assets/clients/packlive.png';
+import peterEngland from '../assets/clients/peter-england.png';
+import raj from '../assets/clients/raj-real-estate.png';
 
 export interface Client { name: string; logo: ImageMetadata }
 
@@ -27,10 +32,15 @@ export const clients: Client[] = [
   { name: 'District', logo: district },
   { name: 'Vijay Sales', logo: vijaySales },
   { name: 'GIVA', logo: giva },
+  { name: 'Peter England', logo: peterEngland },
   { name: 'Timezone', logo: timezone },
   { name: 'toothsi', logo: toothsi },
+  { name: 'Online Manipal', logo: manipal },
   { name: 'Vault Kirti Nagar', logo: vault },
   { name: 'TREZUH', logo: trezuh },
+  { name: 'PackLive', logo: packlive },
+  { name: 'Raj Real Estate', logo: raj },
+  { name: 'Dubai Burqa Collections', logo: dubaiBurqa },
   { name: 'Rian Cullet', logo: rian },
   { name: 'Digi Paradise Studio', logo: digiParadise },
   { name: 'Goldmine Sanger', logo: goldmine },
