@@ -1,43 +1,177 @@
 ---
-// Rolling belt of client logos (or name wordmarks). Renders nothing until clients.ts has
-// entries, so no placeholder brands ever appear.
-import { Image } from 'astro:assets';
+// Client logo wall: a fixed row of round logo slots. Every 1.6 s one slot (in a shuffled
+// order) slides its logo up and out while the next client slides up into its place, so a
+// long client list fits in one calm row. Only the logo shows; the name appears on hover,
+// tap or keyboard focus. Renders nothing until clients.ts has entries.
+//
+// No JS or reduced motion: the first logos simply sit still. Swapping pauses while the wall
+// is off screen, the tab is hidden, or the pointer is over that slot.
+import { getImage } from 'astro:assets';
 import { clients } from '../data/clients';
 
-const rows = clients.length >= 10
-  ? [clients.filter((_, i) => i % 2 === 0), clients.filter((_, i) => i % 2 === 1)]
-  : [clients];
-// Repeat short lists so the belt is always wider than the screen
-const fill = (row: typeof clients) => Array.from({ length: Math.max(2, Math.ceil(10 / Math.max(row.length, 1))) }, () => row).flat();
+const SLOTS = 6; // CSS shows 3 on phones, 4 on tablets, 6 on desktop
+const SIZE = 96;
+const logos = await Promise.all(clients.map(async (c) => {
+  const img = await getImage({ src: c.logo, width: SIZE * 2, height: SIZE * 2, format: 'webp', quality: 82 });
+  return { n: c.name, s: img.src };
+}));
+const first = logos.slice(0, SLOTS);
 ---
 
 {clients.length > 0 && (
-  <section aria-labelledby="clients-heading" class="border-y border-navy/8 bg-white py-12">
-    <h2 id="clients-heading" class="container-x mb-8 text-center text-sm font-semibold uppercase tracking-[0.2em] text-slate" data-no-split>
-      Trusted by growing businesses
+  <section aria-labelledby="clients-heading" class="border-y border-navy/8 bg-white py-14" data-logo-wall data-logos={JSON.stringify(logos)}>
+    <h2 id="clients-heading" class="container-x mb-10 text-center text-sm font-semibold uppercase tracking-[0.2em] text-slate" data-no-split>
+      Brands we've worked with
     </h2>
-    {rows.map((row, i) => (
-      <div class="marquee mb-6 last:mb-0" data-reverse={i === 1 ? '' : undefined} style="--speed: 45s; --gap: 3rem">
-        {[0, 1].map((copy) => (
-          <ul class="marquee__track items-center" aria-hidden={copy === 1 ? 'true' : undefined}>
-            {fill(row).map((c, n) => (
-              <li class="client grid h-16 place-items-center" aria-hidden={n >= row.length ? 'true' : undefined}>
-                {c.logo
-                  ? <Image src={c.logo} alt={c.name} height={48} class="h-10 w-auto max-w-[10rem] object-contain" />
-                  : <span class="whitespace-nowrap font-display text-2xl font-bold tracking-tight text-navy">{c.name}</span>}
-              </li>
-            ))}
-          </ul>
-        ))}
-      </div>
-    ))}
+    <ul class="lw-row container-x" role="list">
+      {first.map((l, i) => (
+        <li class="lw-slot" data-slot data-i={i} style={`--i:${i}`}>
+          <span class="lw-window">
+            <img src={l.s} alt={l.n} width={SIZE} height={SIZE} loading="lazy" decoding="async" />
+          </span>
+          <span class="lw-name" aria-hidden="true">{l.n}</span>
+        </li>
+      ))}
+    </ul>
   </section>
 )}
 
+<script>
+  type Logo = { n: string; s: string };
+  const wall = document.querySelector<HTMLElement>('[data-logo-wall]');
+  const motionOK = !matchMedia('(prefers-reduced-motion: reduce)').matches && !navigator.webdriver;
+
+  if (wall) {
+    const pool: Logo[] = JSON.parse(wall.dataset.logos || '[]');
+    const slots = [...wall.querySelectorAll<HTMLElement>('[data-slot]')];
+
+    // Tap shows the name on touch screens (hover covers mouse, focus-within covers keyboard)
+    slots.forEach((s) => s.addEventListener('click', () => {
+      const on = !s.classList.contains('is-active');
+      slots.forEach((o) => o.classList.remove('is-active'));
+      s.classList.toggle('is-active', on);
+    }));
+
+    if (motionOK) {
+      document.documentElement.classList.contains('js-motion') && wall.classList.add('lw-pre');
+      const visible = () => slots.filter((s) => s.offsetParent !== null);
+      let order: HTMLElement[] = [];
+      let queue: number[] = [];
+      let timer = 0;
+      let onScreen = false;
+
+      // Logos not on screen right now, in a shuffled round so every client gets a turn
+      const nextLogo = () => {
+        const shown = new Set(visible().map((s) => Number(s.dataset.i)));
+        queue = queue.filter((i) => !shown.has(i));
+        if (!queue.length) queue = shuffle(pool.map((_, i) => i).filter((i) => !shown.has(i)));
+        return queue.shift();
+      };
+      // Slots change in a shuffled order, never the same slot twice in a row
+      const nextSlot = () => {
+        const v = visible();
+        order = order.filter((s) => v.includes(s));
+        if (!order.length) {
+          const last = v.indexOf(slots[Number(wall.dataset.last)]);
+          order = shuffle(v);
+          if (last >= 0 && order[0] === v[last] && order.length > 1) order.push(order.shift()!);
+        }
+        return order.shift();
+      };
+
+      const swap = async () => {
+        let slot = nextSlot();
+        if (slot?.matches(':hover, .is-active, :focus-within')) slot = nextSlot();
+        const idx = nextLogo();
+        if (!slot || idx === undefined || slot.matches(':hover, .is-active, :focus-within')) return;
+        wall.dataset.last = String(slots.indexOf(slot));
+        const win = slot.querySelector<HTMLElement>('.lw-window')!;
+        const old = win.querySelector('img:not(.lw-out)');
+        const img = new Image(96, 96);
+        img.src = pool[idx].s;
+        img.alt = pool[idx].n;
+        img.decoding = 'async';
+        try { await img.decode(); } catch { return; }
+        img.className = 'lw-in';
+        win.append(img);
+        slot.dataset.i = String(idx);
+        slot.querySelector('.lw-name')!.textContent = pool[idx].n;
+        if (old) {
+          old.classList.add('lw-out');
+          const done = () => old.remove();
+          old.addEventListener('animationend', done, { once: true });
+          setTimeout(done, 1400);
+        }
+        img.addEventListener('animationend', () => img.classList.remove('lw-in'), { once: true });
+      };
+
+      const run = () => {
+        clearInterval(timer);
+        if (onScreen && !document.hidden && pool.length > visible().length) timer = window.setInterval(swap, 1600);
+      };
+      new IntersectionObserver(([e]) => {
+        onScreen = e.isIntersecting;
+        if (onScreen) wall.classList.add('lw-in-view');
+        run();
+      }, { threshold: 0.35 }).observe(wall);
+      document.addEventListener('visibilitychange', run);
+    }
+  }
+
+  function shuffle<T>(a: T[]): T[] {
+    const b = [...a];
+    for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; }
+    return b;
+  }
+</script>
+
 <style>
-  /* <Image> output isn't scoped to this component, so children are matched globally */
-  .client > :global(*) { filter: grayscale(1); opacity: 0.55; transition: filter 0.3s, opacity 0.3s, transform 0.3s; }
-  .client:hover > :global(*) { filter: none; opacity: 1; transform: scale(1.08); }
-  .client span { color: var(--color-navy); }
-  .client:hover span { color: var(--color-olive); }
+  .lw-row { display: flex; justify-content: center; gap: clamp(1.25rem, 4vw, 3.25rem); }
+  .lw-slot { position: relative; display: grid; justify-items: center; cursor: default; -webkit-tap-highlight-color: transparent; }
+  .lw-slot:nth-child(n + 4) { display: none; }
+  @media (min-width: 40rem) { .lw-slot:nth-child(4) { display: grid; } }
+  @media (min-width: 64rem) { .lw-slot:nth-child(n + 5) { display: grid; } }
+
+  /* The round window the logos slide through */
+  .lw-window {
+    display: grid; width: clamp(4.5rem, 16vw, 6rem); aspect-ratio: 1; overflow: hidden; border-radius: 999px;
+    background: #fff; box-shadow: 0 0 0 1px rgb(19 33 58 / 0.08), 0 10px 24px -14px rgb(19 33 58 / 0.35);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+  }
+  .lw-window :global(img) { grid-area: 1 / 1; width: 100%; height: 100%; object-fit: cover; }
+
+  /* Name: hidden until hover, tap or focus */
+  .lw-name {
+    position: absolute; top: calc(100% + 0.6rem); left: 50%; z-index: 2; translate: -50% 0;
+    white-space: nowrap; border-radius: 999px; background: var(--color-navy); padding: 0.3rem 0.8rem;
+    font-size: 0.8125rem; font-weight: 600; color: #fff; pointer-events: none;
+    opacity: 0; transform: translateY(-6px) scale(0.92); transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .lw-name::before {
+    content: ''; position: absolute; bottom: 100%; left: 50%; translate: -50% 0;
+    border: 6px solid transparent; border-bottom-color: var(--color-navy);
+  }
+  .lw-slot:is(:hover, :focus-within, .is-active) .lw-window {
+    transform: translateY(-4px) scale(1.06);
+    box-shadow: 0 0 0 3px var(--color-ember), 0 18px 30px -16px rgb(255 122 26 / 0.6);
+  }
+  .lw-slot:is(:hover, :focus-within, .is-active) .lw-name { opacity: 1; transform: none; }
+
+  /* Swap: old logo rises out, new one rises in from below, slightly after */
+  .lw-window :global(.lw-out) { animation: lw-out 0.9s cubic-bezier(0.87, 0, 0.13, 1) forwards; }
+  .lw-window :global(.lw-in) { animation: lw-in 0.9s cubic-bezier(0.87, 0, 0.13, 1) 0.1s backwards; }
+  @keyframes lw-out { to { opacity: 0; transform: translateY(-60%); } }
+  @keyframes lw-in { from { opacity: 0; transform: translateY(60%); } }
+
+  /* First appearance: slots rise in one after another when the wall scrolls into view */
+  .lw-pre .lw-slot { opacity: 0; transform: translateY(20px); }
+  .lw-pre.lw-in-view .lw-slot {
+    opacity: 1; transform: none;
+    transition: opacity 0.75s cubic-bezier(0.33, 1, 0.68, 1), transform 0.75s cubic-bezier(0.33, 1, 0.68, 1);
+    transition-delay: calc(var(--i) * 0.1s);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lw-window, .lw-name { transition: none; }
+  }
 </style>
