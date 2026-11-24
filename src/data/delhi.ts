@@ -27,7 +27,7 @@ export const delhiServices: DelhiService[] = [
     service: 'website-development',
     name: 'Website development',
     metaTitle: 'Website Development Company in Delhi | AR Medias',
-    metaDescription: 'Website development and designing company in Kirti Nagar, New Delhi. Fast, SEO-ready business websites, offline meetings in Delhi NCR, fixed INR quotes.',
+    metaDescription: 'Website development and designing company in Kirti Nagar, New Delhi: fast, SEO-ready business websites. Meet us, fixed INR quotes.',
     h1: 'Website development company in Delhi',
     lead: 'We design and build fast, search-ready business websites from our office in Kirti Nagar, New Delhi. Meet us in person, see progress in regular update meetings, and get a fixed quote in INR before work starts.',
     builds: [
@@ -51,7 +51,7 @@ export const delhiServices: DelhiService[] = [
     service: 'custom-software-development',
     name: 'Software development',
     metaTitle: 'Software Development Company in Delhi | AR Medias',
-    metaDescription: 'Custom software development company in New Delhi. Web apps, portals, dashboards and internal tools for Delhi NCR businesses. Offline meetings, fixed INR quotes.',
+    metaDescription: 'Custom software development company in New Delhi: web apps, portals, dashboards and internal tools for Delhi NCR. Fixed INR quotes.',
     h1: 'Software development company in Delhi',
     lead: 'We build custom software for Delhi NCR businesses that have outgrown spreadsheets and off-the-shelf tools: web applications, client portals, dashboards and internal systems, built around how your team actually works.',
     builds: [
@@ -85,7 +85,7 @@ export const delhiServices: DelhiService[] = [
     service: 'mobile-app-development',
     name: 'Mobile app development',
     metaTitle: 'Mobile App Development Company in Delhi | AR Medias',
-    metaDescription: 'Mobile app development company in New Delhi building Android and iOS apps for Delhi NCR businesses and startups. Offline meetings and fixed INR quotes.',
+    metaDescription: 'Mobile app development company in New Delhi: Android and iOS apps for Delhi NCR businesses and startups. Meet us, fixed INR quotes.',
     h1: 'Mobile app development company in Delhi',
     lead: 'We design and build Android and iOS apps for businesses and startups across Delhi NCR, from customer apps to field-team and ordering apps, with demos you can try on your own phone as the work progresses.',
     builds: [
@@ -119,7 +119,7 @@ export const delhiServices: DelhiService[] = [
     service: 'crm-development',
     name: 'CRM software development',
     metaTitle: 'CRM Software Development Company in Delhi | AR Medias',
-    metaDescription: 'CRM software development company in New Delhi. Custom CRM development services or Zoho and HubSpot setup for Delhi NCR sales teams, with WhatsApp lead capture.',
+    metaDescription: 'CRM software development company in New Delhi: custom CRM or Zoho and HubSpot setup for Delhi NCR sales teams, with WhatsApp leads.',
     h1: 'CRM software development company in Delhi',
     lead: 'We build custom CRM software and set up Zoho, HubSpot or Salesforce for sales teams across Delhi NCR, so every enquiry from your website, WhatsApp, calls and portals lands in one place and gets followed up.',
     builds: [
@@ -155,7 +155,7 @@ export const delhiServices: DelhiService[] = [
     service: 'erp-development',
     name: 'ERP software',
     metaTitle: 'ERP Software Company in Delhi | Custom ERP | AR Medias',
-    metaDescription: 'ERP software company in New Delhi. Custom ERP development, Odoo and ERPNext services for Delhi NCR manufacturers and traders, with GST and Tally sync.',
+    metaDescription: 'ERP software company in New Delhi: custom ERP, Odoo and ERPNext for Delhi NCR manufacturers and traders, with GST and Tally sync.',
     h1: 'ERP software company in Delhi',
     lead: 'We build custom ERP software and implement Odoo and ERPNext for manufacturers, traders and distributors across Delhi NCR, connecting purchase, stock, production, sales and accounts in one system with GST built in.',
     builds: [
@@ -191,7 +191,7 @@ export const delhiServices: DelhiService[] = [
     service: 'ai-automation',
     name: 'AI & WhatsApp automation',
     metaTitle: 'AI & WhatsApp Automation Agency in Delhi | AR Medias',
-    metaDescription: 'AI automation agency in New Delhi. WhatsApp automation, AI chatbots and workflow automation for Delhi NCR businesses. Offline meetings, fixed INR quotes.',
+    metaDescription: 'AI automation agency in New Delhi: WhatsApp automation, AI chatbots and workflows for Delhi NCR businesses. Meet us, fixed INR quotes.',
     h1: 'AI and WhatsApp automation agency in Delhi',
     lead: 'We automate the repetitive work that slows Delhi NCR businesses down: WhatsApp replies and follow-ups, AI chatbots that answer customers, and workflows that move data between your tools without anyone copying it by hand.',
     builds: [

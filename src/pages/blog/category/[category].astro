@@ -17,7 +17,7 @@ const posts = (await getPosts()).filter((p) => p.data.category === category);
 // Category-specific description and intro, so each listing page says what it covers
 const intros: Record<string, { description: string; lead: string }> = {
   crm: {
-    description: 'CRM guides for sales teams: custom CRM vs Zoho, HubSpot and Salesforce, lead capture, follow-ups and how to choose the right CRM for your process.',
+    description: 'CRM guides for sales teams: custom CRM vs Zoho, HubSpot and Salesforce, lead capture, follow-ups and choosing the right CRM.',
     lead: 'How to choose, plan and get value from a CRM: custom builds, Zoho, HubSpot and Salesforce, lead capture from every channel and follow-ups that do not slip.',
   },
   erp: {
@@ -25,11 +25,11 @@ const intros: Record<string, { description: string; lead: string }> = {
     lead: 'Practical advice on ERP for growing businesses: when Tally is enough, how Odoo and ERPNext compare, when a custom ERP pays off and how to roll it out without disruption.',
   },
   'ai-automation': {
-    description: 'Guides to AI and WhatsApp automation for businesses: what to automate, the WhatsApp Business API rules, AI chatbots and connecting it all to your CRM.',
+    description: 'Guides to AI and WhatsApp automation: what to automate, WhatsApp Business API rules, AI chatbots and connecting it all to your CRM.',
     lead: 'What AI and automation can take off your team, from instant WhatsApp replies and lead capture to AI assistants, and the rules to follow when you set it up.',
   },
   'web-apps': {
-    description: 'Guides to websites and apps: Core Web Vitals and site speed, planning an MVP, web vs mobile, and building products that are fast and easy to grow.',
+    description: 'Guides to websites and apps: Core Web Vitals and site speed, planning an MVP, web vs mobile, and building products that grow.',
     lead: 'How to plan, build and speed up websites and apps: Core Web Vitals, choosing what goes into a first version, web or mobile, and foundations worth getting right.',
   },
 };

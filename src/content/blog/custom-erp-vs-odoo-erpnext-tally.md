@@ -1,6 +1,6 @@
 ---
 title: 'Custom ERP vs Odoo, ERPNext or Tally: How to Choose'
-description: 'Should you stay on Tally, implement Odoo or ERPNext, or build a custom ERP? A practical guide to fit, cost drivers, ownership and when each option makes sense.'
+description: 'Stay on Tally, move to Odoo or ERPNext, or build a custom ERP? A practical guide to fit, cost drivers, ownership and when each makes sense.'
 category: erp
 published: 2026-11-12
 service: erp-development

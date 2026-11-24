@@ -30,7 +30,7 @@ const extraCities = cityPages.filter((c) => !listed.has(c.name));
 
 // Most markets search by country; the UAE searches by Dubai first.
 const title = guide?.metaTitle ?? `Software & App Development Company in ${m.titlePlace ?? m.country} | AR Medias`;
-const description = guide?.metaDescription ?? `Websites, apps, CRM/ERP and AI automation for businesses in ${m.area}. Fixed quotes in ${m.currency} and calls in your time zone.`;
+const description = guide?.metaDescription ?? `Websites, apps, CRM/ERP and AI for businesses in ${m.area}. Fixed ${m.currency} quotes, calls in your time zone.`;
 
 const faqs = [
   m.faq,

@@ -35,6 +35,8 @@ export interface Project {
   year: number;
   services: string[]; // slugs from services.ts
   title: string;
+  /** Search-result title, keyword first, under ~580px wide; the page uses `title` when omitted. */
+  metaTitle?: string;
   /** Search-result description, 110-160 characters. */
   metaDescription?: string;
   summary: string;
@@ -60,7 +62,8 @@ export interface Project {
 export const projects: Project[] = [
   {
     slug: 'attendance-payroll-saas',
-    metaDescription: 'Case study: an attendance and payroll SaaS by AR Medias, with camera and GPS punch-in and payroll run from frozen, auditable attendance records.',
+    metaTitle: 'Attendance & Payroll SaaS with GPS Punch-In | AR Medias',
+    metaDescription: 'Case study: an attendance and payroll SaaS with camera and GPS punch-in, and payroll run from frozen, auditable attendance records.',
     client: '',
     business: 'AR Medias product · Workforce SaaS',
     country: 'India',
@@ -90,7 +93,8 @@ export const projects: Project[] = [
   },
   {
     slug: 'ai-legal-research-assistant',
-    metaDescription: 'Case study: an AI legal assistant on WhatsApp and the web for Indian advocates, with IPC to BNS mapping and every citation checked before sending.',
+    metaTitle: 'AI Legal Research Assistant on WhatsApp | AR Medias',
+    metaDescription: 'Case study: an AI legal assistant on WhatsApp and the web for Indian advocates, with IPC to BNS mapping and every citation checked.',
     client: '',
     business: 'Legal-tech product for Indian advocates',
     country: 'India',
@@ -121,6 +125,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'ivr-broadcast-order-portal',
+    metaTitle: 'IVR Broadcast Order Portal for Xpack | AR Medias',
     metaDescription: 'Case study: customer and admin portals for an IVR broadcast business, with campaign orders, a prepaid wallet, an urgent queue and activity logs.',
     client: 'Xpack',
     business: 'IVR and voice broadcast service provider',
@@ -153,6 +158,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'glass-recycling-company-website',
+    metaTitle: 'Rian Cullet Website: Custom WordPress Theme | AR Medias',
     metaDescription: 'Case study: a bespoke WordPress theme for a Delhi glass recycling company, hand-built with no page builder and about 20 KB of JavaScript.',
     client: 'Rian Cullet',
     business: 'Glass cullet recycling company, Delhi (since 1996)',
@@ -185,6 +191,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'luxury-real-estate-website',
+    metaTitle: 'TREZUH Luxury Real Estate Website | AR Medias',
     metaDescription: 'Case study: a monochrome, fast single-page website for a real estate and private wealth firm, built on typography, space and restrained motion.',
     client: 'TREZUH',
     business: 'Real estate, developments and private wealth firm',
@@ -216,6 +223,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'ai-whatsapp-instagram-automation',
+    metaTitle: 'WhatsApp & Instagram AI Automation Case Study | AR Medias',
     metaDescription: 'Case study: instant WhatsApp greetings for website leads and AI-run Instagram DM conversations, added alongside an existing PHP website.',
     client: '',
     business: 'Service business with a PHP website',
@@ -246,6 +254,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'digital-product-passport-blockchain',
+    metaTitle: 'Blockchain Digital Product Passport | AR Medias',
     metaDescription: 'Case study: digital product passports with a hash-linked history anchored on a blockchain, so anyone can verify a product by scanning its QR.',
     client: '',
     business: 'AR Medias product · Supply-chain SaaS',
@@ -278,6 +287,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'gps-territory-running-game',
+    metaTitle: 'GPS Running Game App Built in Flutter | AR Medias',
     metaDescription: 'Case study: a Flutter running game for iPhone and Android where players capture hexagon territories on a live map by running through them.',
     client: '',
     business: 'AR Medias product · Fitness game app',
@@ -308,6 +318,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'certificate-verification-portal',
+    metaTitle: 'Certificate Verification Portal with QR Codes | AR Medias',
     metaDescription: 'Case study: an internship certificate portal with permanent QR codes, collision-free codes and an authenticity score anyone can check.',
     client: '',
     business: 'AR Medias internal platform',

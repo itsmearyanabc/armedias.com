@@ -1,6 +1,6 @@
 ---
 title: 'WhatsApp Automation for Business: What You Can Automate'
-description: 'A practical guide to WhatsApp Business API automation: lead capture, instant replies, AI chatbots, reminders and CRM sync, plus the rules you must follow.'
+description: 'A practical guide to WhatsApp Business API automation: lead capture, instant replies, AI chatbots, reminders, CRM sync and the rules.'
 category: ai-automation
 published: 2026-10-25
 service: ai-automation

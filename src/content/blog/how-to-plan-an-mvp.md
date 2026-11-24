@@ -1,6 +1,6 @@
 ---
 title: 'How to Plan an MVP: What to Build First'
-description: 'A practical guide for founders planning a minimum viable product: choosing one problem to solve, cutting scope, picking web or mobile and testing with users.'
+description: 'A founder''s guide to planning an MVP: choosing one problem to solve, cutting scope, picking web or mobile and testing with real users.'
 category: web-apps
 published: 2026-11-12
 service: custom-software-development
