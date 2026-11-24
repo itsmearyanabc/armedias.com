@@ -20,6 +20,7 @@ const LOOPING_BLOCKS = [
   '.market-map', // market card pins
   '.cover', // blog cover art
   '.skyline', // city skylines
+  '.hero-chips', // floating fact chips (always in the first screen, so the slide-in is not delayed)
 ].join(',');
 
 export function pauseOffscreenLoops() {

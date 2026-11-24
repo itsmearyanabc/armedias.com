@@ -3,7 +3,7 @@
 // their own card use the homepage card.
 import { services } from '../data/services';
 import { industries } from '../data/industries';
-import { markets } from '../data/site';
+import { markets, site } from '../data/site';
 import { projects } from '../data/projects';
 import { costGuides } from '../data/cost-guides';
 import { worldCities } from '../data/world-cities';
@@ -14,7 +14,7 @@ export const staticOgPages: Record<string, OgCard> = {
   '/': { title: 'We build the software that runs your business', label: 'Software company · New Delhi' },
   '/services/': { title: 'Web, apps, CRM/ERP and AI automation from one team', label: 'Services' },
   '/industries/': { title: 'Software built around how your industry works', label: 'Industries' },
-  '/work/': { title: 'Real products we built and shipped', label: 'Our work' },
+  '/work/': { title: `${site.projectsDelivered}+ projects. Real results.`, label: 'Our work' },
   '/pricing/': { title: 'Clear, fixed quotes. No surprise invoices.', label: 'Pricing' },
   '/process/': { title: 'A clear path from idea to launch', label: 'Our process' },
   '/about/': { title: 'The technology partner behind your growth', label: 'About' },

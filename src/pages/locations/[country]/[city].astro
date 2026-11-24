@@ -3,6 +3,10 @@ import Base from '../../../layouts/Base.astro';
 import MarketMap from '../../../components/MarketMap.astro';
 import WorkingStyle from '../../../components/WorkingStyle.astro';
 import ProjectCta from '../../../components/ProjectCta.astro';
+import GlowBackdrop from '../../../components/GlowBackdrop.astro';
+import HeroChips from '../../../components/HeroChips.astro';
+import Scribble from '../../../components/Scribble.astro';
+import ClientLogos from '../../../components/ClientLogos.astro';
 import { site, pillars, markets } from '../../../data/site';
 import { industries } from '../../../data/industries';
 import { process as steps } from '../../../data/process';
@@ -25,6 +29,10 @@ const others = worldCities.filter((x) => x.market === c.market && x.slug !== c.s
 const workingStyle = remoteWorkingStyle({ city: c.name, currency: m.currency });
 // Guides written with the city entry take precedence; the rest live in world-city-guides.ts
 const guide = c.guide ?? cityGuides[`${c.market}/${c.slug}`];
+// Dubai gets the white "glow" look (Dubai SEO project, Nov 2026): grid and soft glows, the city
+// name underlined in the H1, floating fact chips and the client logo wall. Other cities unchanged.
+const glow = c.market === 'uae' && c.slug === 'dubai';
+const nameAt = glow ? c.h1.lastIndexOf(c.name) : -1;
 
 const schema = [
   {
@@ -58,6 +66,7 @@ const schema = [
 <Base title={c.metaTitle} description={c.metaDescription} {schema}>
   <!-- HERO -->
   <section class="relative overflow-hidden pb-16 pt-32 lg:pb-24 lg:pt-40">
+    {glow && <GlowBackdrop />}
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
       <div class="blob absolute -right-24 -top-24 size-[36rem] rounded-full bg-olive-300/35 blur-3xl"></div>
       <div class="blob absolute bottom-0 left-1/4 size-[26rem] rounded-full bg-ember/10 blur-3xl"></div>
@@ -68,25 +77,38 @@ const schema = [
           <a href="/" class="hover:text-olive">Home</a> / <a href={`/locations/${m.slug}/`} class="hover:text-olive">{m.country}</a> / <span>{c.name}</span>
         </nav>
         <p class="eyebrow mt-6" data-hero>{c.region} · <time data-clock={c.tz}>--:--</time> local time</p>
-        <h1 class="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl xl:text-6xl" data-hero>{c.h1}</h1>
+        <h1 class="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl xl:text-6xl" data-hero>
+          {nameAt >= 0
+            ? <>{c.h1.slice(0, nameAt)}<span class="text-ember-600"><Scribble>{c.name}</Scribble></span>{c.h1.slice(nameAt + c.name.length)}</>
+            : c.h1}
+        </h1>
         <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>{c.lead}</p>
         <div class="mt-9 flex flex-wrap gap-3" data-hero>
           <a href="/contact/" class="btn-primary" data-magnetic>Book a free call</a>
           <a href="/work/" class="btn-ghost">See our work</a>
         </div>
       </div>
-      <figure class="rounded-[2rem] bg-white p-5 shadow-2xl shadow-navy/10 ring-1 ring-navy/5 sm:p-7" data-reveal="up">
-        <MarketMap coords={c.coords} />
-        <figcaption class="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm">
-          <span class="font-display font-semibold text-navy">New Delhi → {c.name}</span>
-          <span class="text-slate">Google Meet calls in {c.name} hours · fixed quote in {m.currency}</span>
-        </figcaption>
-      </figure>
+      <div class="relative">
+        <figure class="rounded-[2rem] bg-white p-5 shadow-2xl shadow-navy/10 ring-1 ring-navy/5 sm:p-7" data-reveal="up">
+          <MarketMap coords={c.coords} />
+          <figcaption class="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm">
+            <span class="font-display font-semibold text-navy">New Delhi → {c.name}</span>
+            <span class="text-slate">Google Meet calls in {c.name} hours · fixed quote in {m.currency}</span>
+          </figcaption>
+        </figure>
+        {glow && (
+          <HeroChips chips={[
+            { text: `Calls in ${c.name} hours`, sub: '1.5 hours apart', icon: 'clock' },
+            { text: `Fixed quote in ${m.currency}`, sub: 'Agreed before work starts', icon: 'quote' },
+            { text: 'You own the code', sub: 'Domain and accounts too', icon: 'key' },
+          ]} />
+        )}
+      </div>
     </div>
   </section>
 
   <!-- WHO WE HELP -->
-  <section class="border-y border-navy/8 bg-mist/60 py-10">
+  <section class:list={['border-y border-navy/8 py-10', glow ? 'bg-white/70 backdrop-blur-sm' : 'bg-mist/60']}>
     <div class="container-x flex flex-wrap items-center gap-3">
       <h2 class="mr-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate" data-no-split>Who we help in {c.name}</h2>
       {c.fits.map((f) => <span class="rounded-full bg-white px-4 py-2 text-sm font-medium text-navy ring-1 ring-navy/5">{f}</span>)}
@@ -112,6 +134,8 @@ const schema = [
     </div>
   </section>
 
+  {glow && <div class="mb-20 lg:mb-24"><ClientLogos /></div>}
+
   <!-- CITY GUIDE: the work people in this city search for, in more detail -->
   {guide && (
     <section class="pb-24 lg:pb-28">
@@ -135,12 +159,13 @@ const schema = [
   )}
 
   <!-- ALL SERVICES -->
-  <section class="bg-mist/60 py-20">
+  <section class:list={['relative overflow-hidden py-20', !glow && 'bg-mist/60']}>
+    {glow && <GlowBackdrop variant="band" />}
     <div class="container-x">
       <h2 class="text-3xl font-bold sm:text-4xl" data-reveal="up">Services for {c.alsoKnownAs ? `${c.name} (${c.alsoKnownAs})` : c.name} businesses</h2>
       <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
         {services.map((s) => (
-          <li><a href={s.href} class="flex items-center justify-between rounded-2xl bg-white px-6 py-5 font-semibold ring-1 ring-navy/5 transition-colors hover:bg-olive hover:text-white">{s.name}<span aria-hidden="true">→</span></a></li>
+          <li><a href={s.href} class:list={['flex items-center justify-between rounded-2xl bg-white px-6 py-5 font-semibold ring-1 ring-navy/5 transition-colors hover:bg-olive hover:text-white', glow && 'lift']}>{s.name}<span aria-hidden="true">→</span></a></li>
         ))}
       </ul>
     </div>
@@ -222,6 +247,13 @@ const schema = [
     showAddress={false}
   />
 </Base>
+
+<style>
+  /* Dubai look: service links lift slightly on hover */
+  .lift { transition-property: color, background-color, transform, box-shadow; transition-duration: 0.3s; }
+  .lift:hover { transform: translateY(-3px); box-shadow: 0 14px 28px -14px rgb(85 107 47 / 0.55); }
+  @media (prefers-reduced-motion: reduce) { .lift:hover { transform: none; } }
+</style>
 
 <script>
   document.querySelectorAll<HTMLTimeElement>('[data-clock]').forEach((el) => {

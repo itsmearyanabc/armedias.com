@@ -1,0 +1,43 @@
+---
+// White backdrop with a faint grid and soft orange, lime and yellow glows: the same look as the
+// share cards (src/pages/og/[slug].png.ts). Decorative only. Place it inside a `relative`
+// section. The glows drift with the site's existing .blob animation, which pauses off screen
+// and under reduced motion. Glows are radial gradients, not blur filters, so they cost little.
+interface Props {
+  /** 'hero' puts the grid on the right like the cards; 'band' spreads it evenly. */
+  variant?: 'hero' | 'band';
+}
+const { variant = 'hero' } = Astro.props;
+---
+
+<div aria-hidden="true" class:list={['glow-backdrop pointer-events-none absolute inset-0 -z-10 overflow-hidden', `glow-backdrop--${variant}`]}>
+  <div class="glow-grid absolute inset-0"></div>
+  <div class="blob glow glow--ember"></div>
+  <div class="blob glow glow--lime"></div>
+  <div class="blob glow glow--sun"></div>
+</div>
+
+<style>
+  .glow-backdrop { background: #fff; }
+  .glow-grid {
+    background-image:
+      linear-gradient(to right, rgb(19 33 58 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(19 33 58 / 0.05) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .glow-backdrop--hero .glow-grid { mask-image: linear-gradient(to right, transparent 15%, #000 60%); }
+  .glow-backdrop--band .glow-grid { mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%); }
+
+  .glow { position: absolute; border-radius: 999px; }
+  .glow--ember { right: -14rem; top: -16rem; width: 44rem; height: 44rem; background: radial-gradient(circle, rgb(255 122 26 / 0.22), transparent 68%); }
+  .glow--lime { left: -12rem; bottom: -18rem; width: 38rem; height: 38rem; background: radial-gradient(circle, rgb(169 196 108 / 0.32), transparent 68%); }
+  .glow--sun { right: 8%; bottom: -16rem; width: 30rem; height: 30rem; background: radial-gradient(circle, rgb(255 201 60 / 0.26), transparent 68%); }
+  .glow-backdrop--band .glow--ember { top: -20rem; right: 20%; }
+  /* Phones: smaller, lighter glows so the hero stays white rather than tinted */
+  @media (max-width: 40rem) {
+    .glow { opacity: 0.6; }
+    .glow--ember { width: 26rem; height: 26rem; right: -12rem; top: -10rem; }
+    .glow--lime { width: 24rem; height: 24rem; left: -12rem; bottom: -12rem; }
+    .glow--sun { width: 18rem; height: 18rem; }
+  }
+</style>
