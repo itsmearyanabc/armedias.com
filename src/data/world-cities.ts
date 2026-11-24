@@ -573,8 +573,8 @@ export const worldCities: WorldCity[] = [
   {
     market: 'uae', slug: 'dubai', name: 'Dubai', region: 'Dubai', area: 'Dubai, including Business Bay, Dubai Internet City and DIFC',
     tz: 'Asia/Dubai', coords: [55.27, 25.2], competition: 'high',
-    metaTitle: 'Software Development Company in Dubai | AR Medias',
-    metaDescription: 'Custom software, ERP, AI and mobile app development for Dubai businesses. Arabic and English, 1.5 hours apart, fixed AED quotes.',
+    metaTitle: 'Custom Software Development Company in Dubai | AR Medias',
+    metaDescription: 'Software development company for Dubai: custom software, apps, CRM, ERP and AI. Fixed AED quotes, calls in your day, and you own the code.',
     h1: 'Software development company in Dubai',
     lead: 'We build custom software, ERP and logistics systems, AI-powered apps and bilingual English and Arabic websites for Dubai businesses, only 1.5 hours apart.',
     fits: ['Logistics and trading companies', 'Real estate brokers and developers', 'E-commerce and retail', 'Fitness and wellness brands'],

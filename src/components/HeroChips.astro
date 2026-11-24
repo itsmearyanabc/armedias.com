@@ -37,7 +37,7 @@ const icons = {
     animation: chip-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.5s + var(--i) * 0.25s) backwards,
                chip-float 6s ease-in-out calc(1.4s + var(--i) * 0.8s) infinite alternate;
   }
-  .hero-chip--0 { left: -1.5rem; bottom: 18%; }
+  .hero-chip--0 { left: -1.5rem; top: 52%; }
   .hero-chip--1 { right: -1.25rem; top: -1.25rem; }
   .hero-chip--2 { right: 8%; bottom: -3.25rem; }
   .hero-chip__icon { display: grid; place-items: center; width: 2.1rem; height: 2.1rem; border-radius: 999px; color: #fff; }
@@ -52,7 +52,7 @@ const icons = {
   /* Phones: one chip only, tucked under the visual, so nothing covers the map */
   @media (max-width: 40rem) {
     .hero-chip--1, .hero-chip--2 { display: none; }
-    .hero-chip--0 { left: 0.75rem; bottom: -1.25rem; }
+    .hero-chip--0 { left: 0.75rem; top: auto; bottom: -1.25rem; }
   }
   @media (prefers-reduced-motion: reduce) { .hero-chip { animation: none; } }
 </style>

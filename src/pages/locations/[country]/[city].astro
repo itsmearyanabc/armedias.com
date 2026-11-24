@@ -7,6 +7,7 @@ import GlowBackdrop from '../../../components/GlowBackdrop.astro';
 import HeroChips from '../../../components/HeroChips.astro';
 import Scribble from '../../../components/Scribble.astro';
 import ClientLogos from '../../../components/ClientLogos.astro';
+import { dubaiServices } from '../../../data/dubai';
 import { site, pillars, markets } from '../../../data/site';
 import { industries } from '../../../data/industries';
 import { process as steps } from '../../../data/process';
@@ -154,6 +155,29 @@ const schema = [
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  )}
+
+  <!-- DUBAI SERVICE PAGES (Dubai only) -->
+  {glow && (
+    <section class="pb-20 lg:pb-24">
+      <div class="container-x">
+        <div class="max-w-2xl">
+          <p class="eyebrow" data-reveal="fade">Dubai services</p>
+          <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Pick what you need to build in Dubai.</h2>
+        </div>
+        <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+          {dubaiServices.map((ds) => (
+            <li>
+              <a href={`/locations/uae/dubai/${ds.slug}/`} class="lift group flex h-full flex-col rounded-3xl bg-white p-6 ring-1 ring-navy/8 shadow-lg shadow-navy/5 sm:p-7">
+                <span class="text-xl font-bold group-hover:text-olive">{ds.name}</span>
+                <span class="mt-2 leading-relaxed text-slate">{ds.builds[0].d}</span>
+                <span class="mt-auto pt-4 font-semibold text-navy">Read more <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">→</span></span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   )}

@@ -1,0 +1,259 @@
+---
+// Dubai service pages: /locations/uae/dubai/<slug>/. Content lives in src/data/dubai.ts.
+// Same white "glow" look as the Dubai hub (GlowBackdrop, HeroChips, Scribble, logo wall).
+import Base from '../../../../layouts/Base.astro';
+import MarketMap from '../../../../components/MarketMap.astro';
+import GlowBackdrop from '../../../../components/GlowBackdrop.astro';
+import HeroChips from '../../../../components/HeroChips.astro';
+import Scribble from '../../../../components/Scribble.astro';
+import ClientLogos from '../../../../components/ClientLogos.astro';
+import WorkingStyle from '../../../../components/WorkingStyle.astro';
+import ProjectCta from '../../../../components/ProjectCta.astro';
+import { site } from '../../../../data/site';
+import { serviceBySlug } from '../../../../data/services';
+import { projects } from '../../../../data/projects';
+import { worldCities } from '../../../../data/world-cities';
+import { remoteWorkingStyle } from '../../../../data/working-style';
+import { dubaiServices, type DubaiService } from '../../../../data/dubai';
+
+export function getStaticPaths() {
+  return dubaiServices.map((d) => ({ params: { slug: d.slug }, props: { d } }));
+}
+
+const { d } = Astro.props as { d: DubaiService };
+const s = serviceBySlug[d.service];
+const dubai = worldCities.find((c) => c.market === 'uae' && c.slug === 'dubai')!;
+const hub = '/locations/uae/dubai/';
+const url = `${site.url}${hub}${d.slug}/`;
+const cases = d.projects.map((slug) => projects.find((p) => p.slug === slug)).filter((p) => p !== undefined);
+const others = dubaiServices.filter((x) => x.slug !== d.slug);
+const accentAt = d.h1.lastIndexOf(d.accent);
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${url}#service`,
+    name: d.h1,
+    serviceType: s.name,
+    description: d.metaDescription,
+    url,
+    provider: { '@id': `${site.url}/#organization` },
+    areaServed: { '@type': 'City', name: 'Dubai', containedInPlace: { '@type': 'Country', name: 'United Arab Emirates' } },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: d.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'UAE', item: `${site.url}/locations/uae/` },
+      { '@type': 'ListItem', position: 3, name: 'Dubai', item: `${site.url}${hub}` },
+      { '@type': 'ListItem', position: 4, name: d.name, item: url },
+    ],
+  },
+];
+---
+
+<Base title={d.metaTitle} description={d.metaDescription} {schema}>
+  <!-- HERO: the search phrase as H1, then the direct answer -->
+  <section class="relative overflow-hidden pb-20 pt-32 lg:pb-28 lg:pt-40">
+    <GlowBackdrop />
+    <div class="container-x grid items-center gap-12 lg:grid-cols-[1.15fr_1fr]">
+      <div>
+        <nav aria-label="Breadcrumb" class="text-sm text-slate" data-hero>
+          <a href="/" class="hover:text-olive">Home</a> / <a href="/locations/uae/" class="hover:text-olive">UAE</a> / <a href={hub} class="hover:text-olive">Dubai</a> / <span>{d.name}</span>
+        </nav>
+        <p class="eyebrow mt-6" data-hero>Dubai · <time data-clock="Asia/Dubai">--:--</time> local time</p>
+        <h1 class="mt-4 text-4xl font-bold leading-[1.05] sm:text-5xl xl:text-6xl" data-hero>
+          {accentAt >= 0
+            ? <>{d.h1.slice(0, accentAt)}<span class="text-ember-600"><Scribble>{d.accent}</Scribble></span>{d.h1.slice(accentAt + d.accent.length)}</>
+            : d.h1}
+        </h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>{d.answer}</p>
+        <div class="mt-9 flex flex-wrap gap-3" data-hero>
+          <a href="/contact/" class="btn-primary" data-magnetic>Book a free call</a>
+          <a href="#work" class="btn-ghost">See the work</a>
+        </div>
+      </div>
+      <div class="relative">
+        <figure class="rounded-[2rem] bg-white p-5 shadow-2xl shadow-navy/10 ring-1 ring-navy/5 sm:p-7" data-reveal="up">
+          <MarketMap coords={dubai.coords} />
+          <figcaption class="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm">
+            <span class="font-display font-semibold text-navy">New Delhi → Dubai</span>
+            <span class="text-slate">Google Meet calls in Dubai hours · fixed quote in AED</span>
+          </figcaption>
+        </figure>
+        <HeroChips chips={[
+          { text: 'Calls in Dubai hours', sub: '1.5 hours apart', icon: 'clock' },
+          { text: 'Fixed quote in AED', sub: 'Agreed before work starts', icon: 'quote' },
+          { text: 'You own the code', sub: 'Domain and accounts too', icon: 'key' },
+        ]} />
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT DUBAI BUSINESSES ASK US TO BUILD -->
+  <section class="py-20 lg:py-24">
+    <div class="container-x">
+      <div class="max-w-2xl">
+        <p class="eyebrow" data-reveal="fade">What we build</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">What Dubai businesses ask us to build.</h2>
+      </div>
+      <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {d.builds.map((b, i) => (
+          <li data-tilt class="group relative overflow-hidden rounded-3xl bg-mist p-6 transition-colors duration-300 hover:bg-navy sm:p-7">
+            <span aria-hidden="true" class="font-display text-4xl font-bold text-navy/10 transition-colors group-hover:text-ember/40">0{i + 1}</span>
+            <h3 class="mt-3 text-xl font-bold transition-colors group-hover:text-white">{b.t}</h3>
+            <p class="mt-2 leading-relaxed text-slate transition-colors group-hover:text-white/75">{b.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <div class="mb-4"><ClientLogos /></div>
+
+  <!-- BUYER QUESTIONS: each heading is a question, the first sentence answers it -->
+  <section class="py-20 lg:py-24">
+    <div class="container-x grid gap-12 lg:grid-cols-[16rem_1fr] lg:gap-16">
+      <nav aria-label="On this page" class="hidden lg:block">
+        <div class="sticky top-28">
+          <p class="eyebrow">On this page</p>
+          <ol class="mt-4 space-y-2 text-sm">
+            {d.sections.map((x, i) => <li><a href={`#q${i + 1}`} class="block rounded-lg px-3 py-2 text-slate transition-colors hover:bg-mist hover:text-navy">{x.h}</a></li>)}
+            {d.prices && <li><a href="#prices" class="block rounded-lg px-3 py-2 text-slate transition-colors hover:bg-mist hover:text-navy">Published Dubai prices</a></li>}
+            <li><a href="#faq" class="block rounded-lg px-3 py-2 text-slate transition-colors hover:bg-mist hover:text-navy">Questions</a></li>
+          </ol>
+        </div>
+      </nav>
+      <div class="max-w-3xl space-y-16">
+        {d.sections.map((x, i) => (
+          <article id={`q${i + 1}`} class="scroll-mt-28">
+            <h2 class="text-3xl font-bold leading-tight sm:text-4xl">{x.h}</h2>
+            {x.p.map((para, j) => <p class:list={['mt-4 text-lg leading-relaxed', j === 0 ? 'text-navy' : 'text-slate']}>{para}</p>)}
+            {x.list && (
+              <ul class="mt-5 space-y-3">
+                {x.list.map((li) => (
+                  <li class="flex gap-3 text-slate"><span aria-hidden="true" class="mt-2 size-2 shrink-0 rounded-full bg-ember"></span><span class="leading-relaxed">{li}</span></li>
+                ))}
+              </ul>
+            )}
+            {i === 0 && d.prices && <a href="#prices" class="mt-5 inline-flex items-center gap-2 font-semibold text-ember-700 hover:text-navy">See published Dubai price ranges <span aria-hidden="true">↓</span></a>}
+          </article>
+        ))}
+
+        {d.prices && (
+          <section id="prices" class="scroll-mt-28 rounded-3xl bg-white p-6 ring-1 ring-navy/8 shadow-xl shadow-navy/5 sm:p-8" aria-labelledby="prices-heading">
+            <h2 id="prices-heading" class="text-2xl font-bold sm:text-3xl">What moves the price</h2>
+            <ul class="mt-5 flex flex-wrap gap-2">
+              {d.prices.drivers.map((x) => <li class="rounded-full bg-ember/12 px-4 py-2 text-sm font-semibold text-ember-700">{x}</li>)}
+            </ul>
+            <details class="group mt-6 rounded-2xl bg-mist/70 p-5">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-navy">
+                Show published Dubai price ranges
+                <span class="grid size-8 place-items-center rounded-full bg-white transition-transform duration-300 group-open:rotate-45">+</span>
+              </summary>
+              <p class="mt-4 text-sm text-slate">{d.prices.intro}</p>
+              <table class="mt-4 w-full text-left text-sm">
+                <tbody class="divide-y divide-navy/10">
+                  {d.prices.rows.map((r) => <tr><th scope="row" class="py-3 pr-4 font-medium text-navy">{r.label}</th><td class="py-3 text-right font-semibold text-navy">{r.range}</td></tr>)}
+                </tbody>
+              </table>
+              <p class="mt-4 text-xs text-slate">Sources: {d.prices.sources.map((src, i) => <>{i > 0 && '; '}<a href={src.url} rel="nofollow noopener" target="_blank" class="underline hover:text-navy">{src.publisher}, “{src.title}”</a> ({src.date})</>)}.</p>
+            </details>
+            {d.prices.guide && <a href={d.prices.guide} class="mt-5 inline-flex items-center gap-2 font-semibold text-olive hover:text-navy">Full cost guide with other countries <span aria-hidden="true">→</span></a>}
+          </section>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- PROOF -->
+  <section id="work" class="relative overflow-hidden py-20 lg:py-24 scroll-mt-20">
+    <GlowBackdrop variant="band" />
+    <div class="container-x">
+      <p class="eyebrow" data-reveal="fade">Our work</p>
+      <h2 class="mt-4 max-w-2xl text-4xl font-bold sm:text-5xl">Work we have shipped.</h2>
+      <ul class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {d.proofNotes?.map((n) => (
+          <li class="rounded-3xl bg-white p-6 ring-1 ring-navy/8 shadow-lg shadow-navy/5 sm:p-7">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-ember-700">Dubai client</p>
+            <h3 class="mt-3 text-xl font-bold">{n.client}</h3>
+            <p class="mt-2 leading-relaxed text-slate">{n.text}</p>
+          </li>
+        ))}
+        {cases.map((p) => (
+          <li>
+            <a href={`/work/${p.slug}/`} class="lift-card group block h-full rounded-3xl bg-white p-6 ring-1 ring-navy/8 shadow-lg shadow-navy/5 sm:p-7">
+              <p class="text-xs font-bold uppercase tracking-[0.18em] text-olive">Case study{p.client && ` · ${p.client}`}</p>
+              <h3 class="mt-3 text-xl font-bold group-hover:text-olive">{p.title}</h3>
+              <p class="mt-2 leading-relaxed text-slate">{p.summary}</p>
+              <span class="mt-4 inline-flex items-center gap-2 font-semibold text-navy">Read the case study <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <WorkingStyle items={remoteWorkingStyle({ city: 'Dubai', currency: 'AED' })} heading="How we work with Dubai businesses." />
+
+  <!-- FAQ -->
+  <section id="faq" class="py-20 lg:py-24 scroll-mt-20">
+    <div class="container-x grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+      <div>
+        <p class="eyebrow" data-reveal="fade">FAQ</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">Questions from Dubai clients.</h2>
+      </div>
+      <div class="divide-y divide-navy/10 border-y border-navy/10">
+        {d.faqs.map((f) => (
+          <details class="group py-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-xl font-semibold">
+              {f.q}
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-mist transition-transform duration-300 group-open:rotate-45 group-open:bg-olive group-open:text-white">+</span>
+            </summary>
+            <p class="mt-4 max-w-2xl leading-relaxed text-slate">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- OTHER DUBAI PAGES -->
+  <section class="border-t border-navy/10 py-12">
+    <div class="container-x">
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate">More for Dubai businesses</p>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        <li><a href={hub} class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-ember hover:text-ember-700">Software development in Dubai</a></li>
+        {others.map((o) => <li><a href={`${hub}${o.slug}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-ember hover:text-ember-700">{o.name}</a></li>)}
+        <li><a href={`/services/${s.slug}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-ember hover:text-ember-700">{s.name} (all countries)</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <ProjectCta
+    heading="Have a project in Dubai? Let's talk."
+    body="Free 30-minute call on Google Meet, in Dubai business hours. You leave with a clear plan, timeline and fixed price in AED."
+    showAddress={false}
+  />
+</Base>
+
+<style>
+  .lift-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .lift-card:hover { transform: translateY(-4px); box-shadow: 0 22px 40px -20px rgb(85 107 47 / 0.5); }
+  @media (prefers-reduced-motion: reduce) { .lift-card:hover { transform: none; } }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLTimeElement>('[data-clock]').forEach((el) => {
+    const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: el.dataset.clock, hour: '2-digit', minute: '2-digit' });
+    const tick = () => (el.textContent = fmt.format(new Date()));
+    tick();
+    setInterval(tick, 30_000);
+  });
+</script>

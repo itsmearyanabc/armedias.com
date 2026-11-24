@@ -7,6 +7,7 @@ import { markets, site } from '../data/site';
 import { projects } from '../data/projects';
 import { costGuides } from '../data/cost-guides';
 import { worldCities } from '../data/world-cities';
+import { dubaiServices } from '../data/dubai';
 
 export interface OgCard { title: string; label: string }
 
@@ -28,6 +29,7 @@ export const staticOgPages: Record<string, OgCard> = {
   ...Object.fromEntries(projects.map((p) => [`/work/${p.slug}/`, { title: p.title, label: p.client ? `Case study · ${p.client}` : 'Case study' }])),
   ...Object.fromEntries(costGuides.map((g) => [`/pricing/${g.slug}/`, { title: `${g.h1} ${g.h1Accent}`, label: 'Cost guide 2026' }])),
   ...Object.fromEntries(worldCities.map((c) => [`/locations/${c.market}/${c.slug}/`, { title: c.h1, label: c.name }])),
+  ...Object.fromEntries(dubaiServices.map((d) => [`/locations/uae/dubai/${d.slug}/`, { title: d.h1, label: 'Dubai' }])),
 };
 
 /** File name for a page path: "/" -> "home", "/services/crm/" -> "services--crm". */
