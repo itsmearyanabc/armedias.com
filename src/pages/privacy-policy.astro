@@ -2,10 +2,10 @@
 import Legal from '../layouts/Legal.astro';
 import { site } from '../data/site';
 
-const updated = '2 November 2026';
+const updated = '24 November 2026';
 ---
 
-<Legal title="Privacy Policy | AR Medias" heading="Privacy Policy" description="How AR Medias collects, uses, stores and protects personal information sent through armedias.com forms, and the rights you have." {updated}>
+<Legal title="Privacy Policy | AR Medias" heading="Privacy Policy" description="How AR Medias collects, uses and protects personal information from armedias.com forms and analytics, and the rights you have." {updated}>
       <p>This policy explains how {site.legalName} ("we", "us") handles personal information collected through {site.url}.</p>
 
       <h2>What we collect</h2>
@@ -17,7 +17,7 @@ const updated = '2 November 2026';
       <p>We use your details only to reply to your enquiry, prepare proposals you request, and provide services you engage us for. We do not sell your personal information or use it for unrelated marketing without your consent.</p>
 
       <h2>Sharing</h2>
-      <p>We share data only with service providers that help us operate, such as our hosting and email providers, and only as needed for those purposes, or where required by law.</p>
+      <p>We share data only with service providers that help us operate, such as our hosting, email and website analytics providers (Google Analytics, described below), and only as needed for those purposes, or where required by law.</p>
 
       <h2>Retention</h2>
       <p>We keep enquiry details for as long as needed to respond and to maintain records of our business relationship, then delete them. Job applications are kept for up to 12 months so we can contact you about future roles, unless you ask us to delete them sooner.</p>
@@ -26,7 +26,9 @@ const updated = '2 November 2026';
       <p>Depending on where you live, including under India's Digital Personal Data Protection Act, the EU/UK GDPR, the UAE PDPL, Canada's PIPEDA, Australia's Privacy Act, Japan's APPI, China's PIPL, Russia's Federal Law 152-FZ and US state laws, you may have the right to access, correct or delete your personal information, or withdraw consent. To make a request, email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
 
       <h2>Cookies and analytics</h2>
-      <p>We do not use advertising or tracking cookies. To understand how the site is used, we count page views, the page visited, the referring website, the visitor's country and device type. Visitors are counted using a one-way code that changes every day and cannot be traced back to you; we do not store IP addresses for analytics. Our site is also served through Cloudflare, which processes technical data to deliver and protect the site.</p>
+      <p>We do not use advertising cookies, and we do not sell or share visitor data for advertising.</p>
+      <p>We use Google Analytics 4 to understand how visitors find and use the site: which pages are viewed, how visitors arrived (for example from a search engine), their approximate country and city, device and browser type, and actions such as sending the contact form or tapping our WhatsApp, phone or email links. Google Analytics sets first-party cookies (named starting with <code>_ga</code>) to recognise a returning browser, and Google processes this data on our behalf. Google Analytics 4 does not log or store IP addresses. You can block these cookies in your browser settings or install <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener" target="_blank">Google's opt-out add-on</a>; the site works the same without them.</p>
+      <p>Separately, our own server counts page views, the page visited, the referring website, the visitor's country and device type without cookies, using a one-way code that changes every day and cannot be traced back to you; we do not store IP addresses for this count. Our site is also served through Cloudflare, which processes technical data to deliver and protect the site.</p>
 
       <h2>Contact</h2>
       <p>{site.legalName} (GSTIN {site.gstin}), {site.address.street}, {site.address.locality}, {site.address.countryName}. Email: <a href={`mailto:${site.email}`}>{site.email}</a>. Phone: {site.phone}.</p>

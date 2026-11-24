@@ -1,0 +1,33 @@
+---
+// A small "Building in Dubai?" band that links to the Dubai service pages
+// (src/data/dubai.ts), placed on related service, industry, cost guide and UAE pages so
+// visitors and search engines find the Dubai pages from the pages they belong with.
+// Renders nothing when no Dubai page matches.
+import { dubaiPath, type DubaiService } from '../data/dubai';
+
+interface Props {
+  pages: DubaiService[];
+  heading?: string;
+  /** Also link the Dubai hub (default true) */
+  hub?: boolean;
+}
+const { pages, heading = 'Building in Dubai?', hub = true } = Astro.props;
+---
+
+{pages.length > 0 && (
+  <section class="border-t border-navy/8 py-10">
+    <div class="container-x flex flex-wrap items-center gap-3">
+      <p class="mr-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate">{heading}</p>
+      {pages.map((d) => (
+        <a href={dubaiPath(d)} class="inline-flex items-center gap-2 rounded-full bg-ember/10 px-4 py-2 text-sm font-semibold text-navy ring-1 ring-ember/25 transition-colors hover:bg-ember">
+          {d.name} in Dubai <span aria-hidden="true">→</span>
+        </a>
+      ))}
+      {hub && (
+        <a href="/locations/uae/dubai/" class="inline-flex items-center gap-2 rounded-full border border-navy/10 px-4 py-2 text-sm font-medium text-navy transition-colors hover:border-olive hover:text-olive">
+          Software company in Dubai <span aria-hidden="true">→</span>
+        </a>
+      )}
+    </div>
+  </section>
+)}

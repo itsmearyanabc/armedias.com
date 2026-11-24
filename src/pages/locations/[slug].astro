@@ -11,6 +11,8 @@ import WorkingStyle from '../../components/WorkingStyle.astro';
 import { marketGuides } from '../../data/market-guides';
 import { costGuides } from '../../data/cost-guides';
 import { withArticle } from '../../lib/cost-format';
+import DubaiLinks from '../../components/DubaiLinks.astro';
+import { dubaiServices } from '../../data/dubai';
 
 export function getStaticPaths() {
   return markets.map((m) => ({ params: { slug: m.slug }, props: { m } }));
@@ -278,6 +280,8 @@ const schema = [
       </div>
     </div>
   </section>
+
+  {m.slug === 'uae' && <DubaiLinks pages={dubaiServices} heading="Dubai services" />}
 
   <section class="border-t border-navy/10 py-12">
     <div class="container-x">

@@ -114,6 +114,8 @@ export function initForms() {
         const body = await res.json().catch(() => ({}));
         if (!res.ok || !body.ok) throw new Error(body.error || 'Something went wrong.');
         success.hidden = false;
+        // Google Analytics: a sent enquiry is a lead; a careers form is an application
+        (window as Window & { gtag?: (...args: unknown[]) => void }).gtag?.('event', /career/i.test(form.action) ? 'job_application' : 'generate_lead', { form_page: location.pathname });
         gsap.from(success, { opacity: 0, scale: 0.96, duration: 0.6, ease: 'power3.out' });
         burst(success);
         form.reset();

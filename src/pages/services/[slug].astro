@@ -10,6 +10,8 @@ import RelatedGuides from '../../components/RelatedGuides.astro';
 import { costGuides } from '../../data/cost-guides';
 import { withArticle } from '../../lib/cost-format';
 import { projects } from '../../data/projects';
+import DubaiLinks from '../../components/DubaiLinks.astro';
+import { dubaiPagesForService } from '../../data/dubai';
 
 export function getStaticPaths() {
   return services.map((s) => ({ params: { slug: s.slug }, props: { s } }));
@@ -243,6 +245,8 @@ const schema = [
   )}
 
   <RelatedGuides service={s.slug} />
+
+  <DubaiLinks pages={dubaiPagesForService(s.slug)} />
 
   {costGuides.filter((g) => g.service === s.slug).map((g) => (
     <section class="border-t border-navy/8 py-12">

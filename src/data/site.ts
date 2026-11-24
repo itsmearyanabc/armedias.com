@@ -11,6 +11,8 @@ export const site = {
   url: 'https://armedias.com',
   founded: '2024-01-01',
   projectsDelivered: 200,
+  /** Google Analytics 4 measurement ID (added 24 Nov 2026). Empty string turns GA off. */
+  gaMeasurementId: 'G-5SN2NB8WRN',
   founder: {
     name: 'Aryan Yadav',
     role: 'Founder',

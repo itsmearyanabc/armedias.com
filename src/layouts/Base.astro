@@ -133,6 +133,33 @@ const jsonLd = [organization, website, ...schema];
     </main>
     <Footer />
     <WhatsAppButton />
+    {site.gaMeasurementId && import.meta.env.PROD && (
+      <script is:inline define:vars={{ gaId: site.gaMeasurementId }}>
+        // Google Analytics 4. The library loads only after the page has finished loading and
+        // the browser is idle, so it never competes with the page itself for speed.
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', gaId);
+        var loadGa = function () {
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+          document.head.appendChild(s);
+        };
+        var later = function () { 'requestIdleCallback' in window ? requestIdleCallback(loadGa, { timeout: 4000 }) : setTimeout(loadGa, 2000); };
+        document.readyState === 'complete' ? later() : addEventListener('load', later, { once: true });
+        // Lead clicks: WhatsApp, phone and email
+        document.addEventListener('click', function (e) {
+          var a = e.target.closest && e.target.closest('a[href]');
+          if (!a) return;
+          var href = a.getAttribute('href');
+          if (a.hasAttribute('data-wa') || href.indexOf('/api/whatsapp') === 0 || href.indexOf('wa.me') !== -1) window.gtag('event', 'whatsapp_click', { link_url: href });
+          else if (href.indexOf('tel:') === 0) window.gtag('event', 'phone_click');
+          else if (href.indexOf('mailto:') === 0) window.gtag('event', 'email_click');
+        });
+      </script>
+    )}
     <script>
       import { initMotion } from '../scripts/motion';
       import { pauseOffscreenLoops } from '../scripts/offscreen';

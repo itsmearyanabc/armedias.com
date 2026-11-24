@@ -7,6 +7,7 @@ import GlowBackdrop from '../../../components/GlowBackdrop.astro';
 import HeroChips from '../../../components/HeroChips.astro';
 import Scribble from '../../../components/Scribble.astro';
 import ClientLogos from '../../../components/ClientLogos.astro';
+import DubaiLinks from '../../../components/DubaiLinks.astro';
 import { dubaiServices } from '../../../data/dubai';
 import { site, pillars, markets } from '../../../data/site';
 import { industries } from '../../../data/industries';
@@ -253,6 +254,8 @@ const schema = [
       </div>
     </div>
   </section>
+
+  {c.market === 'uae' && !glow && <DubaiLinks pages={dubaiServices} heading="Our Dubai service pages" />}
 
   <!-- OTHER CITIES -->
   <section class="border-t border-navy/10 py-12">

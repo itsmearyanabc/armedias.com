@@ -8,6 +8,8 @@ import { industries, type Industry } from '../../data/industries';
 import { costGuides } from '../../data/cost-guides';
 import { withArticle } from '../../lib/cost-format';
 import { projects } from '../../data/projects';
+import DubaiLinks from '../../components/DubaiLinks.astro';
+import { dubaiPagesForIndustry } from '../../data/dubai';
 
 export function getStaticPaths() {
   return industries.map((i) => ({ params: { slug: i.slug }, props: { ind: i } }));
@@ -194,6 +196,8 @@ const schema = [
       )}
     </div>
   </section>
+
+  <DubaiLinks pages={dubaiPagesForIndustry(ind.slug)} />
 
   <section class="container-x py-16">
     <div class="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-ember via-ember to-sun px-8 py-14 text-navy sm:px-14">

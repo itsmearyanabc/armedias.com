@@ -17,6 +17,8 @@ export interface DubaiService {
   service: string;
   /** Short label for links between Dubai pages */
   name: string;
+  /** industries.ts slugs whose pages link here */
+  industries?: string[];
   metaTitle: string;
   metaDescription: string;
   h1: string;
@@ -233,6 +235,7 @@ export const dubaiServices: DubaiService[] = [
   },
   {
     slug: 'ecommerce-website-development',
+    industries: ['retail-ecommerce'],
     service: 'ecommerce-development',
     name: 'Ecommerce development',
     metaTitle: 'Ecommerce Website Development in Dubai | AR Medias',
@@ -314,6 +317,7 @@ export const dubaiServices: DubaiService[] = [
   },
   {
     slug: 'real-estate-software-development',
+    industries: ['real-estate'],
     service: 'crm-development',
     name: 'Real estate CRM & software',
     metaTitle: 'Real Estate CRM Software Development in Dubai | AR Medias',
@@ -472,6 +476,7 @@ export const dubaiServices: DubaiService[] = [
   },
   {
     slug: 'erp-software-development-company',
+    industries: ['manufacturing'],
     service: 'erp-development',
     name: 'ERP software development',
     metaTitle: 'ERP Software Development Company in Dubai | AR Medias',
@@ -558,6 +563,7 @@ export const dubaiServices: DubaiService[] = [
   },
   {
     slug: 'ai-development-company',
+    industries: ['ai-ml'],
     service: 'ai-automation',
     name: 'AI development & automation',
     metaTitle: 'AI Development & Automation Company in Dubai | AR Medias',
@@ -643,3 +649,9 @@ export const dubaiServices: DubaiService[] = [
 ];
 
 export const dubaiServiceBySlug = Object.fromEntries(dubaiServices.map((d) => [d.slug, d]));
+
+/** Dubai pages for a services.ts slug (CRM has two: CRM and real estate CRM). */
+export const dubaiPagesForService = (service: string) => dubaiServices.filter((d) => d.service === service);
+/** Dubai pages an industry page should link to. */
+export const dubaiPagesForIndustry = (industry: string) => dubaiServices.filter((d) => d.industries?.includes(industry));
+export const dubaiPath = (d: DubaiService) => `/locations/uae/dubai/${d.slug}/`;

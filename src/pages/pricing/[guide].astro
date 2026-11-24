@@ -14,6 +14,8 @@ import { site, markets } from '../../data/site';
 import { services } from '../../data/services';
 import { costGuides, type CostGuide } from '../../data/cost-guides';
 import { ogPathFor } from '../../lib/og';
+import DubaiLinks from '../../components/DubaiLinks.astro';
+import { dubaiPagesForService } from '../../data/dubai';
 
 export function getStaticPaths() {
   return costGuides.map((guide) => ({ params: { guide: guide.slug }, props: { guide } }));
@@ -237,6 +239,8 @@ const schema = [
       </ul>
     </div>
   </section>
+
+  <DubaiLinks pages={dubaiPagesForService(guide.service)} heading="Pricing a project in Dubai?" />
 
   <ProjectCta heading="Tell us your budget. We'll plan what fits." />
 </Base>
