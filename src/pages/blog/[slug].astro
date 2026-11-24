@@ -8,6 +8,7 @@ import { site, marketCountWord } from '../../data/site';
 import { serviceBySlug } from '../../data/services';
 import { categories } from '../../content.config';
 import { getPosts, readingMinutes, formatDate, type Post } from '../../lib/blog';
+import { ogPathFor } from '../../lib/og';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -34,7 +35,7 @@ const schema = [
     description: post.data.description,
     url,
     mainEntityOfPage: url,
-    image: `${site.url}/og-default.png`,
+    image: `${site.url}${ogPathFor(new URL(url).pathname)}`,
     datePublished: post.data.published.toISOString(),
     dateModified: (post.data.updated ?? post.data.published).toISOString(),
     author: { '@type': 'Person', '@id': `${site.url}/about/aryan-yadav/#person`, name: site.founder.name, url: `${site.url}/about/aryan-yadav/` },
