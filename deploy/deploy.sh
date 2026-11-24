@@ -22,6 +22,26 @@ pm2 start "$APP/current/deploy/ecosystem.config.cjs"
 pm2 save
 nginx -t && systemctl reload nginx
 
+# Clear Cloudflare's cache, so cached pages update the moment a deploy goes live. Pages
+# are cached at Cloudflare's edge by a Cache Rule (everything except /api/ and /admin/),
+# which cuts the first response from ~1 s to tens of ms worldwide. Needs CLOUDFLARE_ZONE_ID
+# and CLOUDFLARE_API_TOKEN (permission: Zone > Cache Purge) in .env; skipped if missing.
+# Never fails the deploy and never prints the token.
+cf_var() { { grep -E "^$1=" "$APP/.env" 2>/dev/null || true; } | tail -n 1 | cut -d= -f2- | tr -d "\"' \r"; }
+CF_ZONE=$(cf_var CLOUDFLARE_ZONE_ID)
+CF_TOKEN=$(cf_var CLOUDFLARE_API_TOKEN)
+if [ -n "$CF_ZONE" ] && [ -n "$CF_TOKEN" ]; then
+  if curl -fsS -o /dev/null -X POST "https://api.cloudflare.com/client/v4/zones/$CF_ZONE/purge_cache" \
+       -H "Authorization: Bearer $CF_TOKEN" -H "Content-Type: application/json" --data '{"purge_everything":true}'; then
+    echo "Cloudflare: cache cleared"
+  else
+    echo "Cloudflare: cache clear FAILED, purge it in the Cloudflare dashboard (Caching > Configuration > Purge Everything)"
+  fi
+else
+  echo "Cloudflare: CLOUDFLARE_ZONE_ID / CLOUDFLARE_API_TOKEN not in .env, cache not cleared"
+fi
+unset CF_TOKEN
+
 # Ask IndexNow search engines to recrawl the pages this deploy added, changed or removed
 # (never fails the deploy)
 (cd "$APP/current" && node scripts/indexnow.mjs "$PREVIOUS") || true
