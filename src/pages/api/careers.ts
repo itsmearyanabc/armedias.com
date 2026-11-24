@@ -4,6 +4,7 @@ import { clientIp } from '../../server/auth';
 import { markEmailSent, saveSubmission } from '../../server/leads';
 import { isDuplicate, recordSubmission, verifyTurnstile, waitMs } from '../../server/spam-guard';
 import { isEmail, line, notify, optionalUrl, responder, text } from '../../server/forms';
+import { leadAlert, telegram } from '../../server/telegram';
 
 export const prerender = false;
 
@@ -50,7 +51,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   });
   recordSubmission('careers', ip, fingerprint);
 
-  const sent = await notify(`Job application: ${role} from ${name}`, [
+  const [sent] = await Promise.all([notify(`Job application: ${role} from ${name}`, [
     `Name:       ${name}`,
     `Email:      ${email}`,
     `Phone:      ${phone || '-'}`,
@@ -61,7 +62,16 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     `CV:         ${cv}`,
     '',
     message || '(no message)',
-  ].join('\n'), { name, address: email });
+  ].join('\n'), { name, address: email }),
+  telegram(leadAlert(`📄 Job application: ${role}`, [
+    ['Name', name],
+    ['Email', email],
+    ['Phone', phone],
+    ['Experience', experience],
+    ['Location', location],
+    ['CV', cv],
+    ['Portfolio', portfolio],
+  ], message))]);
   if (sent) await markEmailSent(saved);
 
   return respond(true);

@@ -6,6 +6,7 @@ import { randomBytes, createHash, timingSafeEqual } from 'node:crypto';
 import { db } from './db';
 import { getSetting, setSetting } from './settings';
 import { supabase } from './supabase';
+import { leadAlert, telegram, whatsAppLink } from './telegram';
 
 export const LEAD_FIELDS = {
   name: 'Name', email: 'Email', phone: 'Phone', company: 'Company', service: 'Service',
@@ -214,6 +215,18 @@ export async function ingest(batch: IncomingBatch): Promise<SyncResult> {
   }
   result.duplicates = result.received - result.inserted - result.failed;
   logSync(batch.trigger, result);
+  // Telegram alert for a live form submission (never for "sync all" backfills)
+  if (batch.trigger === 'submit' && result.inserted > 0 && rows.length <= 3) {
+    await Promise.all(rows.map((r) => telegram(leadAlert(`🔔 New Google Forms lead: ${String(r.name)}`, [
+      ['Service', r.service as string | null],
+      ['Country', r.country as string | null],
+      ['Budget', r.budget as string | null],
+      ['Phone', r.phone as string | null],
+      ['WhatsApp', whatsAppLink(r.phone as string | null)],
+      ['Email', r.email as string],
+      ['Company', r.company as string | null],
+    ], r.message as string))));
+  }
   return result;
 }
 

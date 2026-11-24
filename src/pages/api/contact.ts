@@ -7,6 +7,7 @@ import { markEmailSent, saveSubmission } from '../../server/leads';
 import { readAttribution } from '../../server/attribution';
 import { isDuplicate, recordSubmission, verifyTurnstile, waitMs } from '../../server/spam-guard';
 import { isEmail, line, notify, responder, text } from '../../server/forms';
+import { leadAlert, telegram, whatsAppLink } from '../../server/telegram';
 import { budgets, countryChoices, serviceChoices } from '../../data/form-options';
 
 export const prerender = false;
@@ -71,7 +72,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   });
   recordSubmission('contact', ip, fingerprint);
 
-  const sent = await notify(`New enquiry: ${service} (${country}) from ${name}`, [
+  // Email and Telegram go out together; neither waits for the other
+  const [sent] = await Promise.all([notify(`New enquiry: ${service} (${country}) from ${name}`, [
     `Name:     ${name}`,
     `Email:    ${email || '-'}`,
     `Phone:    ${phone || '-'}`,
@@ -87,7 +89,18 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     '',
     '---',
     `Sent from armedias.com on ${new Date().toISOString()}`,
-  ].join('\n'), email ? { name, address: email } : undefined);
+  ].join('\n'), email ? { name, address: email } : undefined),
+  telegram(leadAlert(`🔔 New enquiry from ${name}`, [
+    ['Service', service],
+    ['Country', country],
+    ['Budget', budget],
+    ['Phone', phone],
+    ['WhatsApp', whatsAppLink(phone)],
+    ['Email', email],
+    ['Company', company],
+    ['Page', page],
+    ['Found via', attribution ? `${attribution.channel}${attribution.landing ? `, landed on ${attribution.landing}` : ''}` : null],
+  ], message))]);
   if (sent) await markEmailSent(saved);
 
   return respond(true);

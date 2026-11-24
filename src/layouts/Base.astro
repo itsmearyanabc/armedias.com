@@ -135,20 +135,28 @@ const jsonLd = [organization, website, ...schema];
     <WhatsAppButton />
     {site.gaMeasurementId && import.meta.env.PROD && (
       <script is:inline define:vars={{ gaId: site.gaMeasurementId }}>
-        // Google Analytics 4. The library loads only after the page has finished loading and
-        // the browser is idle, so it never competes with the page itself for speed.
+        // Google Analytics 4. The page view is queued at once, but the library (about 150 KB
+        // of script) loads on the visitor's first scroll, tap, key or mouse move, or 6 s after
+        // the page loads, whichever comes first. The first seconds belong to the page, so the
+        // mobile speed score is not affected; queued hits are sent as soon as it loads.
         window.dataLayer = window.dataLayer || [];
         window.gtag = function () { window.dataLayer.push(arguments); };
         window.gtag('js', new Date());
         window.gtag('config', gaId);
+        var gaStarted = false;
+        var gaEvents = ['scroll', 'pointerdown', 'keydown', 'touchstart', 'mousemove'];
         var loadGa = function () {
+          if (gaStarted) return;
+          gaStarted = true;
+          gaEvents.forEach(function (t) { removeEventListener(t, loadGa); });
           var s = document.createElement('script');
           s.async = true;
           s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
           document.head.appendChild(s);
         };
-        var later = function () { 'requestIdleCallback' in window ? requestIdleCallback(loadGa, { timeout: 4000 }) : setTimeout(loadGa, 2000); };
-        document.readyState === 'complete' ? later() : addEventListener('load', later, { once: true });
+        gaEvents.forEach(function (t) { addEventListener(t, loadGa, { passive: true }); });
+        var gaFallback = function () { setTimeout(loadGa, 6000); };
+        document.readyState === 'complete' ? gaFallback() : addEventListener('load', gaFallback, { once: true });
         // Lead clicks: WhatsApp, phone and email
         document.addEventListener('click', function (e) {
           var a = e.target.closest && e.target.closest('a[href]');
