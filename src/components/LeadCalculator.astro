@@ -1,0 +1,96 @@
+---
+// Lead calculator for the lead generation pages: pick an industry and a monthly ad budget,
+// see the range of leads that budget buys at published UAE cost-per-lead figures, and the
+// budget 100 leads need. A planning guide, not a quote; sources are listed under it.
+// Without JavaScript the same figures show as a table.
+import type { DubaiSource } from '../data/dubai';
+
+interface Props {
+  intro: string;
+  industries: { name: string; low: number; high: number; source: string }[];
+  sources: DubaiSource[];
+}
+const { intro, industries, sources } = Astro.props;
+const aed = (n: number) => `AED ${n.toLocaleString('en-US')}`;
+const first = industries[0];
+const startBudget = 10000;
+---
+
+<section id="calculator" class="relative scroll-mt-24 py-20 lg:py-24" data-lead-calc data-industries={JSON.stringify(industries)}>
+  <div class="container-x">
+    <div class="max-w-2xl">
+      <p class="eyebrow" data-reveal="fade">Lead calculator</p>
+      <h2 class="mt-4 text-4xl font-bold sm:text-5xl">What does 100 leads cost in your industry?</h2>
+      <p class="mt-4 text-lg leading-relaxed text-slate">{intro}</p>
+    </div>
+
+    <div class="mt-10 grid gap-6 rounded-[2rem] bg-white p-6 shadow-2xl shadow-navy/10 ring-1 ring-navy/8 sm:p-8 lg:grid-cols-[1fr_1.1fr] lg:gap-10">
+      <div class="space-y-6">
+        <label class="block">
+          <span class="text-sm font-semibold text-navy">Your industry</span>
+          <select data-calc-industry class="mt-2 w-full rounded-2xl border border-navy/12 bg-mist px-4 py-3 text-navy focus:border-ember focus:outline-none">
+            {industries.map((x, i) => <option value={i}>{x.name}</option>)}
+          </select>
+        </label>
+        <label class="block">
+          <span class="flex items-baseline justify-between text-sm font-semibold text-navy">Monthly ad budget <output data-calc-budget-out class="font-display text-lg text-ember-700">{aed(startBudget)}</output></span>
+          <input data-calc-budget type="range" min="2000" max="100000" step="1000" value={startBudget} class="calc-range mt-3 w-full" aria-label="Monthly ad budget in AED" />
+          <span class="mt-1 flex justify-between text-xs text-slate"><span>AED 2,000</span><span>AED 100,000</span></span>
+        </label>
+        <p class="text-xs leading-relaxed text-slate">Source for this industry: <span data-calc-source>{first.source}</span></p>
+      </div>
+
+      <div class="grid content-center gap-4 rounded-3xl bg-navy p-6 text-white sm:p-8">
+        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-ember-300">At this budget, expect about</p>
+        <p class="font-display text-5xl font-bold leading-none sm:text-6xl"><span data-calc-leads>{Math.round(startBudget / first.high)}–{Math.round(startBudget / first.low)}</span> <span class="text-2xl font-semibold text-white/70">leads a month</span></p>
+        <div class="h-px bg-white/15"></div>
+        <p class="text-white/80">Budget for <strong class="text-white">100 leads</strong> in this industry: <strong data-calc-hundred class="text-sun">{aed(first.low * 100)}–{aed(first.high * 100)}</strong></p>
+        <p class="text-sm text-white/60">Cost per lead used: <span data-calc-cpl>{aed(first.low)}–{aed(first.high)}</span>. Our trial fee is separate: $399 for the month.</p>
+        <a href="/contact/" class="btn-ember mt-2 justify-self-start">Plan my trial budget</a>
+      </div>
+    </div>
+
+    <details class="mt-6 rounded-2xl bg-mist/70 p-5">
+      <summary class="cursor-pointer font-semibold text-navy">All industries and sources</summary>
+      <table class="mt-4 w-full text-left text-sm">
+        <thead><tr class="text-slate"><th class="py-2 pr-4 font-medium">Industry</th><th class="py-2 pr-4 font-medium">Cost per lead</th><th class="py-2 font-medium">100 leads need</th></tr></thead>
+        <tbody class="divide-y divide-navy/10">
+          {industries.map((x) => <tr><td class="py-2 pr-4 font-medium text-navy">{x.name}</td><td class="py-2 pr-4">{x.low === x.high ? aed(x.low) : `${aed(x.low)}–${aed(x.high)}`}</td><td class="py-2">{x.low === x.high ? aed(x.low * 100) : `${aed(x.low * 100)}–${aed(x.high * 100)}`}</td></tr>)}
+        </tbody>
+      </table>
+      <p class="mt-4 text-xs text-slate">Figures published by agencies, not audited market data: {sources.map((s, i) => <>{i > 0 && '; '}<a href={s.url} rel="nofollow noopener" target="_blank" class="underline hover:text-navy">{s.publisher}, “{s.title}”</a> ({s.date})</>)}.</p>
+    </details>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-lead-calc]');
+  if (root) {
+    const data: { name: string; low: number; high: number; source: string }[] = JSON.parse(root.dataset.industries!);
+    const q = <T extends Element>(s: string) => root.querySelector<T>(s)!;
+    const industry = q<HTMLSelectElement>('[data-calc-industry]');
+    const budget = q<HTMLInputElement>('[data-calc-budget]');
+    const aed = (n: number) => `AED ${Math.round(n).toLocaleString('en-US')}`;
+    const range = (a: number, b: number) => (a === b ? `${a}` : `${a}–${b}`);
+    const update = () => {
+      const x = data[Number(industry.value)];
+      const b = Number(budget.value);
+      q('[data-calc-budget-out]').textContent = aed(b);
+      q('[data-calc-leads]').textContent = range(Math.round(b / x.high), Math.round(b / x.low));
+      q('[data-calc-hundred]').textContent = x.low === x.high ? aed(x.low * 100) : `${aed(x.low * 100)}–${aed(x.high * 100)}`;
+      q('[data-calc-cpl]').textContent = x.low === x.high ? aed(x.low) : `${aed(x.low)}–${aed(x.high)}`;
+      q('[data-calc-source]').textContent = x.source;
+      budget.style.setProperty('--fill', `${((b - Number(budget.min)) / (Number(budget.max) - Number(budget.min))) * 100}%`);
+    };
+    industry.addEventListener('change', update);
+    budget.addEventListener('input', update);
+    update();
+  }
+</script>
+
+<style>
+  .calc-range { appearance: none; height: 8px; border-radius: 999px; background: linear-gradient(to right, var(--color-ember) var(--fill, 9%), rgb(19 33 58 / 0.1) var(--fill, 9%)); }
+  .calc-range::-webkit-slider-thumb { appearance: none; width: 24px; height: 24px; border-radius: 999px; background: #fff; border: 3px solid var(--color-ember); box-shadow: 0 4px 12px -2px rgb(255 122 26 / 0.5); cursor: pointer; transition: transform 0.2s; }
+  .calc-range::-webkit-slider-thumb:hover { transform: scale(1.12); }
+  .calc-range::-moz-range-thumb { width: 22px; height: 22px; border-radius: 999px; background: #fff; border: 3px solid var(--color-ember); cursor: pointer; }
+</style>

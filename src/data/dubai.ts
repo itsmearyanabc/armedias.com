@@ -13,7 +13,7 @@ export interface DubaiSource { publisher: string; title: string; url: string; da
 
 export interface DubaiService {
   slug: string;
-  /** services.ts slug this page belongs to */
+  /** services.ts slug this page belongs to; empty for Dubai-only offers with no main-site service */
   service: string;
   /** Short label for links between Dubai pages */
   name: string;
@@ -37,6 +37,12 @@ export interface DubaiService {
   /** Published Dubai price ranges, shown in a closed panel */
   prices?: { intro: string; rows: { label: string; range: string }[]; drivers: string[]; sources: DubaiSource[]; guide?: string };
   faqs: { q: string; a: string }[];
+  /** Fixed-price offer shown as the hero card (lead generation trial) */
+  offer?: { label: string; price: string; priceNote: string; promise: string; includes: string[]; cta: string };
+  /** Guarantee terms, shown in full as a numbered list */
+  guarantee?: { title: string; intro: string; terms: { t: string; d: string }[] };
+  /** Lead calculator: published cost-per-lead ranges by industry, in AED */
+  calculator?: { intro: string; industries: { name: string; low: number; high: number; source: string }[]; sources: DubaiSource[] };
 }
 
 const element8Web: DubaiSource = { publisher: 'Element8', title: 'Website Development Cost in Dubai: Complete 2026 Guide', url: 'https://www.element8.ae/blogs/website-development-cost-dubai', date: '10 Apr 2026' };
@@ -46,10 +52,156 @@ const techugoApp: DubaiSource = { publisher: 'Techugo', title: 'How Much Does Ap
 const apptunixErp: DubaiSource = { publisher: 'Apptunix', title: 'ERP Software Development Cost in Dubai', url: 'https://www.apptunix.com/blog/erp-software-development-cost-in-dubai/', date: 'updated 18 Sep 2026' };
 const codingclaveUae: DubaiSource = { publisher: 'Codingclave', title: 'AI & WhatsApp Chatbot Development Dubai: Cost & Monthly Fees (price list)', url: 'https://codingclave.com/uae/services/ai-chatbot-development', date: '8 Nov 2026' };
 
+// Lead generation pricing benchmarks (vendor-published, collected 27 Nov 2026)
+const clozerCpl: DubaiSource = { publisher: 'Clozer', title: 'Average Cost Per Lead by Industry in UAE: 2026 Benchmarks', url: 'https://clozer.pages.dev/blog/cpl-uae-2026.html', date: '2026' };
+const prospeoDubai: DubaiSource = { publisher: 'Prospeo', title: 'Best Lead Generation Companies in Dubai (2026)', url: 'https://prospeo.io/s/lead-generation-company-in-dubai', date: '2026' };
+const tombaDubai: DubaiSource = { publisher: 'Tomba', title: 'Lead Generation Company in Dubai: How to Pick One in 2026', url: 'https://tomba.io/blog/lead-generation-company-in-dubai', date: '21 Sep 2026' };
+
 // How Dubai clients pay us (Aryan, 24 Nov 2026)
 const payment = 'We quote in AED or US dollars and accept Stripe, PayPal, USDT or another method you prefer.';
 
 export const dubaiServices: DubaiService[] = [
+  {
+    slug: 'lead-generation-company',
+    // Dubai-only offer: no main-site service page links here, and only the trial price is shown
+    // (Aryan, 27 Nov 2026: pricing after the trial is custom, agreed on a call)
+    service: '',
+    name: 'Lead generation',
+    metaTitle: 'Lead Generation Company in Dubai | AR Medias',
+    metaDescription: 'Lead generation in Dubai: Meta and Google ads, landing pages and WhatsApp follow-up. 1-month trial at $399, 100 qualified leads guaranteed.',
+    h1: 'Lead generation company in Dubai',
+    accent: 'Dubai',
+    answer: 'We find customers for Dubai businesses: ads on Meta and Google, a landing page built for your offer, and WhatsApp follow-up that answers every enquiry in seconds. Start with a one-month trial for $399 (about AED 1,465). If we deliver fewer than 100 qualified leads in that month, we keep working without a fee until we do. Ad spend is separate and runs from your own account.',
+    builds: [
+      { t: 'Meta and Instagram lead campaigns', d: 'Ads to the people most likely to buy from you, with instant forms or a landing page, tested until the cost per lead comes down.' },
+      { t: 'Google Search ads', d: 'Your offer in front of people already searching for it in Dubai, for the searches that bring enquiries rather than browsers.' },
+      { t: 'A landing page for one offer', d: 'Built by us for the campaign, quick on mobile data, in English or Arabic, with the form and WhatsApp button where thumbs reach them.' },
+      { t: 'WhatsApp reply in seconds', d: 'Every new lead gets a WhatsApp message straight away on the official Business API, with two or three questions that sort buyers from browsers.' },
+      { t: 'Every lead in one dashboard', d: 'Name, number, source, time and status for each lead, in your CRM or ours, so you can see which ad brought which customer.' },
+      { t: 'Follow-ups that send themselves', d: 'Reminders to people who did not answer, and retargeting ads to those who visited but did not enquire.' },
+    ],
+    sections: [
+      {
+        h: 'What counts as a qualified lead?',
+        p: [
+          'A qualified lead is a real person who asked about your product or service, in your area, with a phone or WhatsApp number that actually reaches them. That is the definition our guarantee uses, written down before the trial starts.',
+          'Most disappointing lead generation comes from counting form fills instead of people. So we check every lead on WhatsApp or by phone, and these never count:',
+        ],
+        list: [
+          'Duplicates of someone already in your list',
+          'Wrong or unreachable numbers',
+          'Competitors, job seekers and people selling to you',
+          'Enquiries from outside the area you serve',
+          'Spam and test entries',
+        ],
+      },
+      {
+        h: 'How does the 100-lead guarantee work?',
+        p: [
+          'You pay $399 for the first month, plus the ad budget we agree for your industry. If the month ends with fewer than 100 qualified leads, we keep the campaigns running and charge no management fee until you have 100.',
+          'Lead counts mean nothing without rules, so the full terms are on this page, below. The two that matter most: you fund the ad budget we set together before starting, and someone on your side replies to leads quickly, or lets our WhatsApp automation reply for you.',
+        ],
+      },
+      {
+        h: 'What happens after the trial month?',
+        p: [
+          'You decide whether to continue. If you do, we agree the next step on a call, because no two businesses need the same thing: the number of offers, areas and channels, and the lead target you want, all change the work.',
+          'That call starts from your trial results: what each lead cost, which channel brought the buyers and how quickly your team closed them. The fee and the monthly lead target are then written down before anything starts, and the ad spend stays in your own account as before.',
+        ],
+      },
+      {
+        h: 'How much does lead generation cost in Dubai?',
+        p: [
+          'Two costs add up: the agency fee and the ad spend. Published Dubai guides put agency fees at around AED 3,000 to 7,000 a month on top of ad spend, and full retainers at AED 8,000 to 35,000 a month. Our trial is $399 for the first month; after that, the fee is set on a call around your business.',
+          'Ad spend depends on your industry. A lead for a real estate broker costs far less than a lead for a B2B software company, because fewer people search for the second and each one is worth more. The calculator below uses published UAE cost-per-lead ranges, so you can see what budget 100 leads needs in your field before you talk to anyone.',
+        ],
+      },
+      {
+        h: 'Which channels bring leads for Dubai businesses?',
+        p: [
+          'For most consumer businesses, Meta (Instagram and Facebook) brings the most leads for the money, Google Search brings fewer but readier buyers, and WhatsApp is where the conversation actually happens. We usually start with Meta and Google together and move budget to whichever produces cheaper qualified leads.',
+          'Some industries need more. B2B companies usually do better with LinkedIn and Google than with Instagram. Real estate brokers also get enquiries from property portals; where your portal account forwards them by email or WhatsApp, they can join the same follow-up flow and dashboard as the ad leads.',
+        ],
+      },
+      {
+        h: 'How fast will the first leads arrive?',
+        p: [
+          'Usually within the first week. The first days go into the landing page, tracking and the first set of ads; once Meta and Google approve them, enquiries start the same day.',
+          'The first two weeks are also when the cost per lead is highest, because the platforms are still learning who responds. We change audiences, ads and the offer wording every few days in that period, and you see every change and every lead in the dashboard as it happens.',
+        ],
+      },
+      {
+        h: 'How do you choose a lead generation agency in Dubai?',
+        p: [
+          'Ask questions that a weak agency cannot answer well. These are the ones we would ask ourselves:',
+        ],
+        list: [
+          'How do you define a qualified lead, in writing?',
+          'Whose ad account is the budget spent from, and who owns it if we stop?',
+          'Can I see every lead, with its source, as it arrives?',
+          'What happens if you miss the number you promised?',
+          'Do you buy lists or cold call? (We do neither.)',
+          'Is there a lock-in? (Our trial is one month, with no commitment after it.)',
+        ],
+      },
+      {
+        h: 'Is this kind of lead generation allowed in the UAE?',
+        p: [
+          'Yes, when every lead asks to be contacted. Ours come from people who filled in a form or messaged you first, so the follow-up is a reply, not a cold approach.',
+          'We do not buy contact lists or make unsolicited calls. That keeps you clear of the UAE telemarketing rules and the personal data protection law, and WhatsApp messages go through the official Business API on your own number, within Meta\'s messaging rules.',
+        ],
+      },
+    ],
+    projects: ['ai-whatsapp-instagram-automation'],
+    proofNotes: [
+      { client: 'Goldmine Sanger', text: 'A gold mining company based in Dubai. We built their automated lead funnel, which captures every enquiry and follows it up, along with their website and the management software their team uses.' },
+    ],
+    offer: {
+      label: 'One-month trial',
+      price: '$399',
+      priceNote: 'about AED 1,465, ad spend separate',
+      promise: '100 qualified leads, or we keep working free until you have them',
+      includes: ['Meta and Google campaigns', 'Landing page for your offer', 'WhatsApp reply in seconds', 'Live lead dashboard', 'Every industry we work with'],
+      cta: 'Start the trial',
+    },
+    guarantee: {
+      title: 'The 100-lead guarantee, in full',
+      intro: 'Written before the trial starts and signed by both sides. Plain terms, no fine print hidden elsewhere.',
+      terms: [
+        { t: 'What counts', d: 'A real person who asked about your product or service through our campaigns, in your agreed area, with a phone or WhatsApp number we have confirmed reaches them. Duplicates, wrong numbers, competitors, job seekers, sellers and spam never count.' },
+        { t: 'What we do not promise', d: 'Sales. We deliver qualified leads and the follow-up automation; closing them is your team\'s job. A lead that met the definition when we delivered it stays counted.' },
+        { t: 'The ad budget', d: 'Agreed in writing before the trial, from your industry\'s cost per lead, and paid from your own Meta and Google ad accounts. The guarantee holds at that budget.' },
+        { t: 'Your side', d: 'Someone replies to new leads within 30 minutes during working hours, or our WhatsApp automation replies for you.' },
+        { t: 'Timing', d: 'The trial month runs from the day the first campaign goes live, which is usually within the first week.' },
+        { t: 'If a lead is bad', d: 'Tell us within 7 days and we replace it.' },
+        { t: 'If we miss 100', d: 'We keep running the campaigns with no management fee until you have 100 qualified leads. Ad spend during that time is still paid by you, from your own account.' },
+        { t: 'Industries', d: 'Every industry we work with. Not covered: gambling, multi-level marketing, and products the ad platforms do not allow.' },
+        { t: 'You own everything', d: 'Ad accounts, pages, landing pages, CRM and every lead. If you stop, nothing stays with us.' },
+      ],
+    },
+    calculator: {
+      intro: 'Pick your industry and a monthly ad budget. The range uses published UAE cost-per-lead figures, so treat it as a planning guide, not a quote.',
+      industries: [
+        { name: 'Real estate', low: 62, high: 500, source: 'Clozer (AED 62, client data); Prospeo (AED 100-500+)' },
+        { name: 'Education and training', low: 80, high: 150, source: 'Clozer' },
+        { name: 'Healthcare and clinics', low: 140, high: 140, source: 'Clozer (client data)' },
+        { name: 'Legal and professional services', low: 200, high: 400, source: 'Clozer' },
+        { name: 'B2B and high-value services', low: 500, high: 1000, source: 'Prospeo (qualified, Google Search)' },
+        { name: 'Other industries (UAE average)', low: 85, high: 180, source: 'Clozer' },
+      ],
+      sources: [clozerCpl, prospeoDubai, tombaDubai],
+    },
+    faqs: [
+      { q: 'Is the $399 trial really one month with no lock-in?', a: 'Yes. One month, then you decide. If you want to continue, we agree a plan for your business on a call, based on your trial results.' },
+      { q: 'How much does it cost after the trial?', a: 'It depends on your business: how many offers, areas and channels, and how many leads a month you want. We set the fee on a call after the trial and put it in writing before the next month starts.' },
+      { q: 'Does the $399 include ad spend?', a: 'No. Ad spend goes straight to Meta and Google from your own ad account, so you see every dirham. We agree the budget with you before starting, from your industry\'s cost per lead.' },
+      { q: 'What if I get fewer than 100 qualified leads?', a: 'We keep the campaigns running with no management fee until you reach 100. Bad leads reported within 7 days are replaced.' },
+      { q: 'Do you work with my industry?', a: 'The trial is open to every industry we work with, including real estate, healthcare, education, retail and e-commerce, software and B2B services. The ad budget is what changes from one industry to another.' },
+      { q: 'Do you have an office in Dubai?', a: 'No. Our team works from New Delhi, 1.5 hours ahead of Dubai, with calls in your working day. Campaigns, dashboards and WhatsApp all run online, so location makes no difference to the leads.' },
+      { q: 'Which currency do you charge in, and how do I pay?', a: `${payment}` },
+      { q: 'Who owns the ad accounts and the leads?', a: 'You do. Campaigns run from your own Meta and Google accounts, and the leads, pages and CRM stay yours if you stop.' },
+    ],
+  },
   {
     slug: 'website-development-company',
     service: 'website-development',

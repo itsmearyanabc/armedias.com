@@ -9,6 +9,7 @@ import Scribble from '../../../../components/Scribble.astro';
 import ClientLogos from '../../../../components/ClientLogos.astro';
 import WorkingStyle from '../../../../components/WorkingStyle.astro';
 import ProjectCta from '../../../../components/ProjectCta.astro';
+import LeadCalculator from '../../../../components/LeadCalculator.astro';
 import { site } from '../../../../data/site';
 import { serviceBySlug } from '../../../../data/services';
 import { projects } from '../../../../data/projects';
@@ -21,7 +22,8 @@ export function getStaticPaths() {
 }
 
 const { d } = Astro.props as { d: DubaiService };
-const s = serviceBySlug[d.service];
+// Dubai-only offers (lead generation) have no main-site service behind them
+const s = d.service ? serviceBySlug[d.service] : undefined;
 const dubai = worldCities.find((c) => c.market === 'uae' && c.slug === 'dubai')!;
 const hub = '/locations/uae/dubai/';
 const url = `${site.url}${hub}${d.slug}/`;
@@ -35,7 +37,7 @@ const schema = [
     '@type': 'Service',
     '@id': `${url}#service`,
     name: d.h1,
-    serviceType: s.name,
+    serviceType: s?.name ?? d.name,
     description: d.metaDescription,
     url,
     provider: { '@id': `${site.url}/#organization` },
@@ -76,19 +78,37 @@ const schema = [
         </h1>
         <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate" data-hero>{d.answer}</p>
         <div class="mt-9 flex flex-wrap gap-3" data-hero>
-          <a href="/contact/" class="btn-primary" data-magnetic>Book a free call</a>
-          <a href="#work" class="btn-ghost">See the work</a>
+          {d.offer
+            ? <><a href="/contact/" class="btn-primary" data-magnetic>{d.offer.cta}</a><a href="#guarantee" class="btn-ghost">Read the guarantee</a></>
+            : <><a href="/contact/" class="btn-primary" data-magnetic>Book a free call</a><a href="#work" class="btn-ghost">See the work</a></>}
         </div>
       </div>
       <div class="relative">
-        <figure class="rounded-[2rem] bg-white p-5 shadow-2xl shadow-navy/10 ring-1 ring-navy/5 sm:p-7" data-reveal="up">
-          <MarketMap coords={dubai.coords} />
-          <figcaption class="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm">
-            <span class="font-display font-semibold text-navy">New Delhi → Dubai</span>
-            <span class="text-slate">Google Meet calls in Dubai hours · fixed quote in AED</span>
-          </figcaption>
-        </figure>
-        <HeroChips chips={[
+        {d.offer ? (
+          <div class="offer-card rounded-[2rem] bg-white p-6 shadow-2xl shadow-navy/10 ring-1 ring-navy/5 sm:p-8" data-reveal="up">
+            <p class="inline-flex items-center gap-2 rounded-full bg-ember/12 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-ember-700"><span class="size-2 animate-pulse rounded-full bg-ember"></span>{d.offer.label}</p>
+            <p class="mt-5 font-display text-6xl font-bold leading-none text-navy">{d.offer.price}</p>
+            <p class="mt-2 text-sm text-slate">{d.offer.priceNote}</p>
+            <p class="mt-5 rounded-2xl bg-navy px-4 py-3 font-display text-lg font-semibold leading-snug text-white">{d.offer.promise}</p>
+            <ul class="mt-5 space-y-2.5">
+              {d.offer.includes.map((x) => <li class="flex items-center gap-3 text-navy"><span class="grid size-6 shrink-0 place-items-center rounded-full bg-olive/15 text-olive"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4 4 10-10" /></svg></span>{x}</li>)}
+            </ul>
+            <a href="/contact/" class="btn-ember mt-6 w-full justify-center">{d.offer.cta}</a>
+          </div>
+        ) : (
+          <figure class="rounded-[2rem] bg-white p-5 shadow-2xl shadow-navy/10 ring-1 ring-navy/5 sm:p-7" data-reveal="up">
+            <MarketMap coords={dubai.coords} />
+            <figcaption class="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm">
+              <span class="font-display font-semibold text-navy">New Delhi → Dubai</span>
+              <span class="text-slate">Google Meet calls in Dubai hours · fixed quote in AED</span>
+            </figcaption>
+          </figure>
+        )}
+        <HeroChips chips={d.offer ? [
+          { text: 'Reply in seconds', sub: 'WhatsApp, official API', icon: 'clock' },
+          { text: '100 qualified leads', sub: 'Or we work free', icon: 'check' },
+          { text: 'Your ad account', sub: 'Leads and pages too', icon: 'key' },
+        ] : [
           { text: 'Calls in Dubai hours', sub: '1.5 hours apart', icon: 'clock' },
           { text: 'Fixed quote in AED', sub: 'Agreed before work starts', icon: 'quote' },
           { text: 'You own the code', sub: 'Domain and accounts too', icon: 'key' },
@@ -101,8 +121,8 @@ const schema = [
   <section class="py-20 lg:py-24">
     <div class="container-x">
       <div class="max-w-2xl">
-        <p class="eyebrow" data-reveal="fade">What we build</p>
-        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">What Dubai businesses ask us to build.</h2>
+        <p class="eyebrow" data-reveal="fade">{d.offer ? 'What you get' : 'What we build'}</p>
+        <h2 class="mt-4 text-4xl font-bold sm:text-5xl">{d.offer ? 'Everything that turns ad clicks into enquiries.' : 'What Dubai businesses ask us to build.'}</h2>
       </div>
       <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
         {d.builds.map((b, i) => (
@@ -118,6 +138,8 @@ const schema = [
 
   <div class="mb-4"><ClientLogos /></div>
 
+  {d.calculator && <LeadCalculator intro={d.calculator.intro} industries={d.calculator.industries} sources={d.calculator.sources} />}
+
   <!-- BUYER QUESTIONS: each heading is a question, the first sentence answers it -->
   <section class="py-20 lg:py-24">
     <div class="container-x grid gap-12 lg:grid-cols-[16rem_1fr] lg:gap-16">
@@ -127,6 +149,8 @@ const schema = [
           <ol class="mt-4 space-y-2 text-sm">
             {d.sections.map((x, i) => <li><a href={`#q${i + 1}`} class="block rounded-lg px-3 py-2 text-slate transition-colors hover:bg-mist hover:text-navy">{x.h}</a></li>)}
             {d.prices && <li><a href="#prices" class="block rounded-lg px-3 py-2 text-slate transition-colors hover:bg-mist hover:text-navy">Published Dubai prices</a></li>}
+            {d.guarantee && <li><a href="#guarantee" class="block rounded-lg px-3 py-2 text-slate transition-colors hover:bg-mist hover:text-navy">The guarantee, in full</a></li>}
+            {d.calculator && <li><a href="#calculator" class="block rounded-lg px-3 py-2 text-slate transition-colors hover:bg-mist hover:text-navy">Lead calculator</a></li>}
             <li><a href="#faq" class="block rounded-lg px-3 py-2 text-slate transition-colors hover:bg-mist hover:text-navy">Questions</a></li>
           </ol>
         </div>
@@ -172,6 +196,29 @@ const schema = [
       </div>
     </div>
   </section>
+
+  <!-- GUARANTEE (lead generation) -->
+  {d.guarantee && (
+    <section id="guarantee" class="relative scroll-mt-24 overflow-hidden py-20 lg:py-24">
+      <GlowBackdrop variant="band" />
+      <div class="container-x">
+        <div class="max-w-2xl">
+          <p class="eyebrow" data-reveal="fade">No fine print</p>
+          <h2 class="mt-4 text-4xl font-bold sm:text-5xl">{d.guarantee.title}</h2>
+          <p class="mt-4 text-lg leading-relaxed text-slate">{d.guarantee.intro}</p>
+        </div>
+        <ol class="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+          {d.guarantee.terms.map((x, i) => (
+            <li class="lift-card rounded-3xl bg-white p-6 ring-1 ring-navy/8 shadow-lg shadow-navy/5">
+              <span class="grid size-9 place-items-center rounded-full bg-ember font-display text-sm font-bold text-navy">{i + 1}</span>
+              <h3 class="mt-4 text-lg font-bold">{x.t}</h3>
+              <p class="mt-2 leading-relaxed text-slate">{x.d}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
 
   <!-- PROOF -->
   <section id="work" class="relative overflow-hidden py-20 lg:py-24 scroll-mt-20">
@@ -231,7 +278,7 @@ const schema = [
       <ul class="mt-4 flex flex-wrap gap-2">
         <li><a href={hub} class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-ember hover:text-ember-700">Software development in Dubai</a></li>
         {others.map((o) => <li><a href={`${hub}${o.slug}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-ember hover:text-ember-700">{o.name}</a></li>)}
-        <li><a href={`/services/${s.slug}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-ember hover:text-ember-700">{s.name} (all countries)</a></li>
+        {s && <li><a href={`/services/${s.slug}/`} class="inline-block rounded-full border border-navy/10 px-4 py-2 text-sm font-medium hover:border-ember hover:text-ember-700">{s.name} (all countries)</a></li>}
       </ul>
     </div>
   </section>
@@ -244,6 +291,8 @@ const schema = [
 </Base>
 
 <style>
+  /* On the offer card, the left chip would cover the list it repeats */
+  .offer-card + :global(.hero-chips .hero-chip--0) { display: none; }
   .lift-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
   .lift-card:hover { transform: translateY(-4px); box-shadow: 0 22px 40px -20px rgb(85 107 47 / 0.5); }
   @media (prefers-reduced-motion: reduce) { .lift-card:hover { transform: none; } }
