@@ -398,8 +398,8 @@ export const dubaiServices: DubaiService[] = [
     slug: 'mobile-app-development-company',
     service: 'mobile-app-development',
     name: 'Mobile app development',
-    metaTitle: 'Mobile App Development Company in Dubai | AR Medias',
-    metaDescription: 'iOS and Android apps for Dubai businesses, from first version to App Store launch. App cost explained, fixed AED quote, you own the app.',
+    metaTitle: 'Mobile App Development Company in Dubai, UAE | AR Medias',
+    metaDescription: 'iOS and Android app development for Dubai and UAE businesses, from first version to App Store launch. Fixed AED quote, and you own the app.',
     h1: 'Mobile app development company in Dubai',
     accent: 'Dubai',
     answer: 'We build iPhone and Android apps for Dubai businesses, from the first version you can put in front of customers to the App Store and Google Play launch. One codebase usually serves both phones, which keeps cost and upkeep down. You get a fixed quote before work starts, and the app is published under your own developer accounts, so it belongs to you.',
@@ -431,6 +431,41 @@ export const dubaiServices: DubaiService[] = [
         p: [
           'A focused first version usually takes 8 to 12 weeks. Larger apps are planned in releases, so something useful reaches users early instead of everything arriving at once.',
           'Store review is outside anyone\'s control. Google is usually quick; Apple can take a few days and sometimes asks for changes. We prepare the store listing, privacy details and test accounts in advance so review goes as smoothly as possible.',
+        ],
+      },
+      {
+        h: 'Android and iPhone apps: do you need both?',
+        p: [
+          'In the UAE, usually yes. Both platforms have a large share of users here, so an app that launches on only one of them leaves out a big part of your customers.',
+          'Building both does not mean paying twice. With Flutter or React Native, one codebase produces the iPhone and the Android app, and the screens are tested on both before each release. If your users are mostly on one platform, such as staff who all carry company Android phones, we build for that one first.',
+        ],
+      },
+      {
+        h: 'What does a Dubai app usually need to connect to?',
+        p: [
+          'Most of the work in a UAE app sits behind the screens. These are the connections that come up most often in Dubai projects:',
+        ],
+        list: [
+          'Card payments through a UAE gateway such as Network International or Telr, with Apple Pay and Google Pay.',
+          'Buy now, pay later through Tabby or Tamara, for retail and e-commerce apps.',
+          'UAE PASS sign-in, for apps that need a verified identity. This needs approval from the UAE PASS programme, so we plan it early.',
+          'WhatsApp for order updates and support, through the official Business API.',
+          'Maps and delivery tracking, with addresses that work for Dubai buildings and areas, not only street numbers.',
+          'Your existing CRM, ERP or stock system, so orders and customers do not live in two places.',
+        ],
+      },
+      {
+        h: 'How do you choose a mobile app development company in Dubai?',
+        p: [
+          'Lists of the "best" app companies rarely tell you how a team works. These questions do, and a good company answers them without hesitating:',
+        ],
+        list: [
+          'Can I install a test version on my own phone during the project, not just see screenshots?',
+          'Whose Apple and Google developer accounts will the app be published under?',
+          'Do I get the full source code, and the logins for the backend and hosting?',
+          'Is the quote fixed for an agreed scope, and how are changes priced?',
+          'Who looks after updates when Apple and Google release new phone software?',
+          'Can I speak to the people who will actually build it?',
         ],
       },
       {
@@ -477,6 +512,8 @@ export const dubaiServices: DubaiService[] = [
     },
     faqs: [
       { q: 'Do you build apps for businesses in Dubai?', a: 'Yes. We work remotely from New Delhi, 1.5 hours ahead of Dubai, with Google Meet calls in your working day and a test build on your phone after each milestone.' },
+      { q: 'Do you build both Android and iOS apps?', a: 'Yes. Most apps are built once in Flutter or React Native and released on both the App Store and Google Play. Native iOS or Android is used only when the app needs deep access to the phone.' },
+      { q: 'Do you work with businesses elsewhere in the UAE?', a: 'Yes. We build apps for clients in Dubai, Abu Dhabi, Sharjah and the other emirates. Everything runs online, so the emirate makes no difference to how we work.' },
       { q: 'Will we see the app before it launches?', a: 'Yes. You install test versions on your own phone through TestFlight on iPhone and an internal test track on Android, and give feedback before anything goes public.' },
       { q: 'Which currency do you quote in, and how do we pay?', a: `${payment} Payments are split into milestones tied to work you have approved.` },
       { q: 'Can you take over an app another company built?', a: 'Yes. We start with an audit of the code, store accounts and backend, tell you plainly what is worth keeping, and then fix or rebuild in stages.' },
