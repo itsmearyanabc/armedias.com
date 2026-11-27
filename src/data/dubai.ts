@@ -313,10 +313,10 @@ export const dubaiServices: DubaiService[] = [
     service: 'website-development',
     name: 'Web design & development',
     metaTitle: 'Web Design & Development Company in Dubai | AR Medias',
-    metaDescription: 'Web design and development for Dubai companies: fast websites and web apps built by hand. AED cost guide, fixed quote, no lock-in.',
+    metaDescription: 'Website development and web design for Dubai and UAE companies: fast sites in English and Arabic, built by hand. Fixed AED quote, you own it.',
     h1: 'Web design and development company in Dubai',
     accent: 'Dubai',
-    answer: 'We design and build websites for Dubai companies: business sites, English and Arabic sites, and web apps behind a login. Our team works from New Delhi, 1.5 hours ahead of Dubai, so calls happen in your working day. You get a written scope and a fixed quote before any work starts, and the code, domain and hosting accounts are yours from day one.',
+    answer: 'We are a web design and website development company for Dubai businesses, building company sites, English and Arabic sites, and web apps behind a login. Our team works from New Delhi, 1.5 hours ahead of Dubai, so calls happen in your working day. You get a written scope and a fixed quote before any work starts, and the code, domain and hosting accounts are yours from day one.',
     builds: [
       { t: 'Company website', d: 'The pages that explain what you do, who it is for and how to reach you, with enquiry forms and WhatsApp that land in your inbox.' },
       { t: 'English and Arabic website', d: 'One site in two languages, with the Arabic version laid out right to left instead of Arabic text dropped into an English layout.' },
@@ -345,6 +345,27 @@ export const dubaiServices: DubaiService[] = [
         p: [
           'A business website usually takes three to six weeks from approved design to launch. Design comes first, and nothing is built until you have approved how the pages look on a phone and a laptop.',
           'What slows projects down is rarely the code. It is waiting for text, photos and approvals, so it helps to start gathering them while the design is being made. A second language adds translation and a layout review of every page in right-to-left, so plan a little more time for it.',
+        ],
+      },
+      {
+        h: 'How do you choose a website development company in Dubai?',
+        p: [
+          'Portfolios all look good, so ask about how the work is done. A company worth hiring answers these without hedging:',
+        ],
+        list: [
+          'Will the domain, hosting and code be in my company\'s name from the start?',
+          'Is the site built by hand, or on a page builder that slows it down?',
+          'Can I see the design on my phone before anything is built?',
+          'How will the Arabic version be laid out, not just translated?',
+          'If you redesign our current site, how do you keep our Google rankings?',
+          'What is the fixed price, and what would change it?',
+        ],
+      },
+      {
+        h: 'Freelancer or web design company?',
+        p: [
+          'A good freelancer is a fair choice for a small, simple site with a tight budget, and many are cheaper than an agency. The risk is that one person is the whole team: if they get busy or move on, updates stop and access to your hosting can go with them.',
+          'A company costs more but brings design, development and testing as separate skills, and someone is still there in two years. Whichever you choose, make sure every account is in your name, so you are never stuck.',
         ],
       },
       {
@@ -393,6 +414,7 @@ export const dubaiServices: DubaiService[] = [
     },
     faqs: [
       { q: 'Do you work with businesses in Dubai?', a: 'Yes. Goldmine Sanger, a gold mining company in Dubai, runs its website, lead funnel and management software on our work. We work remotely from New Delhi, with calls on Google Meet inside Dubai business hours.' },
+      { q: 'Do you build websites for businesses elsewhere in the UAE?', a: 'Yes. We work with companies in Dubai, Abu Dhabi, Sharjah and the other emirates. Everything runs online, so the emirate makes no difference to how we work.' },
       { q: 'Do you have an office in Dubai?', a: 'No. Our office is in New Delhi and every Dubai project runs remotely. The time difference is 1.5 hours, so our working days overlap almost completely.' },
       { q: 'Which currency do you quote in, and how do we pay?', a: `${payment} Payments are split into milestones tied to work you have approved.` },
       { q: 'Do we own the website and the code?', a: 'Yes. The code, design files, domain and hosting accounts are in your name from day one, so you are free to change developers at any time.' },
