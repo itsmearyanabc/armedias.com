@@ -96,8 +96,8 @@ export const dubaiServices: DubaiService[] = [
     // (Aryan, 27 Nov 2026: pricing after the trial is custom, agreed on a call)
     service: '',
     name: 'Lead generation',
-    metaTitle: 'Lead Generation Company in Dubai | AR Medias',
-    metaDescription: 'Lead generation in Dubai: Meta and Google ads, landing pages and WhatsApp follow-up. 1-month trial at $399, 100 qualified leads guaranteed.',
+    metaTitle: 'Lead Generation Company in Dubai | $399 Trial | AR Medias',
+    metaDescription: 'Lead generation in Dubai and the UAE: Meta and Google ads, landing pages, WhatsApp follow-up. 100 qualified leads guaranteed in month one.',
     h1: 'Lead generation company in Dubai',
     accent: 'Dubai',
     answer: 'We find customers for Dubai businesses: ads on Meta and Google, a landing page built for your offer, and WhatsApp follow-up that answers every enquiry in seconds. Start with a one-month trial for $399 (about AED 1,465). If we deliver fewer than 100 qualified leads in that month, we keep working without a fee until we do. Ad spend is separate and runs from your own account.',
@@ -110,6 +110,13 @@ export const dubaiServices: DubaiService[] = [
       { t: 'Follow-ups that send themselves', d: 'Reminders to people who did not answer, and retargeting ads to those who visited but did not enquire.' },
     ],
     sections: [
+      {
+        h: 'What is lead generation?',
+        p: [
+          'Lead generation is finding people who are interested in what you sell and getting their contact details, so your team can talk to them. A lead is one of those people: someone who asked about your product or service and left a way to reach them.',
+          'For a Dubai business that usually means ads on Instagram, Facebook or Google, a page or form where people enquire, and a quick reply on WhatsApp. Selling to the lead is the next step; lead generation is everything that brings them to you.',
+        ],
+      },
       {
         h: 'What counts as a qualified lead?',
         p: [
