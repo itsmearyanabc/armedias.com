@@ -55,7 +55,36 @@ const codingclaveUae: DubaiSource = { publisher: 'Codingclave', title: 'AI & Wha
 // Lead generation pricing benchmarks (vendor-published, collected 27 Nov 2026)
 const clozerCpl: DubaiSource = { publisher: 'Clozer', title: 'Average Cost Per Lead by Industry in UAE: 2026 Benchmarks', url: 'https://clozer.pages.dev/blog/cpl-uae-2026.html', date: '2026' };
 const prospeoDubai: DubaiSource = { publisher: 'Prospeo', title: 'Best Lead Generation Companies in Dubai (2026)', url: 'https://prospeo.io/s/lead-generation-company-in-dubai', date: '2026' };
+const recdLeads: DubaiSource = { publisher: 'Real Estate Club Dubai', title: 'Lead Partnerships: Exclusive Dubai Property Leads', url: 'https://realestateclubdubai.com/lead-partnerships', date: '2026' };
 const tombaDubai: DubaiSource = { publisher: 'Tomba', title: 'Lead Generation Company in Dubai: How to Pick One in 2026', url: 'https://tomba.io/blog/lead-generation-company-in-dubai', date: '21 Sep 2026' };
+
+// The lead generation trial and its guarantee: one definition, used by every lead generation
+// page so the terms can never differ between pages (Aryan, 27 Nov 2026: only the trial price
+// is published; pricing after it is custom, agreed on a call).
+const leadTrialOffer: NonNullable<DubaiService['offer']> = {
+      label: 'One-month trial',
+      price: '$399',
+      priceNote: 'about AED 1,465, ad spend separate',
+      promise: '100 qualified leads, or we keep working free until you have them',
+      includes: ['Meta and Google campaigns', 'Landing page for your offer', 'WhatsApp reply in seconds', 'Live lead dashboard', 'Every industry we work with'],
+      cta: 'Start the trial',
+    };
+
+const leadGuarantee: NonNullable<DubaiService['guarantee']> = {
+      title: 'The 100-lead guarantee, in full',
+      intro: 'Written before the trial starts and signed by both sides. Plain terms, no fine print hidden elsewhere.',
+      terms: [
+        { t: 'What counts', d: 'A real person who asked about your product or service through our campaigns, in your agreed area, with a phone or WhatsApp number we have confirmed reaches them. Duplicates, wrong numbers, competitors, job seekers, sellers and spam never count.' },
+        { t: 'What we do not promise', d: 'Sales. We deliver qualified leads and the follow-up automation; closing them is your team\'s job. A lead that met the definition when we delivered it stays counted.' },
+        { t: 'The ad budget', d: 'Agreed in writing before the trial, from your industry\'s cost per lead, and paid from your own Meta and Google ad accounts. The guarantee holds at that budget.' },
+        { t: 'Your side', d: 'Someone replies to new leads within 30 minutes during working hours, or our WhatsApp automation replies for you.' },
+        { t: 'Timing', d: 'The trial month runs from the day the first campaign goes live, which is usually within the first week.' },
+        { t: 'If a lead is bad', d: 'Tell us within 7 days and we replace it.' },
+        { t: 'If we miss 100', d: 'We keep running the campaigns with no management fee until you have 100 qualified leads. Ad spend during that time is still paid by you, from your own account.' },
+        { t: 'Industries', d: 'Every industry we work with. Not covered: gambling, multi-level marketing, and products the ad platforms do not allow.' },
+        { t: 'You own everything', d: 'Ad accounts, pages, landing pages, CRM and every lead. If you stop, nothing stays with us.' },
+      ],
+    };
 
 // How Dubai clients pay us (Aryan, 24 Nov 2026)
 const payment = 'We quote in AED or US dollars and accept Stripe, PayPal, USDT or another method you prefer.';
@@ -156,29 +185,8 @@ export const dubaiServices: DubaiService[] = [
     proofNotes: [
       { client: 'Goldmine Sanger', text: 'A gold mining company based in Dubai. We built their automated lead funnel, which captures every enquiry and follows it up, along with their website and the management software their team uses.' },
     ],
-    offer: {
-      label: 'One-month trial',
-      price: '$399',
-      priceNote: 'about AED 1,465, ad spend separate',
-      promise: '100 qualified leads, or we keep working free until you have them',
-      includes: ['Meta and Google campaigns', 'Landing page for your offer', 'WhatsApp reply in seconds', 'Live lead dashboard', 'Every industry we work with'],
-      cta: 'Start the trial',
-    },
-    guarantee: {
-      title: 'The 100-lead guarantee, in full',
-      intro: 'Written before the trial starts and signed by both sides. Plain terms, no fine print hidden elsewhere.',
-      terms: [
-        { t: 'What counts', d: 'A real person who asked about your product or service through our campaigns, in your agreed area, with a phone or WhatsApp number we have confirmed reaches them. Duplicates, wrong numbers, competitors, job seekers, sellers and spam never count.' },
-        { t: 'What we do not promise', d: 'Sales. We deliver qualified leads and the follow-up automation; closing them is your team\'s job. A lead that met the definition when we delivered it stays counted.' },
-        { t: 'The ad budget', d: 'Agreed in writing before the trial, from your industry\'s cost per lead, and paid from your own Meta and Google ad accounts. The guarantee holds at that budget.' },
-        { t: 'Your side', d: 'Someone replies to new leads within 30 minutes during working hours, or our WhatsApp automation replies for you.' },
-        { t: 'Timing', d: 'The trial month runs from the day the first campaign goes live, which is usually within the first week.' },
-        { t: 'If a lead is bad', d: 'Tell us within 7 days and we replace it.' },
-        { t: 'If we miss 100', d: 'We keep running the campaigns with no management fee until you have 100 qualified leads. Ad spend during that time is still paid by you, from your own account.' },
-        { t: 'Industries', d: 'Every industry we work with. Not covered: gambling, multi-level marketing, and products the ad platforms do not allow.' },
-        { t: 'You own everything', d: 'Ad accounts, pages, landing pages, CRM and every lead. If you stop, nothing stays with us.' },
-      ],
-    },
+    offer: leadTrialOffer,
+    guarantee: leadGuarantee,
     calculator: {
       intro: 'Pick your industry and a monthly ad budget. The range uses published UAE cost-per-lead figures, so treat it as a planning guide, not a quote.',
       industries: [
@@ -200,6 +208,97 @@ export const dubaiServices: DubaiService[] = [
       { q: 'Do you have an office in Dubai?', a: 'No. Our team works from New Delhi, 1.5 hours ahead of Dubai, with calls in your working day. Campaigns, dashboards and WhatsApp all run online, so location makes no difference to the leads.' },
       { q: 'Which currency do you charge in, and how do I pay?', a: `${payment}` },
       { q: 'Who owns the ad accounts and the leads?', a: 'You do. Campaigns run from your own Meta and Google accounts, and the leads, pages and CRM stay yours if you stop.' },
+    ],
+  },
+  {
+    slug: 'real-estate-lead-generation',
+    service: '',
+    name: 'Real estate lead generation',
+    metaTitle: 'Real Estate Lead Generation in Dubai | AR Medias',
+    metaDescription: 'Buyer, investor and tenant leads for Dubai brokers and developers, qualified on WhatsApp before your agents call. $399 one-month trial.',
+    h1: 'Real estate lead generation in Dubai',
+    accent: 'Dubai',
+    answer: 'We bring Dubai brokers and developers buyer, investor and tenant enquiries from Meta and Google ads, ask each one about budget and timeline on WhatsApp within seconds, and pass the serious ones to your agents. The leads come from your own ad account, so they are yours alone and never resold. Start with a one-month trial for $399, with 100 qualified leads guaranteed; ad spend is separate.',
+    builds: [
+      { t: 'Off-plan launch campaigns', d: 'Ads timed to a project launch, aimed at buyers and investors in the UAE and abroad, with the payment plan up front so price-shoppers filter themselves out.' },
+      { t: 'Ready and secondary listings', d: 'Campaigns for specific communities and unit types, so a lead for a two-bed in JVC reaches the agent who handles JVC.' },
+      { t: 'Rental and tenant leads', d: 'Higher-volume campaigns for leasing teams, sorted by move-in date and budget before anyone picks up the phone.' },
+      { t: 'Qualification on WhatsApp', d: 'Every enquiry is asked about budget, cash or mortgage, timeline and area within seconds, and the answers sit with the lead.' },
+      { t: 'Routing to the right agent', d: 'Leads assigned by community, language or turn, with a reminder if nobody replies in time, so no enquiry waits overnight.' },
+      { t: 'Landing pages per project', d: 'One page per project or community, quick on mobile, in English or Arabic, with the brochure and payment plan behind the form.' },
+    ],
+    sections: [
+      {
+        h: 'Where do Dubai real estate leads come from?',
+        p: [
+          'Most come from three places: the property portals, paid ads on Meta and Google, and referrals. Portals bring steady enquiries, but the same buyer often contacts several agencies about the same unit. Ads bring enquiries that come to you alone, because they come from your own campaign.',
+          'Social platforms matter here more than in most markets. Instagram suits luxury and high-rise projects, and many overseas investors first meet a Dubai project in their feed rather than on a portal. We use the portals you already pay for and add campaigns that bring leads nobody else has.',
+        ],
+      },
+      {
+        h: 'Should you buy real estate leads in Dubai?',
+        p: [
+          'Be careful with leads you did not generate. Bought or shared lists are often sold to several agencies, go stale quickly, and contact data collected for someone else is a data protection risk for you.',
+          'There are honest lead sellers who sell exclusive leads in bundles, which can work for a small team. The alternative is to own the source: campaigns in your own ad account, so every lead is fresh, yours alone and checked before it reaches an agent. That is how we work, and you keep the account if you stop.',
+        ],
+      },
+      {
+        h: 'How much does a real estate lead cost in Dubai?',
+        p: [
+          'It depends on the channel and the property. Published figures put a Meta-led real estate lead at around AED 62 for one Dubai campaign, AED 100 to 500 and more across the market, and blended Google Ads leads at about $70 to 110 (roughly AED 257 to 404), rising to $120 to 245 for search-only campaigns.',
+          'Luxury and off-plan investor leads cost more than rental leads, and they are worth more. The calculator below shows what 100 leads need in ad budget for each route, so you can plan before you speak to us. Our trial fee is separate: $399 for the first month.',
+        ],
+      },
+      {
+        h: 'How do you qualify a property lead?',
+        p: [
+          'With a few direct questions, asked the same way every time. Property Finder\'s own guide for agents recommends frameworks such as BANT: budget, authority, need and timeline.',
+        ],
+        list: [
+          'Budget, and whether it is cash or a mortgage, with pre-approval if there is one',
+          'Who decides: the buyer alone, a partner or a company',
+          'What they need: community, unit type, ready or off-plan, to live in or to rent out',
+          'When: this month, this quarter or just looking',
+        ],
+      },
+      {
+        h: 'Off-plan, ready or rentals: what changes?',
+        p: [
+          'The audience and the timing. Off-plan campaigns run around a launch and often reach investors outside the UAE, so the follow-up has to work across time zones and on WhatsApp. Ready and secondary campaigns target specific communities and unit types. Rentals bring many more leads at a lower value, so the qualification questions do more of the work.',
+          'We set up each as its own campaign with its own landing page and questions, so an investor asking about a payment plan never lands in the leasing team\'s queue.',
+        ],
+      },
+      {
+        h: 'How fast should an agent reply to a new lead?',
+        p: [
+          'As fast as possible. A buyer who enquires about a unit is usually comparing several at once, and the first useful reply often wins the viewing.',
+          'That is why every lead gets a WhatsApp message from your number within seconds, day or night, with the brochure or the first qualification question. The agent then picks up a conversation that has already started instead of a cold number.',
+        ],
+      },
+    ],
+    projects: ['luxury-real-estate-website', 'ai-whatsapp-instagram-automation'],
+    proofNotes: [
+      { client: 'Goldmine Sanger', text: 'A Dubai company. We built their automated lead funnel, which captures every enquiry and follows it up, along with their website and management software.' },
+    ],
+    offer: leadTrialOffer,
+    guarantee: leadGuarantee,
+    calculator: {
+      intro: 'Pick a route and a monthly ad budget. The ranges come from published Dubai real estate figures, so treat them as a planning guide, not a quote.',
+      industries: [
+        { name: 'Real estate, Meta-led campaigns', low: 62, high: 500, source: 'Clozer (AED 62, one Dubai campaign); Prospeo (AED 100-500+)' },
+        { name: 'Real estate, blended Google Ads', low: 257, high: 404, source: 'Real Estate Club Dubai ($70-110 per lead)' },
+        { name: 'Real estate, Google Search only', low: 441, high: 900, source: 'Real Estate Club Dubai ($120-245 per lead)' },
+      ],
+      sources: [clozerCpl, prospeoDubai, recdLeads],
+    },
+    faqs: [
+      { q: 'Are the leads shared with other agencies?', a: 'No. They come from campaigns in your own ad account, so each lead is yours alone and is never resold.' },
+      { q: 'Do you work with brokers and developers?', a: 'Both. Brokerages usually want steady buyer and tenant leads by community; developers usually want launch campaigns for one project at a time.' },
+      { q: 'Do property ads in Dubai need a permit?', a: 'Yes. Property adverts in Dubai need an advertising permit (Trakheesi) from the Dubai Land Department, and the permit details must appear on the ad. You or the developer hold the permit; we put it on every ad and landing page.' },
+      { q: 'Can the leads go into our CRM?', a: 'Yes. Leads can go straight into the CRM you use, or into a simple dashboard we set up, with the WhatsApp conversation attached.' },
+      { q: 'Which languages can the campaigns run in?', a: 'English and Arabic as standard. Campaigns for overseas investors can run in their language if you supply the translated brochure and payment plan.' },
+      { q: 'How does the $399 trial work for real estate?', a: 'One month of campaigns, landing pages, WhatsApp qualification and the dashboard for $399, with ad spend paid from your own account. If you get fewer than 100 qualified leads that month, we keep working without a fee until you do. After the trial, pricing is agreed on a call based on your business.' },
+      { q: 'Do you have an office in Dubai?', a: 'No. Our team works from New Delhi, 1.5 hours ahead of Dubai, with calls in your working day. Campaigns, WhatsApp and the dashboard all run online.' },
     ],
   },
   {
